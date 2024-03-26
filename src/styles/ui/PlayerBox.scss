@@ -1,0 +1,60 @@
+@import "../theme";
+
+@mixin player-box-style($gradient) {
+  position: relative;
+  margin: 0.5em 0;
+  width: 20em;
+  padding: 10px;
+  border-radius: $borderRadius;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(to right, #AAA4FF, #B795FF, #FF81B3);
+
+  &:before {
+    content: '';
+    position: absolute;
+    background: $gradient; // Use the passed gradient
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    margin: -2px;
+    border-radius: calc(#{$borderRadius} + 2px);
+  }
+}
+
+.player-box{
+  &.primary {
+    @include player-box-style(linear-gradient(to right, #FC3A87, #4235FB));
+  }
+
+  &.secondary {
+    @include player-box-style(white);
+  }
+
+  &.username {
+    margin-left: 10px;
+    font-weight: 400;
+    color: white;
+  }
+}
+
+.player-shame-token {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 10px;
+}
+
+.shame-token-icon {
+  margin-right: 5px; /* Adjust the spacing between icon and number */
+}
+
+.shame-token-count {
+  margin-left: 0.35em;
+  font-weight: 400;
+  color: white;
+}
+
+
