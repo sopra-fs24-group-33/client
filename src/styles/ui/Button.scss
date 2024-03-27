@@ -18,10 +18,15 @@
   text-align: center;
   height: 35px;
   border: none;
-  border-radius: $borderRadius;
+  border-radius: 25px;
   cursor: pointer;
   opacity: 1;
-  color: $background;
-  background-color: $accent;
+  color: black;
+  background-color: white;
   transition: all 0.3s ease;
+}
+
+.primary-button.black {
+  color: white;
+  background-color: black;
 }
