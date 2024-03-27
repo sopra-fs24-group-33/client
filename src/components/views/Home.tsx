@@ -39,8 +39,15 @@ const Home = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <Button onClick={() => navigate("/login")}>Login</Button>
-        <Button onClick={() => navigate("/register")}>Register</Button>
+        <Button
+          className="primary-button black"
+          onClick={() => navigate("/login")}>
+          Login
+        </Button>
+        <Button  className="primary-button black"
+                 onClick={() => navigate("/register")}>
+          Register
+        </Button>
       </div>
 
 

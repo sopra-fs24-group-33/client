@@ -7,6 +7,8 @@
     /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
     @include center;
     flex-direction: column;
+
+
   }
   &.form {
     display: flex;
@@ -20,7 +22,7 @@
     padding-left: 37px;
     padding-right: 37px;
     border-radius: 0.75em;
-    background-color: $background;
+    background-color: black;
     transition: opacity 0.5s ease, transform 0.5s ease;
     box-shadow: $dropShadow;
   }
@@ -30,13 +32,15 @@
     justify-content: center;
   }
   &.input {
-    height: 35px;
+    height: 45px;
     padding-left: 15px;
     margin-left: -4px;
-    border: none;
-    border-radius: 0.75em;
+    border: 2px solid;
+    border-image: linear-gradient(to right, #FC3A87, #4235FB);
+    border-image-slice: 1; // Ensures the gradient covers the entire border
+    border-radius: 1em;
     margin-bottom: 20px;
-    background: transparentize(white, 0.85);
+    background: black;
     color: $textColor;
   }
   &.label {

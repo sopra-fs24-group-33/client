@@ -21,7 +21,12 @@
   border-radius: 25px;
   cursor: pointer;
   opacity: 1;
+  color: black;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.primary-button.black {
   color: white;
   background-color: black;
-  transition: all 0.3s ease;
 }
