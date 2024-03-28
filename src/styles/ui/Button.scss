@@ -24,9 +24,17 @@
   color: black;
   background-color: white;
   transition: all 0.3s ease;
+
+  &.black {
+    color: white;
+    background-color: black;
+  }
+
+  &.large {
+    height: 50px;
+  }
+
 }
 
-.primary-button.black {
-  color: white;
-  background-color: black;
-}
+
+

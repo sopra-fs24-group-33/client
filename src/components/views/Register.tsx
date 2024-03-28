@@ -74,9 +74,9 @@ const Register = () => {
           <div className="register button-container">
             <Button
               width="100%"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/home")}
             >
-              Go Back
+              Cancel
             </Button>
             <Button
               disabled={!username || !name || !password}
