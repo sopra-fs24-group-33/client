@@ -42,7 +42,7 @@ const Register = () => {
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
 
-      navigate("/game");
+      navigate("/overview");
     }
     catch (error) {
       alert(
