@@ -1,13 +1,22 @@
 @import "../theme";
 
 .login {
-  &.container {
-    margin-top: 2em;
-    min-height: 300px;
-    /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
-    @include center;
+  &.main-container {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
 
+  &.container {
+    /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
+
+    /* benutze container nicht mehr, mixin macht nicht das was ich will*/
+
+    @include center;
+    display: flex;
+    flex-direction: column;
 
   }
   &.form {
@@ -16,11 +25,11 @@
     justify-content: center;
     width: 60%;
     max-width: 30em;
-    height: 20em;
     font-size: 16px;
     font-weight: 300;
     padding-left: 37px;
     padding-right: 37px;
+    padding-bottom: 37px;
     border-radius: 0.75em;
     background-color: black;
     transition: opacity 0.5s ease, transform 0.5s ease;
@@ -36,9 +45,9 @@
     padding-left: 15px;
     margin-left: -4px;
     border: 2px solid;
+    border-radius: 1em;
     border-image: linear-gradient(to right, #FC3A87, #4235FB);
     border-image-slice: 1; // Ensures the gradient covers the entire border
-    border-radius: 1em;
     margin-bottom: 20px;
     background: black;
     color: $textColor;
@@ -53,5 +62,6 @@
     display: flex;
     justify-content: center;
     margin-top: 2em;
+    gap: 1em;
   }
 }

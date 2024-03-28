@@ -1,0 +1,16 @@
+@import "../theme";
+
+.flying-cards {
+  background-size: 100%; /* Correcting the syntax */
+  background-position: center; /* Correcting the syntax */
+  position: absolute; /* or 'fixed' depending on your layout */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  display: flex;
+  align-items: center; /* Correcting the property name */
+  justify-content: center; /* Correcting the property name */
+  flex-direction: column;
+}
