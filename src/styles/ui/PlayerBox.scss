@@ -1,9 +1,9 @@
 @import "../theme";
 
-.player-box{
+.player-box {
   &.primary {
     position: relative;
-    margin-top: 1.5em;
+    margin-bottom: 1.5em;
     width: 30em;
     height: 4em;
     padding: 15px;
@@ -16,7 +16,7 @@
 
   &.secondary {
     position: relative;
-    margin-top: 1.5em;
+    margin-bottom: 1.5em;
     width: 30em;
     height: 4em;
     padding: 15px;
@@ -24,6 +24,24 @@
     display: flex;
     align-items: center;
     background: linear-gradient(to right, #AAA4FF, #B795FF, #FF81B3);
+  }
+
+  &.empty {
+    position: relative;
+    margin-bottom: 1.5em;
+    width: 30em;
+    height: 4em;
+    padding: 15px;
+    border-radius: $borderRadius;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+  }
+
+  &.add-symbol {
+    color: black;
+    font-size: 25px;
   }
 
   &.username {
@@ -36,25 +54,6 @@
     color: white;
     font-size: 25px;
   }
-}
-
-.player-slot {
-  cursor: pointer;
-  position: relative;
-  margin-top: 1.5em;
-  width: 30em;
-  height: 4em;
-  padding: 15px;
-  border-radius: $borderRadius;
-  display: flex;
-  align-items: center;
-  background: white;
-  justify-content: center;
-}
-
-.add-symbol {
-  color: black;
-  font-size: 40px;
 }
 
 .player-shame-token {
@@ -73,6 +72,23 @@
   font-weight: 400;
   color: white;
   font-size: 20px;
+}
+
+.player-slot {
+  position: relative;
+  margin-bottom: 1.5em;
+  width: 30em;
+  height: 4em;
+  padding: 15px;
+  border-radius: $borderRadius;
+  display: flex;
+  align-items: center;
+  background: white;
+
+  .add-symbol {
+    color: black;
+    font-size: 40px;
+  }
 }
 
 

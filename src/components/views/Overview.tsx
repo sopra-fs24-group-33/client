@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
@@ -8,17 +8,41 @@ import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
 import PlayerBox from  "components/ui/PlayerBox"
 import { User } from "types";
+import { Simulate } from "react-dom/test-utils";
+import error = Simulate.error;
 
 const Overview = () => {
 
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<User[]>(null);
+  const [user, setUser] = useState<User>(null);
+  const containerRef = useRef(null);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   const logout = (): void => {
     localStorage.removeItem("token");
     navigate("/login");
   };
+
+  const createLobby = async () => {
+    try {
+      const requestBody = JSON.stringify({user})
+      const response = await api.post("/lobbies", requestBody);
+
+      localStorage.setItem("leader", user.token);
+
+      navigate("/overview");
+    }
+    catch (error) {
+      alert(
+        `Something went wrong during the lobby creation: \n${handleError(error)}`
+      )
+
+      // only temporary
+      navigate("/lobby")
+    }
+  }
 
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
@@ -33,6 +57,10 @@ const Overview = () => {
 
         // Get the returned users and update the state.
         setUsers(response.data);
+
+        // Get current user based on token
+        const findUser = users.find(user => user.token === localStorage.getItem("token"))
+        setUser(findUser)
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -84,10 +112,12 @@ const Overview = () => {
       <BaseContainer className="overview container">
         <h2>Players Online</h2>
         <hr className="overview hr-thin" />
-        {content}
+        <div className="overview player-container">
+          {content}
+        </div>
       </BaseContainer>
       <div className='overview button-container'>
-        <Button className="primary-button" width={300} onClick={() => logout()}>
+        <Button className="primary-button" width={300} onClick={() => createLobby()}>
           Create Lobby
         </Button>
         <Button className="primary-button" width={300} onClick={() => logout()}>
