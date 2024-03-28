@@ -24,6 +24,7 @@
     box-shadow: $dropShadow;
   }
   &.title-container {
+    width: 30em ;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -20,10 +20,10 @@ const PlayerBox = ({ username, shameTokens, boxType }) => {
         </div>
         <div className="player-shame-token">
           {shameTokens > 0 && (
-            <>
+            <div className="shame-token-wrapper">
               <ShameToken className="shame-token-icon" />
               <span className="shame-token-count">{shameTokens}</span>
-            </>
+            </div>
           )}
         </div>
       </div>

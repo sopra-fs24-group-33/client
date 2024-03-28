@@ -5,11 +5,11 @@
 This file contains the general and shared style of your application.
  */
 body {
-  overflow: hidden;
+  overflow: visible;
   margin: 0;
   padding: 0;
-  min-width: 100vw;
-  min-height: 100vh;
+  min-width: 10vw;
+  min-height: 10vh;
   font-family: $fontDefault;
   background-image: radial-gradient(circle at center, $accent, $accentDark);
 }

@@ -63,7 +63,13 @@
   margin-right: 10px;
 }
 
+.shame-token-wrapper {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
+
 .shame-token-icon {
+  flex-shrink: 0;
   margin-right: 5px; /* Adjust the spacing between icon and number */
 }
 
