@@ -5,6 +5,7 @@ import Login from "../../views/Login";
 import Home from "../../views/Home";
 import Register from "../../views/Register";
 import Overview from "../../views/Overview";
+import Lobby from "../../views/Lobby";
 
 /**
  * Main router of your application.
@@ -33,6 +34,8 @@ const AppRouter = () => {
         <Route path="/register" element={<Register />}> </Route>
 
         <Route path="/overview" element={<Overview />}> </Route>
+
+        <Route path="/lobby" element={<Lobby />}> </Route>
 
 
 
