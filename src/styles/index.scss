@@ -5,12 +5,13 @@
 This file contains the general and shared style of your application.
  */
 body {
+  overflow: hidden;
   margin: 0;
   padding: 0;
   min-width: 100vw;
   min-height: 100vh;
   font-family: $fontDefault;
-  background-image: linear-gradient(135deg, $accent 10%, $accentDark 100%);
+  background-image: radial-gradient(circle at center, $accent, $accentDark);
 }
 
 input,
