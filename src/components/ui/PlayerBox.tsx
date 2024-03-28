@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import "../../styles/ui/PlayerBox.scss"; // Adjust the path to your SCSS file
 import ShameToken from "./ShameToken";
+// @ts-ignore
+import shame_logo from "../../assets/shame_logo.svg";
 
 const PlayerBox = ({ username, shameTokens, boxType }) => {
   if (boxType === "empty") {
@@ -21,8 +23,8 @@ const PlayerBox = ({ username, shameTokens, boxType }) => {
         <div className="player-shame-token">
           {shameTokens > 0 && (
             <div className="shame-token-wrapper">
-              <ShameToken className="shame-token-icon" />
               <span className="shame-token-count">{shameTokens}</span>
+              <img src={shame_logo} alt="" style={{}} />
             </div>
           )}
         </div>

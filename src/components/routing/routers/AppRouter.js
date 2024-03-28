@@ -37,6 +37,8 @@ const AppRouter = () => {
 
         <Route path="/lobby" element={<Lobby />}> </Route>
 
+        <Route path="/join" element={<Lobby />}> </Route>
+
 
 
       </Routes>

@@ -120,7 +120,7 @@ const Overview = () => {
         <Button className="primary-button" width={300} onClick={() => createLobby()}>
           Create Lobby
         </Button>
-        <Button className="primary-button" width={300} onClick={() => logout()}>
+        <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
           Join Lobby
         </Button>
 
