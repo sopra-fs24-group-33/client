@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const ShameToken = () => {
   return (
-    <svg width="27" height="27" viewBox="0 0 334 334" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="30" height="30" viewBox="0 0 334 334" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M334 167C334 259.232 259.232 334 167 334C74.7684 334 0 259.232 0 167C0 74.7684 74.7684 0 167 0C259.232 0 334 74.7684 334 167Z"
         fill="url(#paint0_linear_297_7952)" />
