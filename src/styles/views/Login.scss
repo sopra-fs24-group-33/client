@@ -32,16 +32,15 @@
     justify-content: center;
   }
   &.input {
-    height: 45px;
-    padding-left: 15px;
-    margin-left: -4px;
-    border: 2px solid;
-    border-image: linear-gradient(to right, #FC3A87, #4235FB);
-    border-image-slice: 1; // Ensures the gradient covers the entire border
-    border-radius: 1em;
-    margin-bottom: 20px;
-    background: black;
+    height: 50px;
+    border: double 1px transparent;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-radius: 15px;
+    background-image: linear-gradient(to right, black, black), linear-gradient(to right, #FC3A87, #4235FB);
+    background-clip: content-box, border-box;
     color: $textColor;
+    text-indent: 10px;
   }
   &.label {
     color: $textColor;
