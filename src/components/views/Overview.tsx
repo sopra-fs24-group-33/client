@@ -93,7 +93,7 @@ const Overview = () => {
     content = (
       <div className="overview">
         <ul className="overview user-list">
-          {users.map((user: User) => (
+          {users.filter((user: User) => user.status === 'ONLINE').map((user: User) => (
             <li key={user.id}>
               <PlayerBox
                 username={user.username}
