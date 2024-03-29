@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 // @ts-ignore
-import Background from "../../assets/background.svg";
+import Background from "../../assets/AltBackground.svg";
 // @ts-ignore
 import Deck_backside from "../../assets/Deck_backside.svg";
 import { Button } from "../ui/Button";
@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div style={{
       backgroundImage: `url(${Background})`,
-      backgroundSize: '100%',
+      backgroundSize: 'cover',
       backgroundPosition: 'center',
       height: '100vh',
       width: '100vw',

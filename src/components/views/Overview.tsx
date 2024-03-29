@@ -125,6 +125,9 @@ const Overview = () => {
         </Button>
 
       </div>
+      <Button width="100%" onClick={() => logout()}>
+        Logout
+      </Button>
     </div>
   );
 };

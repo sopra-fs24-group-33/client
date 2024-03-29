@@ -10,6 +10,7 @@ import PlayerBox from "../ui/PlayerBox";
 
 
 const Lobby = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const Lobby = () => {
         {Array.from({ length: 5 }).map((_, index) => (
           <li key={index}>
             <PlayerBox
-              username={index === 0 ? "ses" : index === 1 ? "lol" : ""}
+              username={index === 0 ? "me" : index === 1 ? "other user" : ""}
               shameTokens={index === 0 ? 69 : index === 1 ? 5 : 0}
               boxType={index === 0 ? "primary" : index === 1 ? "secondary" : "empty"}
             />
@@ -84,7 +85,7 @@ const Lobby = () => {
         <Button className="primary-button" width={300} >
           Start Game
         </Button>
-        <Button className="primary-button" width={300} >
+        <Button className="primary-button" width={300} onClick={() => navigate("/overview")}>
           Leave Lobby
         </Button>
 
