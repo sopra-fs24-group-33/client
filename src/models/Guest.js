@@ -1,16 +1,14 @@
-/**
- * User model
- */
-class User {
+
+class Guest {
   constructor(data = {}) {
     this.id = null;
-    this.current_shame_tokens = null;
-    this.username = null;
-    this.password = null;
+    this.guestname = null;
     this.shame_tokens = null;
-    this.gamesPlayed = null;
     this.token = null;
     this.status = null;
+    this.isUser = null;
     Object.assign(this, data);
   }
 }
+
+export default User;

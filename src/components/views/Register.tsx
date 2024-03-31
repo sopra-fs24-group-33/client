@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
+/*
+It is possible to add multiple components inside a single file,
+however be sure not to clutter your files with an endless amount!
+As a rule of thumb, use one file per component and only add small,
+specific components that belong to the main one in the same file.
+ */
 const FormField = (props) => {
   return (
     <div className="login field">
@@ -47,37 +53,27 @@ FormField2.propTypes = {
   onChange: PropTypes.func,
 };
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>(null);
+  const [password, setPassword] = useState<string>(null);
 
-  const openRegister = () => {
-    navigate("/register");
-  };
 
-  const doGuestLogin = async () => {
-    try {
-      const response = await api.post("/guests");
-      const guest = response.data;
-      localStorage.setItem("token", guest.id);
-      navigate("/game");
-    } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
-    }
-  };
-
-  const doLogin = async () => {
+  const doRegister = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/login", requestBody);
-      const token = response.data;
-      localStorage.setItem("token", token.id);
+      const response = await api.post("/users", requestBody);
+      const user = response.data;
+      localStorage.setItem("token", user.id);
+      // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/game");
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      alert(
+        `Something went wrong during the login: \n${handleError(error)}`
+      );
     }
   };
+
 
   return (
     <BaseContainer>
@@ -86,27 +82,19 @@ const Login = () => {
           <FormField
             label="Username"
             value={username}
-            onChange={(un) => setUsername(un)}
+            onChange={(un: string) => setUsername(un)}
           />
           <FormField2
             label="Password"
             value={password}
-            onChange={(pw) => setPassword(pw)}
+            onChange={(un: string) => setPassword(un)}
           />
           <div className="login button-container">
             <Button
               disabled={!username || !password}
               width="100%"
-              onClick={doLogin}
+              onClick={() => doRegister()}
             >
-              Login
-            </Button>
-            <Button width="100%" onClick={doGuestLogin}>
-              Play as guest
-            </Button>
-          </div>
-          <div className="register button-container">
-            <Button width="100%" onClick={openRegister}>
               Register
             </Button>
           </div>
@@ -116,5 +104,7 @@ const Login = () => {
   );
 };
 
-export default Login;
-
+/**
+ * You can get access to the history object's properties via the useLocation, useNavigate, useParams, ... hooks.
+ */
+export default Register;

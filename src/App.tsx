@@ -7,6 +7,7 @@ import AppRouter from "./components/routing/routers/AppRouter";
  * React Template by Lucas Pelloni
  * Overhauled by Kyrill Hux
  * Updated by Marco Leder
+ *
  */
 const App = () => {
   return (
