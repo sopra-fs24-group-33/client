@@ -9,27 +9,65 @@
 
 .overview {
   &.container {
-    max-height: 550px;
-    overflow-y: auto;
+    position: relative;
+    overflow: hidden;
     margin-top: 2em;
     width: fit-content;
     background: black;
-    padding: 1.5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    padding-top: 1.5em;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: $dropShadow;
+  }
+  &.title-container {
+    width: 30em ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  &.player-container {
+    position: relative;
+    max-height: 575px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 1em;
+    width: fit-content;
+    background: black;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
     border-radius: $borderRadius;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: $dropShadow;
     scrollbar-width: thin; /* Can be "auto", "thin", or "none" */
-    scrollbar-color: #1e1e1e #000000; /* thumb and track color */
+    scrollbar-color: rgba(44, 44, 44, 0.86) black; /* thumb and track color */
   }
   .hr-thin {
     width: 60%;
     height: 1px; /* Makes the line thinner */
     background-color: white; /* Ensures the line is visible with the desired color, optional */
     border: none; /* Removes the default border to rely on the background-color and height for the line's appearance */
-    margin-top: 0px;
-    margin-bottom: 0.75em;/* Adjust this value to position the line higher. The exact value will depend on your layout. */
+    margin-bottom: 0.75em;
+    margin-top: 0.75em/* Adjust this value to position the line higher. The exact value will depend on your layout. */
+  }
+  .scroll-indicator {
+    text-align: center;
+    margin-top: 10px; /* Adjust based on your design */
+  }
+
+  .scroll-indicator span {
+    display: inline-block;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: #cccccc; /* Or any color that fits your design */
+    margin: 0 5px;
   }
   &.user-list {
     list-style: none;
@@ -42,7 +80,12 @@
     justify-content: center;
   }
   & p,h2 {
-    margin: 0.5em 0;
+    font-size: 30px;
+    margin: 0.1em 0;
+  }
+  & h1 {
+    font-size: 25px;
+    margin: 0.1em 0;
   }
   &.button-container {
     margin: 15px;

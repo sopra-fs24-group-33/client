@@ -59,6 +59,21 @@ const Login = () => {
     }
   };
 
+  const doGuestLogin = async () => {
+    try {
+      const response = await api.post("/guests")
+      const guest = new User(response.data)
+
+      localStorage.setItem("token", guest.token)
+      localStorage.setItem("id", guest.id)
+
+    } catch (error) {
+      alert(
+        `Something went wrong during the login: \n${handleError(error)}`
+      );
+    }
+  }
+
   return (
     <BaseContainer>
       <div className="login main-container">

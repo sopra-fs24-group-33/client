@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
@@ -7,24 +7,59 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
 import PlayerBox from  "components/ui/PlayerBox"
-import { User } from "types";
+import { Player } from "types";
+import { Simulate } from "react-dom/test-utils";
+import error = Simulate.error;
+import Lobby from "models/Lobby";
 
 const Overview = () => {
 
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState<User[]>(null);
+  const [players, setPlayers] = useState<Player[]>(null);
+  const containerRef = useRef(null);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   const logout = (): void => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
+  const createLobby = async () => {
+
+    // Get current player based on token
+    const player = players.find(user => user.token === localStorage.getItem("token"))
+
+    try {
+      const requestBody = JSON.stringify( player )
+      const response = await api.post("/gamelobbys", requestBody);
+
+      console.log("response data:", response.data)
+
+      const lobby = new Lobby(response.data)
+
+      console.log("pin:", lobby.pin)
+      console.log("admin:", lobby.admin)
+      console.log("players:", lobby.players)
+
+      localStorage.setItem("leader", player.token)
+      localStorage.setItem("pin", lobby.pin)
+
+      navigate("/lobby");
+    }
+    catch (error) {
+      alert(
+        `Something went wrong during the lobby creation: \n${handleError(error)}`
+      )
+
+    }
+  }
+
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const response = await api.get("/users");
+        const response = await api.get("/guests");
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
@@ -32,7 +67,7 @@ const Overview = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
-        setUsers(response.data);
+        setPlayers(response.data);
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -61,16 +96,16 @@ const Overview = () => {
 
   let content = <Spinner />
 
-  if (users) {
+  if (players) {
     content = (
       <div className="overview">
         <ul className="overview user-list">
-          {users.map((user: User) => (
-            <li key={user.id}>
+          {players.map((player: Player) => (
+            <li key={player.id}>
               <PlayerBox
-                username={user.username}
-                shameTokens={69}
-                boxType={localStorage.getItem("token") === user.token ? "primary" : "secondary"}
+                username={player.guestname}
+                shameTokens={player.shame_tokens}
+                boxType={localStorage.getItem("token") === player.token ? "primary" : "secondary"}
               />
             </li>
           ))}
@@ -84,17 +119,22 @@ const Overview = () => {
       <BaseContainer className="overview container">
         <h2>Players Online</h2>
         <hr className="overview hr-thin" />
-        {content}
+        <div className="overview player-container">
+          {content}
+        </div>
       </BaseContainer>
       <div className='overview button-container'>
-        <Button className="primary-button" width={300} onClick={() => logout()}>
+        <Button className="primary-button" width={300} onClick={() => createLobby()}>
           Create Lobby
         </Button>
-        <Button className="primary-button" width={300} onClick={() => logout()}>
+        <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
           Join Lobby
         </Button>
 
       </div>
+      <Button width="100%" onClick={() => logout()}>
+        Logout
+      </Button>
     </div>
   );
 };
