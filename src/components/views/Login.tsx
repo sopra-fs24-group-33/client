@@ -76,8 +76,9 @@ const Login = () => {
 
   return (
     <BaseContainer>
-      <div className="login container">
+      <div className="login main-container">
         <div className="login form">
+          <h2>Login</h2>
           <FormField
             label="Username"
             value={username}
@@ -90,18 +91,19 @@ const Login = () => {
           />
           <div className="login button-container">
             <Button
+              width="100%"
+              onClick={() => navigate("/home")}
+            >
+              Cancel
+            </Button>
+            <Button
               disabled={!username || !password}
               width="100%"
               onClick={() => doLogin()}
             >
               Login
             </Button>
-            <Button
-              width="100%"
-              onClick={() => navigate("/register")}
-            >
-              Register
-            </Button>
+
           </div>
         </div>
       </div>
