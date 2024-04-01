@@ -16,7 +16,6 @@ const Overview = () => {
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<User[]>(null);
-  const [user, setUser] = useState<User>(null);
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
 
@@ -26,21 +25,26 @@ const Overview = () => {
   };
 
   const createLobby = async () => {
+
+    // Get current user based on token
+    const user = users.find(user => user.token === localStorage.getItem("token"))
+
     try {
-      const requestBody = JSON.stringify({user})
-      const response = await api.post("/lobbies", requestBody);
+      const requestBody = JSON.stringify( user )
+      const response = await api.post("/gamelobbys", requestBody);
 
-      localStorage.setItem("leader", user.token);
+      console.log("response data:", response.data)
 
-      navigate("/overview");
+
+      localStorage.setItem("leader", user.token)
+
+      navigate("/lobby");
     }
     catch (error) {
       alert(
         `Something went wrong during the lobby creation: \n${handleError(error)}`
       )
 
-      // only temporary
-      navigate("/lobby")
     }
   }
 
@@ -48,7 +52,7 @@ const Overview = () => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const response = await api.get("/users");
+        const response = await api.get("/guests");
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
@@ -57,10 +61,6 @@ const Overview = () => {
 
         // Get the returned users and update the state.
         setUsers(response.data);
-
-        // Get current user based on token
-        const findUser = users.find(user => user.token === localStorage.getItem("token"))
-        setUser(findUser)
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -96,7 +96,7 @@ const Overview = () => {
           {users.map((user: User) => (
             <li key={user.id}>
               <PlayerBox
-                username={user.username}
+                username={user.guestname}
                 shameTokens={69}
                 boxType={localStorage.getItem("token") === user.token ? "primary" : "secondary"}
               />
