@@ -47,7 +47,6 @@
   }
 
   &.username {
-    cursor: default;
     overflow: hidden; // Prevents content from spilling out
     text-overflow: ellipsis; // Adds an ellipsis if the text overflows
     white-space: nowrap; // Keeps the text on a single line

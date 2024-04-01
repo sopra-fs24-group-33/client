@@ -8,6 +8,7 @@ import Header from "./Header";
 import { Spinner } from "../ui/Spinner";
 import PlayerBox from "../ui/PlayerBox";
 import PropTypes from "prop-types";
+import { Player } from "../../types";
 
 const FormField = (props) => {
   return (
@@ -29,17 +30,58 @@ FormField.propTypes = {
   onChange: PropTypes.func,
 };
 
+const FormFieldPin = (props) => {
+  const handleInputChange = (e) => {
+    // Remove non-numeric characters and limit the length to 6
+    let inputValue = e.target.value.replace(/\D/g, '').substring(0, 6);
+    // Insert a space after the third character for visual representation
+    let formattedValue = inputValue.replace(/(\d{3})(?=\d)/g, '$1 ');
+    // Update the state with the formatted input for visual representation
+    props.onChange(formattedValue);
+  };
+
+  return (
+    <div className="login field">
+      <label className="login label">{props.label}</label>
+      <input
+        className="login input"
+        placeholder="enter here.."
+        value={props.value} // Use value for visual representation
+        onChange={handleInputChange}
+      />
+    </div>
+  );
+};
+
+FormFieldPin.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
+
 const GamePin = () => {
   const navigate = useNavigate();
   const [gamePin, setGamePin] = useState<number>(null);
   const userId = localStorage.getItem("id");
 
-  const doJoin = async () => {
-    try {
-      const requestBody = JSON.stringify( {gamePin, userId} )
-      const response = await api.post("/lobbies")
+  const [players, setPlayers] = useState<Player[]>(null);
 
-      localStorage.setItem("gamePin", gamePin);
+  const doJoin = async () => {
+    const player = players.find(user => user.token === localStorage.getItem("token"));
+
+    console.log("Player:", player)
+    console.log("Game Pin:", typeof gamePin)
+
+    const withoutSpacing = gamePin.replace(/\s/g, '')
+    const finalPin = parseInt(withoutSpacing, 10);
+
+    console.log("Game Pin Final:",  finalPin)
+
+    try {
+      const requestBody = JSON.stringify( player )
+      const response = await api.post(`/gamelobbys/${finalPin}`, requestBody)
+
+      localStorage.setItem("pin", withoutSpacing);
 
       navigate("/lobby")
     } catch (error) {
@@ -49,12 +91,51 @@ const GamePin = () => {
     }
   };
 
+  useEffect(() => {
+    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+    async function fetchData() {
+      try {
+        const response = await api.get("/guests");
+
+        // delays continuous execution of an async operation for 1 second.
+        // This is just a fake async call, so that the spinner can be displayed
+        // feel free to remove it :)
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Get the returned users and update the state.
+        setPlayers(response.data);
+
+        // This is just some data for you to see what is available.
+        // Feel free to remove it.
+        console.log("request to:", response.request.responseURL);
+        console.log("status code:", response.status);
+        console.log("status text:", response.statusText);
+        console.log("requested data:", response.data);
+
+        // See here to get more data.
+        console.log(response);
+      } catch (error) {
+        console.error(
+          `Something went wrong while fetching the users: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        alert(
+          "Something went wrong while fetching the users! See the console for details."
+        );
+      }
+    }
+
+    fetchData();
+  }, []);
+
   return (
     <BaseContainer>
       <div className="login container">
         <div className="login pin-form">
           <h2>Enter Game Pin</h2>
-          <FormField
+          <FormFieldPin
             value={gamePin}
             onChange={(pin: number) => setGamePin(pin)}
           />

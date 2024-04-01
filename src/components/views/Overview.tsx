@@ -7,15 +7,16 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
 import PlayerBox from  "components/ui/PlayerBox"
-import { User } from "types";
+import { Player } from "types";
 import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
+import Lobby from "models/Lobby";
 
 const Overview = () => {
 
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState<User[]>(null);
+  const [players, setPlayers] = useState<Player[]>(null);
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
 
@@ -26,17 +27,23 @@ const Overview = () => {
 
   const createLobby = async () => {
 
-    // Get current user based on token
-    const user = users.find(user => user.token === localStorage.getItem("token"))
+    // Get current player based on token
+    const player = players.find(user => user.token === localStorage.getItem("token"))
 
     try {
-      const requestBody = JSON.stringify( user )
+      const requestBody = JSON.stringify( player )
       const response = await api.post("/gamelobbys", requestBody);
 
       console.log("response data:", response.data)
 
+      const lobby = new Lobby(response.data)
 
-      localStorage.setItem("leader", user.token)
+      console.log("pin:", lobby.pin)
+      console.log("admin:", lobby.admin)
+      console.log("players:", lobby.players)
+
+      localStorage.setItem("leader", player.token)
+      localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");
     }
@@ -60,7 +67,7 @@ const Overview = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
-        setUsers(response.data);
+        setPlayers(response.data);
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -89,16 +96,16 @@ const Overview = () => {
 
   let content = <Spinner />
 
-  if (users) {
+  if (players) {
     content = (
       <div className="overview">
         <ul className="overview user-list">
-          {users.map((user: User) => (
-            <li key={user.id}>
+          {players.map((player: Player) => (
+            <li key={player.id}>
               <PlayerBox
-                username={user.guestname}
-                shameTokens={69}
-                boxType={localStorage.getItem("token") === user.token ? "primary" : "secondary"}
+                username={player.guestname}
+                shameTokens={player.shame_tokens}
+                boxType={localStorage.getItem("token") === player.token ? "primary" : "secondary"}
               />
             </li>
           ))}
