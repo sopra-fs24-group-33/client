@@ -59,12 +59,12 @@ const Home = () => {
           <img src={Deck_backside} alt="" style={{ marginLeft: "20px" }} />
         </div>
         <div className="home button-container">
-          <Button className="primary-button large white"
+          <Button className="large white"
                   width="100%"
                   onClick={() => navigate('/register')}>
             Register
           </Button>
-          <Button className="primary-button large white"
+          <Button className="large white"
                   width="100%" onClick={() => navigate('/login')}>
             Login
           </Button>

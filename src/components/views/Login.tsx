@@ -6,6 +6,8 @@ import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+// @ts-ignore
+import Background from "../../assets/AltBackground.svg";
 
 /*
 It is possible to add multiple components inside a single file,
@@ -75,39 +77,52 @@ const Login = () => {
   }
 
   return (
-    <BaseContainer>
-      <div className="login main-container">
-        <div className="login form">
-          <h2>Login</h2>
-          <FormField
-            label="Username"
-            value={username}
-            onChange={(un: string) => setUsername(un)}
-          />
-          <FormField
-            label="Password"
-            value={password}
-            onChange={(n) => setPassword(n)}
-          />
-          <div className="login button-container">
-            <Button
-              width="100%"
-              onClick={() => navigate("/home")}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={!username || !password}
-              width="100%"
-              onClick={() => doLogin()}
-            >
-              Login
-            </Button>
+    <div style={{
+      backgroundImage: `url(${Background})`,
+      backgroundSize: 'cover',
+      backgroundPosition: '100%',
+      height: '100vh',
+      width: '100vw',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+    }}>
+      <BaseContainer>
+        <div className="login container">
+          <div className="login form">
+            <h2>Login</h2>
+            <FormField
+              label="Username"
+              value={username}
+              onChange={(un: string) => setUsername(un)}
+            />
+            <FormField
+              label="Password"
+              value={password}
+              onChange={(n) => setPassword(n)}
+            />
+            <div className="login button-container">
+              <Button
+                width="100%"
+                onClick={() => navigate("/home")}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={!username || !password}
+                width="100%"
+                onClick={() => doLogin()}
+              >
+                Login
+              </Button>
 
+            </div>
           </div>
         </div>
-      </div>
-    </BaseContainer>
+      </BaseContainer>
+    </div>
+
   );
 };
 
