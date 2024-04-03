@@ -36,6 +36,7 @@
     box-shadow: $dropShadow;
   }
   &.field {
+    margin: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;

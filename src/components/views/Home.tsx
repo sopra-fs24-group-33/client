@@ -16,6 +16,7 @@ const Home = () => {
 
   return (
     <div style={{
+      backgroundImage: `url(${Background})`,
       backgroundSize: 'cover',
       backgroundPosition: '100%',
       height: '100vh',
@@ -26,21 +27,44 @@ const Home = () => {
       flexDirection: 'column',
     }}>
       <div>
-        <h3>Welcome to</h3>
         <div style={{
           display: 'flex',
           alignItems: 'center',
+          marginBottom: '15px'
         }}>
-          <h1>De Game</h1>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}>
+            <h3 style={{
+              paddingRight: '400px',
+              textShadow: '5px 5px 5px black',
+            }}>
+              Welcome to
+            </h3>
+            <h1 style={{
+              textShadow: '10px 10px 15px black'
+            }}>
+              DE GAME
+            </h1>
+            <h3 style={{
+              paddingLeft: '300px',
+              textShadow: '5px 5px 5px black'
+            }}>
+              A collaborative card game
+            </h3>
+
+          </div>
           <img src={Deck_backside} alt="" style={{ marginLeft: "20px" }} />
         </div>
         <div className="home button-container">
-          <Button className="primary-button large black"
+          <Button className="primary-button large white"
                   width="100%"
                   onClick={() => navigate('/register')}>
             Register
           </Button>
-          <Button className="primary-button large black"
+          <Button className="primary-button large white"
                   width="100%" onClick={() => navigate('/login')}>
             Login
           </Button>
