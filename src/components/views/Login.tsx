@@ -116,8 +116,17 @@ const Login = () => {
               >
                 Login
               </Button>
-
             </div>
+            <div className="login hr-box">
+              <hr className="login horizontal-line" />
+              <p className="login hr-text">or</p>
+              <hr className="login horizontal-line" />
+            </div>
+            <Button
+              className="outlined"
+              onClick={() => doGuestLogin()}>
+              Guest Login
+            </Button>
           </div>
         </div>
       </BaseContainer>

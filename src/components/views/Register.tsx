@@ -52,6 +52,22 @@ const Register = () => {
     }
   }
 
+  const doGuestLogin = async () => {
+    try {
+      const response = await api.post("/guests")
+      const guest = new User(response.data)
+
+      localStorage.setItem("token", guest.token)
+      localStorage.setItem("id", guest.id)
+
+    } catch (error) {
+      alert(
+        `Something went wrong during the login: \n${handleError(error)}`
+      );
+    }
+  }
+
+
 
   return (
     <div style={{
@@ -97,6 +113,16 @@ const Register = () => {
                 Register
               </Button>
             </div>
+            <div className="login hr-box">
+              <hr className="login horizontal-line" />
+              <p className="login hr-text">or</p>
+              <hr className="login horizontal-line" />
+            </div>
+            <Button
+              className="outlined"
+              onClick={() => doGuestLogin()}>
+              Guest Login
+            </Button>
           </div>
         </div>
       </BaseContainer>

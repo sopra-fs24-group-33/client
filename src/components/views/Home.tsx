@@ -59,7 +59,7 @@ const Home = () => {
           <img src={Deck_backside} alt="" style={{ marginLeft: "20px" }} />
         </div>
         <div className="home button-container">
-          <Button className="large white"
+          <Button className="large outlined"
                   width="100%"
                   onClick={() => navigate('/register')}>
             Register

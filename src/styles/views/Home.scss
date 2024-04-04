@@ -9,33 +9,6 @@
 
 
 .home {
-  &.main-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-
-  &.content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &.heading-image-box {
-    display: flex;
-    flex-direction: row;
-  }
-
-  &.heading-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-  }
-
   &.button-container {
     padding-top: 20px;
     width: 100%;
@@ -43,11 +16,4 @@
     display: flex;
     justify-content: space-between;
   }
-
-  & h1 {
-    color: white;
-
-  }
-
-
 }
