@@ -9,6 +9,7 @@ import Header from "./Header";
 import { Spinner } from "../ui/Spinner";
 import PlayerBox from "../ui/PlayerBox";
 import { Player } from "../../types";
+import "styles/views/Lobby.scss";
 
 
 const Lobby = () => {
@@ -103,7 +104,7 @@ const Lobby = () => {
         {players.map((player: Player) => (
           <li key={player.id}>
             <PlayerBox
-              username={player.name}
+              username={player.guestname}
               shameTokens={player.shame_tokens}
               boxType={localStorage.getItem("id") === player.id.toString() ? "primary" : "secondary"}
             />
@@ -119,15 +120,15 @@ const Lobby = () => {
   }
   return (
     <div>
-      <BaseContainer className="overview container">
+      <BaseContainer className="lobby container">
         <h2>Game Pin</h2>
         <h1> {displayPin} </h1>
-        <hr className="overview hr-thin" />
-        <div className="overview player-container">
+        <hr className="lobby hr-thin" />
+        <div className="lobby player-container">
           {content}
         </div>
       </BaseContainer>
-      <div className="overview button-container">
+      <div className="lobby button-container">
         <Button className="primary-button" width={300} >
           Start Game
         </Button>

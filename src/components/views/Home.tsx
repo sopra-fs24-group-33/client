@@ -38,23 +38,22 @@ const Home = () => {
             flexDirection: "column",
           }}>
             <h3 style={{
-              paddingRight: '400px',
-              textShadow: '5px 5px 5px black',
+              textAlign: "left",
+              width: "100%",
+
             }}>
               Welcome to
             </h3>
-            <h1 style={{
-              textShadow: '10px 10px 15px black'
-            }}>
+            <h1>
               DE GAME
             </h1>
             <h3 style={{
-              paddingLeft: '300px',
-              textShadow: '5px 5px 5px black'
+              textAlign: "right",
+              width: "100%",
+
             }}>
               A collaborative card game
             </h3>
-
           </div>
           <img src={Deck_backside} alt="" style={{ marginLeft: "20px" }} />
         </div>
@@ -64,7 +63,7 @@ const Home = () => {
                   onClick={() => navigate('/register')}>
             Register
           </Button>
-          <Button className="large white"
+          <Button className="large"
                   width="100%" onClick={() => navigate('/login')}>
             Login
           </Button>
