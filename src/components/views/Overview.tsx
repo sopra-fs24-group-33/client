@@ -157,14 +157,7 @@ const Overview = () => {
           <Button onClick={() => logout()}>Logout</Button>
           <Button className="outlined square">Rules</Button>
         </div>
-
-        <div className="overview vertical-line-box">
-          <div className="overview vertical-line" />
-        </div>
-
       </div>
-
-
     );
   }
 
@@ -212,6 +205,10 @@ const Overview = () => {
 
           {contentUserInfo}
 
+          <div className="overview vertical-line-box">
+            <div className="overview vertical-line" />
+          </div>
+
           <div className="overview sub-container">
             <div className="overview header">
               <di>
@@ -247,7 +244,7 @@ const Overview = () => {
           </div>
         </BaseContainer>
 
-        <div className='overview button-container'>
+        <div className="overview button-container">
           <Button className="primary-button" width={300} onClick={() => createLobby()}>
             Create Lobby
           </Button>
