@@ -7,6 +7,7 @@ import Register from "../../views/Register";
 import Overview from "../../views/Overview";
 import Lobby from "../../views/Lobby";
 import GamePin from "../../views/GamePin";
+import GameDemoFromBackend from "../../views/GameDemoFromBackend";
 
 /**
  * Main router of your application.
@@ -39,6 +40,7 @@ const AppRouter = () => {
         <Route path="/lobby" element={<Lobby />}> </Route>
 
         <Route path="/join" element={<GamePin />}> </Route>
+
 
 
 

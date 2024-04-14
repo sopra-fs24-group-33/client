@@ -54,7 +54,7 @@ const Register = () => {
 
   const doGuestLogin = async () => {
     try {
-      const response = await api.post("/guests")
+      const response = await api.post("/players")
       const guest = new User(response.data)
 
       localStorage.setItem("token", guest.token)

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
+import Player from "models/Player";
 import {useNavigate} from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
@@ -46,14 +47,14 @@ const Login = () => {
       const response = await api.post("/login", requestBody);
 
       // Get the returned user and update a new object.
-      const user = new User(response.data);
+      const user = new Player(response.data);
 
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
-      navigate("/game");
+      navigate("/overview");
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`
@@ -63,11 +64,13 @@ const Login = () => {
 
   const doGuestLogin = async () => {
     try {
-      const response = await api.post("/guests")
-      const guest = new User(response.data)
+      const response = await api.post("/players")
+      const playerData = response.data;
+      const player = new Player(playerData);
 
-      localStorage.setItem("token", guest.token)
-      localStorage.setItem("id", guest.id)
+      localStorage.setItem("token", player.token)
+      localStorage.setItem("id", player.id)
+      navigate("/overview");
 
     } catch (error) {
       alert(

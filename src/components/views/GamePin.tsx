@@ -79,7 +79,7 @@ const GamePin = () => {
 
     try {
       const requestBody = JSON.stringify( player )
-      const response = await api.post(`/gamelobbys/${finalPin}`, requestBody)
+      const response = await api.post(`/gamelobbies/${finalPin}`, requestBody)
 
       localStorage.setItem("pin", withoutSpacing);
 
@@ -95,7 +95,7 @@ const GamePin = () => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const response = await api.get("/guests");
+        const response = await api.get("/players");
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
