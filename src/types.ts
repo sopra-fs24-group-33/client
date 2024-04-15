@@ -6,7 +6,6 @@ export type User = {
 };
 
 export type Player = {
-  guestname: string;
   name: string;
   id: number;
   token: string;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
+import Player from "models/Player";
 import {useNavigate} from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
@@ -50,6 +51,7 @@ const Login = () => {
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
 
+
       navigate("/overview");
     } catch (error) {
       alert(
@@ -60,11 +62,13 @@ const Login = () => {
 
   const doGuestLogin = async () => {
     try {
-      const response = await api.post("/guests")
-      const guest = new User(response.data)
+      const response = await api.post("/players")
+      const playerData = response.data;
+      const player = new Player(playerData);
 
-      localStorage.setItem("token", guest.token)
-      localStorage.setItem("id", guest.id)
+      localStorage.setItem("token", player.token)
+      localStorage.setItem("id", player.id)
+      navigate("/overview");
 
       navigate("/overview");
     } catch (error) {

@@ -28,10 +28,13 @@ const Overview = () => {
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
 
-  const logout = (): void => {
+  const logout = async () => {
+    const id = localStorage.getItem("id");
     localStorage.removeItem("token");
+    await api.delete(`/players/${id}`)
     navigate("/home");
   };
+
 
   const createLobby = async () => {
 
@@ -40,7 +43,7 @@ const Overview = () => {
 
     try {
       const requestBody = JSON.stringify( player )
-      const response = await api.post("/gamelobbys", requestBody);
+      const response = await api.post("/gamelobbies", requestBody);
 
       console.log("response data:", response.data)
 
@@ -67,7 +70,7 @@ const Overview = () => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const response = await api.get("/guests");
+        const response = await api.get("/players");
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
@@ -115,6 +118,7 @@ const Overview = () => {
             <li key={player.id}>
               <PlayerBoxNew
                 username={player.guestname}
+
                 shameTokens={player.shame_tokens}
                 you={localStorage.getItem("token") === player.token}
               />

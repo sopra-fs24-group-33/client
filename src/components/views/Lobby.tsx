@@ -16,7 +16,6 @@ const Lobby = () => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
-
   const leaveLobby = async () => {
     console.log("player id:", typeof players[0].id)
     console.log("local storage id:", typeof localStorage.getItem("id"))
@@ -31,7 +30,7 @@ const Lobby = () => {
 
     try {
       const requestBody = JSON.stringify( player )
-      const response = await api.put(`/gamelobbys/${lobbyPin}`, requestBody)
+      const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
     } catch (error) {
       console.error(
         `Something went wrong while fetching the users: \n${handleError(
@@ -55,7 +54,7 @@ const Lobby = () => {
       try {
         console.log("lobby id:", lobbyPin)
         const requestBody = JSON.stringify( lobbyPin )
-        const response = await api.get(`/gamelobbys/${lobbyPin}`, requestBody);
+        const response = await api.get(`/gamelobbies/${lobbyPin}`, requestBody);
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
