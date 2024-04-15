@@ -13,6 +13,9 @@ $accentDark: #49209f;
 $textColor: white;
 $background: #000000;
 
+$lila: #8F5BFF;
+$pink: #FC3A87;
+
 /* some constants */
 
 $DESKTOP_WIDTH: 1160px;
@@ -22,9 +25,15 @@ $SMALL_WIDTH: 768px;
 
 /* some standard elements */
 /* fonts */
-$fontDefault: "M PLUS Rounded 1c", sans-serif;
+$fontDefault: "HelveticaNeueLTProLt";
+$fontHeading: "HelveticaNeueLTProBdExO";
+$fontSubHeading: "HelveticaNeueLTProBdEx";
+$fontButton: "HelveticaNeueLTProBdEx";
+/*
 $fontMono: "Roboto Mono", monospace;
 $fontBold: "Roboto Black";
+
+ */
 
 /* a standard drop shadow */
 $dropShadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.25);
@@ -42,6 +51,37 @@ $borderRadius: 0.75em;
   justify-content: center;
 }
 
+
+h1 {
+  font-family: $fontHeading;
+  font-size: 7em;
+  color: white;
+  line-height: 1;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+h2 {
+  font-family: $fontSubHeading;
+  font-size: 2.25em;
+  line-height: 0.75;
+  color: white;
+}
+
+h3 {
+  font-family: $fontSubHeading;
+  font-size: 0.9em;
+  font-weight: 1;
+  color: white;
+  margin: 0;
+}
+p {
+  font-family: $fontDefault;
+  font-size: 18px;
+  line-height: 0.75;
+
+}
+
+/*
 h1 {
   font-size: 7em;
   font-weight: bold;
@@ -58,4 +98,14 @@ h3 {
   color: white;
   margin: 0;
 }
+h4 {
+  font-size: 0.75em;
+  color: white;
+}
+h5 {
+  font-size: 16px;
+  line-height: 0.11em;
+}
+
+ */
 

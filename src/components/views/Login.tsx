@@ -46,14 +46,12 @@ const Login = () => {
       const requestBody = JSON.stringify({ username, password });
       const response = await api.post("/login", requestBody);
 
-      // Get the returned user and update a new object.
-      const user = new Player(response.data);
+      const user = new User(response.data);
 
-      // Store the token into the local storage.
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
 
-      // Login successfully worked --> navigate to the route /game in the GameRouter
+
       navigate("/overview");
     } catch (error) {
       alert(
@@ -72,6 +70,7 @@ const Login = () => {
       localStorage.setItem("id", player.id)
       navigate("/overview");
 
+      navigate("/overview");
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`

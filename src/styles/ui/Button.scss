@@ -1,5 +1,6 @@
 @import "../theme";
 
+
 .primary-button {
   &:hover {
     transform: translateY(-2px);
@@ -11,41 +12,27 @@
       transform: none;
     }
   }
-  padding: 6px;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 13px;
+  font-family: $fontButton;
   text-align: center;
-  height: 35px;
-  border: none;
   border-radius: 25px;
   cursor: pointer;
-  opacity: 1;
   color: black;
   background-color: white;
   transition: all 0.3s ease;
+  border: white solid 1px;
+  padding: 10px 30px;
 
-  &.black {
-    color: white;
-    background-color: black;
-  }
-  &.white {
-    color: black;
-    background-color: white;
-    border: black solid 1px;
-  }
   &.large {
     font-size: 1.25em;
-    height: 50px;
   }
+
   &.outlined {
     background-color: transparent;
     border: white solid;
     color: white;
-
+  }
+  &.square {
+    border-radius: 10px;
   }
 
 }
-
-
-

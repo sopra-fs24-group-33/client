@@ -2,16 +2,30 @@
 @import "./theme";
 
 
-/**
-This file contains the general and shared style of your application.
- */
+//for headings
+@font-face {
+  font-family: 'HelveticaNeueLTProBdExO';
+  src:  url('../assets/fonts/helvetica-neue-lt-pro-2-cufonfonts  /HelveticaNeueLTProBdExO.otf') format('opentype');
+}
+//for buttons and subheading
+@font-face {
+  font-family: 'HelveticaNeueLTProBdEx';
+  src:  url('../assets/fonts/helvetica-neue-lt-pro-2-cufonfonts  /HelveticaNeueLTProBdEx.otf') format('opentype');
+}
+//for text
+@font-face {
+  font-family: 'HelveticaNeueLTProLt';
+  src:  url('../assets/fonts/helvetica-neue-lt-pro-2-cufonfonts  /HelveticaNeueLTProLt.otf') format('opentype');
+}
+
+
 body {
   overflow: visible;
   margin: 0;
   padding: 0;
   min-width: 10vw;
   min-height: 10vh;
-  font-family: $fontDefault;
+  font-family: 'HelveticaNeueLTProLt', sans-serif;
   background-image: url("../assets/numbers.png"), radial-gradient(circle at center, #292929, $background);
   background-size: 100%;
   background-position: center;
