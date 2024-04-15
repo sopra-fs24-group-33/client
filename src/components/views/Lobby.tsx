@@ -103,7 +103,7 @@ const Lobby = () => {
         {players.map((player: Player) => (
           <li key={player.id}>
             <PlayerBox
-              username={player.guestname}
+              username={player.name}
               shameTokens={player.shame_tokens}
               boxType={localStorage.getItem("id") === player.id.toString() ? "primary" : "secondary"}
             />

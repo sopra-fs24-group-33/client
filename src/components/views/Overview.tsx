@@ -117,7 +117,7 @@ const Overview = () => {
           {players.map((player: Player) => (
             <li key={player.id}>
               <PlayerBoxNew
-                username={player.guestname}
+                username={player.name}
 
                 shameTokens={player.shame_tokens}
                 you={localStorage.getItem("token") === player.token}
