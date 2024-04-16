@@ -5,36 +5,30 @@ import ShameToken from "./ShameToken";
 // @ts-ignore
 import shame_logo from "../../assets/shame_logo.svg";
 
-const PlayerBox = ({ username, shameTokens, boxType }) => {
-  if (boxType === "empty") {
-    // Render the box for the 'empty' state
-    return (
-      <div className="player-box empty">
-        <div className="player-box add-symbol">+</div>
+const PlayerBox = ({ username, shameTokens, you }) => {
+
+  return (
+    <div className={`player-box box`}>
+      <div className="player-box username">
+        <h3>{username}  {you && " (you)"}</h3>
+
+
       </div>
-    );
-  } else {
-    // Render the regular player box
-    return (
-      <div className={`player-box ${boxType}`}>
-        <div className="player-box username">
-          {username}
-        </div>
-        <div className="player-shame-token">
-          <div className="shame-token-wrapper">
-            <span className="shame-token-count">{shameTokens}</span>
-            <img src={shame_logo} alt="" style={{}} />
-          </div>
+      <div className="player-shame-token">
+        <div className="shame-token-wrapper">
+          <img src={shame_logo} alt="" style={{}} />
+          <span className="shame-token-count">{shameTokens}</span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+
 };
 
 PlayerBox.propTypes = {
   username: PropTypes.string,
   shameTokens: PropTypes.number,
-  boxType: PropTypes.oneOf(["primary", "secondary", "empty"]), // Include 'empty' as a valid box type
+  you: PropTypes.boolean,
 };
 
 export default PlayerBox;

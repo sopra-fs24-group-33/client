@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
-import PlayerBoxNew from  "components/ui/PlayerBoxNew";
+import PlayerBox from "components/ui/PlayerBox";
 import { Player } from "types";
 import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
@@ -15,7 +15,7 @@ import Lobby from "models/Lobby";
 import Background from "../../assets/AltBackground.svg";
 // @ts-ignore
 import shame_logo from "../../assets/shame_logo.svg";
-import "../../styles/ui/PlayerBoxNew.scss";
+import "../../styles/ui/PlayerBox.scss";
 
 
 const Overview = () => {
@@ -39,21 +39,17 @@ const Overview = () => {
 
   const createLobby = async () => {
     // Get current player based on token
-    const player = players.find(user => user.token === localStorage.getItem("token"))
-    console.log(player);
     try {
-      const requestBody = JSON.stringify( player )
+      const requestBody = JSON.stringify( curPlayer )
+      console.log("this is the requesto body: " + requestBody)
       const response = await api.post("/gamelobbies", requestBody);
 
-      console.log("response data:", response.data)
+      console.log("This is the response data:", response.data)
 
       const lobby = new Lobby(response.data)
 
-      console.log("pin:", lobby.pin)
-      console.log("admin:", lobby.admin)
-      console.log("players:", lobby.players)
 
-      localStorage.setItem("leader", player.token)
+      localStorage.setItem("leader", curPlayer.token)
       localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");
@@ -116,9 +112,8 @@ const Overview = () => {
         <ul className="overview user-list">
           {players.map((player: Player) => (
             <li key={player.id}>
-              <PlayerBoxNew
+              <PlayerBox
                 username={player.name}
-
                 shameTokens={player.shame_tokens}
                 you={localStorage.getItem("token") === player.token}
               />
@@ -136,11 +131,11 @@ const Overview = () => {
       <div className="overview sub-container">
 
         <div className="overview">
-          <h2>Hey {curPlayer.guestname}</h2>
+          <h2>Hey {curPlayer.name}</h2>
           <div className="overview outer-text-wrapper">
             <div className="overview inner-text-wrapper">
               <p>username</p>
-              <p>{curPlayer.guestname}</p>
+              <p>{curPlayer.name}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Password</p>
