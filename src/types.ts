@@ -1,21 +1,42 @@
 export type User = {
   username: string;
-  name: string;
   id: number;
   token: string;
+  gamesplayed: number;
+  shame_tokens: number;
+  password: string;
 };
 
 export type Player = {
-  name: string;
   id: number;
   token: string;
-  shame_tokens : number;
+  name: string;
+  shame_tokens: number;
+  isuser: number;
 };
 
-export type Lobby = {
-  id: number;
+export type GameLobby = {
+  adminid: number;
   pin: number;
-  admin: number;
-  gameStatus: string;
-  players: Player[];
+  gameid: number;
+  players: GamePlayer[];
+};
+
+export type Game = {
+  id: number;
+  lobbyid: number;
+  cardStack: number[];
+  players: GamePlayer[];
+  currentCard: number;
+  successfulMove: number;
+  level: number;
+};
+
+export type GamePlayer = {
+  id: number;
+  name: string;
+  shame_tokens: number;
+  gamelobby: GameLobby;
+  game: Game;
+  cards: number[];
 };

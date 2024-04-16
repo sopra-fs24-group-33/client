@@ -30,6 +30,7 @@ const Overview = () => {
 
   const logout = async () => {
     const id = localStorage.getItem("id");
+    localStorage.removeItem("id");
     localStorage.removeItem("token");
     await api.delete(`/players/${id}`)
     navigate("/home");
@@ -37,10 +38,9 @@ const Overview = () => {
 
 
   const createLobby = async () => {
-
     // Get current player based on token
     const player = players.find(user => user.token === localStorage.getItem("token"))
-
+    console.log(player);
     try {
       const requestBody = JSON.stringify( player )
       const response = await api.post("/gamelobbies", requestBody);

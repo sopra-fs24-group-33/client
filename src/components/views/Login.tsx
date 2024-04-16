@@ -46,7 +46,7 @@ const Login = () => {
       const requestBody = JSON.stringify({ username, password });
       const response = await api.post("/login", requestBody);
 
-      const user = new User(response.data);
+      const user = new Player(response.data);
 
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);

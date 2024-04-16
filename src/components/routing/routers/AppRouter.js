@@ -41,6 +41,8 @@ const AppRouter = () => {
 
         <Route path="/join" element={<GamePin />}> </Route>
 
+        <Route path="/test" element={<GameDemoFromBackend />}> </Route>
+
 
 
 

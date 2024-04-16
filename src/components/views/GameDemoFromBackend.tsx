@@ -15,6 +15,7 @@ const GameDemoFromBackend = () => {
     const pin = localStorage.getItem("pin");
     const response = await api.post(`/startgame/${pin}`);
     const gamestatus = response.data;
+    localStorage.setItem("gameid", gamestatus.id);
     console.log(gamestatus)
   };
 
@@ -24,7 +25,12 @@ const GameDemoFromBackend = () => {
   };
 
   const doMove = async () => {
-
+    const id = localStorage.getItem("gameid");
+    const current = await api.get(`/game/${id}`);
+    console.log(current.data)
+    const response = await api.put(`/move/${id}`, integerValue);
+    const gamestatus = response.data;
+    console.log(gamestatus)
   };
 
   useEffect(() => {

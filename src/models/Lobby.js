@@ -1,14 +1,16 @@
+import { GamePlayer } from "../types";
+
 /**
  * Lobby model
  */
-class Lobby {
+class GameLobby {
   constructor(data = {}) {
-    this.id = null;
     this.pin = null;
-    this.admin = null;
-    this.gamestatus = null;
+    this.adminid = null;
+    this.gameid = null;
+    this.players = null;
     Object.assign(this, data);
   }
 }
 
-export default Lobby;
+export default GameLobby;

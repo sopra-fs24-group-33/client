@@ -4,10 +4,11 @@
 class User {
   constructor(data = {}) {
     this.id = null;
-    this.name = null;
-    this.guestname = null;
+    this.username = null;
     this.token = null;
-    this.status = null;
+    this.gamesplayed = null;
+    this.shame_tokens = null;
+    this.password = null;
     Object.assign(this, data);
   }
 }
