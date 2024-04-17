@@ -15,7 +15,7 @@ const PlayerBox = ({ username, shameTokens, you }) => {
       <div className="player-shame-token">
         <div className="shame-token-wrapper">
           <img src={shame_logo} alt="" style={{width: "25px", height:"25px"}} />
-          <h3 className="shame-token-count light">{shameTokens}</h3>
+          <h3 className="shame-token-count light">{shameTokens? shameTokens : 0}</h3>
         </div>
       </div>
     </div>
