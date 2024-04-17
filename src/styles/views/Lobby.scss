@@ -8,90 +8,53 @@
  */
 
 .lobby {
-  &.container {
-    position: relative;
-    overflow: hidden;
-    margin-top: 2em;
-    width: fit-content;
-    background: black;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    padding-top: 1.5em;
-    border-radius: $borderRadius;
+  &.section {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-shadow: $dropShadow;
-  }
-  &.title-container {
-    width: 30em ;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
   }
-  &.player-container {
-    position: relative;
-    max-height: 575px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    margin-top: 1em;
-    width: fit-content;
-    background: black;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    border-radius: $borderRadius;
+  &.container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    max-width: fit-content;
+    padding: 1.5em 2em;
+    border-radius: 0.75em;
+    background-color: black;
+    transition: opacity 0.5s ease, transform 0.5s ease;
     box-shadow: $dropShadow;
-    scrollbar-width: thin; /* Can be "auto", "thin", or "none" */
-    scrollbar-color: rgba(44, 44, 44, 0.86) black; /* thumb and track color */
+  }
+  &.header {
+
   }
   .hr-thin {
-    width: 60%;
+    width: 100%;
     height: 1px; /* Makes the line thinner */
     background-color: white; /* Ensures the line is visible with the desired color, optional */
     border: none; /* Removes the default border to rely on the background-color and height for the line's appearance */
     margin-bottom: 0.75em;
-    margin-top: 0.75em/* Adjust this value to position the line higher. The exact value will depend on your layout. */
-  }
-  .scroll-indicator {
-    text-align: center;
-    margin-top: 10px; /* Adjust based on your design */
+
   }
 
-  .scroll-indicator span {
-    display: inline-block;
-    height: 8px;
-    width: 8px;
-    border-radius: 50%;
-    background-color: #cccccc; /* Or any color that fits your design */
-    margin: 0 5px;
+
+  &.player-container {
+
+
   }
+
   &.user-list {
     list-style: none;
     padding-left: 0;
   }
-  &.user-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  & p,h2 {
-    font-size: 30px;
-    margin: 0.1em 0;
-  }
-  & h1 {
-    color: white;
-    font-size: 25px;
-    margin: 0.1em 0;
-  }
+
   &.button-container {
-    margin: 15px;
-    gap: 50px;
     display: flex;
     justify-content: center;
+    margin-top: 2em;
+    gap: 1em;
   }
+
 }
