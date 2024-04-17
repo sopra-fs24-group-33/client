@@ -1,0 +1,16 @@
+.card-pile {
+  width: 20vh;
+  height: 23vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; // Establishes a positioning context for absolutely positioned cards
+  z-index: -100;
+}
+
+.card-position {
+  position: absolute;
+  top: -25%; // Start from the top of the container
+  left: 50%; // Center horizontally
+  transform: translateX(-50%); // Center the card within the container
+}

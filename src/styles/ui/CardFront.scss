@@ -1,0 +1,51 @@
+@import "../theme";
+
+.card-container {
+  display:flex;
+  align-items: stretch;
+  justify-content: center;
+  position: relative;
+  width: 8vw;
+  height: calc(8vw * 1.4);
+  border-radius: 1vh;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 0 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced initial subtle shadow
+  &:hover {
+    transform: translateY(-30px);
+    // Adjusted hover shadow for a tighter glow effect
+    box-shadow:
+            0 0 1vh rgba(0, 0, 0, 0.65),
+            0 0 3vh rgba(255, 255, 255, 0.8);
+  }
+  .card-img {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.75vw;
+    font-family: $fontSubHeading;
+    user-select: none;
+  }
+}
+
+.card-container-large {
+  width: 10vw; // Larger width
+  height: auto; // Adjust height proportionally
+  .card-img {
+    width: 100%;
+    height: 100%;
+  }
+  .card-value {
+    font-size: 3.5vw; // Larger text size
+  }
+}
+
+

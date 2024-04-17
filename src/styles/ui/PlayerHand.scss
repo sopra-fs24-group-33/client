@@ -1,0 +1,8 @@
+.player-hand {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; // This will center the cards in the container
+  align-items: center; // This will align the cards vertically
+  gap: 10px; // Adjust the gap between cards as necessary
+  // Add any additional styling you want for the hand container here
+}

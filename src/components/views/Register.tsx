@@ -59,6 +59,7 @@ const Register = () => {
 
       localStorage.setItem("token", guest.token)
       localStorage.setItem("id", guest.id)
+      navigate("/overview");
 
     } catch (error) {
       alert(

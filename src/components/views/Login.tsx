@@ -70,7 +70,6 @@ const Login = () => {
       localStorage.setItem("id", player.id)
       navigate("/overview");
 
-      navigate("/overview");
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`

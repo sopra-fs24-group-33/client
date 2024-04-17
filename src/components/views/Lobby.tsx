@@ -45,8 +45,6 @@ const Lobby = () => {
 
   }
 
-
-
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
@@ -117,6 +115,7 @@ const Lobby = () => {
     const stringPin = lobby.pin.toString();
     displayPin = stringPin.substring(0, 3) + " " + stringPin.substr(3);
   }
+
   return (
     <div>
       <BaseContainer className="lobby container">
@@ -128,7 +127,7 @@ const Lobby = () => {
         </div>
       </BaseContainer>
       <div className="lobby button-container">
-        <Button className="primary-button" width={300} >
+        <Button className="primary-button" width={300} onClick={() => navigate("/game")} >
           Start Game
         </Button>
         <Button className="primary-button" width={300} onClick={() => leaveLobby()}>
@@ -139,4 +138,5 @@ const Lobby = () => {
     </div>
   );
 }
+
 export default Lobby;
