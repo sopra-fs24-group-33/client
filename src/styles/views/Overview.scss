@@ -35,14 +35,12 @@
     width: 360px;
     height: 100%;
     position: relative;
-
   }
 
   &.vertical-line-box{
     height: 100%;
     padding-left: 2em;
     padding-right: 1em;
-
   }
   &.vertical-line{
     height: 100%;
@@ -77,14 +75,12 @@
     scrollbar-color: rgba(44, 44, 44, 1) black; /* thumb and track color */
   }
   &.outer-text-wrapper {
-    // insert code here
     width: 320px; /* its as wide as a player box*/
     padding-bottom: 10em;
   }
   &.inner-text-wrapper {
     display: flex;
     justify-content: space-between;
-
   }
   &.rules-logout-button-wrapper {
     display: flex;

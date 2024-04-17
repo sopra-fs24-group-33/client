@@ -54,17 +54,16 @@ $borderRadius: 0.75em;
 
 
 h1 {
+  height: 100px; // h1 was always bigger than the text inside and the text was to far up. i found no other way that to hard code the height :(
   font-family: $fontHeading;
   font-size: 7em;
   color: white;
-  line-height: 1;
-  margin-bottom: 0;
   margin-top: 0;
+  margin-bottom: 10px;
 }
 h2 {
   font-family: $fontSubHeading;
   font-size: 2.25em;
-  line-height: 0.25;
   color: white;
 }
 h2.light {
@@ -73,6 +72,7 @@ h2.light {
 }
 
 h3 {
+  height: 18px;
   font-family: $fontSubHeading;
   font-size: 1.1em;
   color: white;

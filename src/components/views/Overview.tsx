@@ -236,9 +236,7 @@ const Overview = () => {
 
           <div className="overview sub-container">
             <div className="overview header">
-              <div>
                 <h2>Online</h2>
-              </div>
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />
