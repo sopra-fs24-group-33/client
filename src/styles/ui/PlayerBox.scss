@@ -25,11 +25,10 @@
   display: flex;
   align-items: center;
   margin-left: auto;
-  margin-right: 10px;
 }
 
 .shame-token-wrapper {
-  gap: 5px;
+  gap: 10px;
   display: flex;
   align-items: center; /* Align items vertically in the center */
 }
@@ -40,7 +39,6 @@
 }
 
 .shame-token-count {
-  font-size: 1.25em;
   color: white;
 }
 

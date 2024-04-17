@@ -16,6 +16,7 @@ import Background from "../../assets/AltBackground.svg";
 // @ts-ignore
 import shame_logo from "../../assets/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
+import "../../styles/_theme.scss";
 
 
 const Overview = () => {
@@ -151,7 +152,10 @@ const Overview = () => {
       <div className="overview sub-container">
 
         <div className="overview">
-          <h2>Hey {curPlayer.name}</h2>
+          <div className="overview header-hey-username">
+            <h2 className="light">Hey&nbsp;</h2>
+            <h2>{curPlayer.name}</h2>
+          </div>
           <div className="overview outer-text-wrapper">
             <div className="overview inner-text-wrapper">
               <p>username</p>
@@ -232,13 +236,13 @@ const Overview = () => {
 
           <div className="overview sub-container">
             <div className="overview header">
-              <di>
+              <div>
                 <h2>Online</h2>
-              </di>
+              </div>
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />
-                  <span className="shame-token-count">77</span>
+                  <h3 className="shame-token-count light">77</h3>
                 </div>
               </div>
             </div>
@@ -246,6 +250,7 @@ const Overview = () => {
               {contentOnline}
             </div>
           </div>
+
 
           <div className="overview sub-container">
             <div className="overview header">
