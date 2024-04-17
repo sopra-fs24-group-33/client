@@ -30,6 +30,11 @@
     flex-direction: column;
     justify-content: center;
   }
+  &.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
   &.input {
     height: 50px;
     color: $textColor;

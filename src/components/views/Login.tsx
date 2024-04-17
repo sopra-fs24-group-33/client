@@ -9,13 +9,10 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 // @ts-ignore
 import Background from "../../assets/AltBackground.svg";
+// @ts-ignore
+import Logo from "../../assets/Logo.svg";
 
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
+
 const FormField = (props) => {
   return (
     <div className="login field">
@@ -70,7 +67,6 @@ const Login = () => {
       localStorage.setItem("id", player.id)
       navigate("/overview");
 
-      navigate("/overview");
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`
@@ -93,7 +89,12 @@ const Login = () => {
       <BaseContainer>
         <div className="login container">
           <div className="login form">
-            <h2>Login</h2>
+            <div className="login header">
+              <h2>
+                Login
+              </h2>
+              <img src={Logo} alt="" style={{ width: "65px", height: "65px" }} />
+            </div>
             <FormField
               label="Username"
               value={username}

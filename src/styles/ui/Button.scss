@@ -3,13 +3,15 @@
 
 .primary-button {
   &:hover {
-    transform: translateY(-2px);
+    background-color: #cccccc;
+    border-color: #cccccc;
   }
   &:disabled {
     cursor: default;
     opacity: 0.4;
     &:hover {
-      transform: none;
+      background-color: white;
+      border-color: white;
     }
   }
   font-family: $fontButton;
@@ -30,6 +32,13 @@
     background-color: transparent;
     border: white solid;
     color: white;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+
   }
   &.square {
     border-radius: 10px;
