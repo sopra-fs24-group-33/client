@@ -17,6 +17,7 @@ import Background from "../../assets/AltBackground.svg";
 import shame_logo from "../../assets/shame_logo.svg";
 import "../../styles/ui/PlayerBoxNew.scss";
 
+let myPlayer = null;
 
 const Overview = () => {
 
@@ -81,7 +82,8 @@ const Overview = () => {
         setPlayers(response.data);
 
         // Get current player based on token
-        setCurPlayer(response.data.find(user => user.token === localStorage.getItem("token")));
+        setCurPlayer(response.data);
+        myPlayer = response.data.find(user => user.token === localStorage.getItem("token")));
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -118,7 +120,6 @@ const Overview = () => {
             <li key={player.id}>
               <PlayerBoxNew
                 username={player.name}
-
                 shameTokens={player.shame_tokens}
                 you={localStorage.getItem("token") === player.token}
               />
