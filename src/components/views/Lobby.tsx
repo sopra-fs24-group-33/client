@@ -11,118 +11,143 @@ import OldPlayerBox from "../ui/old-PlayerBox";
 import { Player } from "../../types";
 import "styles/views/Lobby.scss";
 import PlayerBox from "../ui/PlayerBox";
-import AgoraRTC from "agora-rtc-sdk-ng";
 
-const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-const TOKEN = "007eJxTYAhZ1vSzepXalDyFP1N88zRPL8xUuOdzoSZuu2Tpxd+1+hEKDGbmFibJphbmKclmKSappqaWJolpSUmpRpamKWamRiZp5dcV0hoCGRks57gzMTJAIIjPwpCbmJnHwAAAdmoflA=="
-const CHANNEL = "main"
 
 const Lobby = () => {
   const navigate = useNavigate();
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [lobby, setLobby] = useState(null);
+  const [players, setPlayers] = useState<Player[]>(null);
+  const [lobby, setLobby] = useState<GameLobby>(null);
+  const leaveLobby = async () => {
+    console.log("player id:", typeof players[0].id)
+    console.log("local storage id:", typeof localStorage.getItem("id"))
+    const player = players.find(player => player.id.toString() === localStorage.getItem("id"))
+    const lobbyPin = localStorage.getItem("pin")
+
+    console.log("lobby Pin:",lobbyPin)
+
+    console.log(player)
+
+    navigate("/overview")
+
+    try {
+      const requestBody = JSON.stringify( player )
+      const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
+    } catch (error) {
+      console.error(
+        `Something went wrong while fetching the users: \n${handleError(
+          error
+        )}`
+      );
+      console.error("Details:", error);
+      alert(
+        "Something went wrong while fetching the users! See the console for details."
+      );
+    }
+
+  }
+
+
 
   useEffect(() => {
-    const joinAndSetupStreams = async () => {
+    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+    async function fetchData() {
+      const pin = localStorage.getItem("pin")
       try {
-        const appId = APP_ID;
-        const token = TOKEN;
-        const channel = CHANNEL; // Replace with your channel name
-        const uid = await client.join(appId, channel, token, null);
+        const requestBody = JSON.stringify(pin)
+        const response = await api.get(`/gamelobbies/${pin}`, requestBody);
+        console.log("This is the response data: ",  response.data)
 
-        const localTracks = await AgoraRTC.createMicrophoneAndCameraTracks();
-        await client.publish(localTracks);
-
-        client.on("user-published", async (user, mediaType) => {
-          await client.subscribe(user, mediaType);
-          if (mediaType === "video") {
-            const videoTrack = user.videoTrack;
-            videoTrack.play(`player-${user.uid}`);
-          }
-        });
-
-        client.on("user-unpublished", user => {
-          if (user.videoTrack) {
-            user.videoTrack.stop();
-          }
-        });
-
-        return () => {
-          localTracks.forEach(track => track.close());
-          client.leave();
-        };
-      } catch (error) {
-        console.error("Streaming Error:", error);
-      }
-    };
-
-    joinAndSetupStreams();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const pin = localStorage.getItem("pin");
-      try {
-        const response = await api.get(`/gamelobbies/${pin}`);
         setLobby(response.data);
         setPlayers(response.data.players);
+
+
+
+
       } catch (error) {
-        console.error(`Error fetching lobby data: ${handleError(error)}`);
+        console.error(
+          `Something went wrong while fetching the users: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        alert(
+          "Something went wrong while fetching the users! See the console for details."
+        );
       }
-    };
+    }
 
     fetchData();
   }, []);
 
-  const leaveLobby = async () => {
-    await client.leave();
-    navigate("/overview");
-  };
+  let content = <Spinner />
+  let  displayPin = null
 
-  let content = <Spinner />;
-  let displayPin = "";
-
-  if (players && players.length > 0) {
-    content = (
-      <div className="overview">
-        <ul className="overview user-list">
-          {players.map((player) => (
-            <li key={player.id}>
-              <PlayerBox
-                username={player.name}
-                shameTokens={player.shame_tokens}
-                you={localStorage.getItem("id") === player.id.toString()}
-              />
-              <div id={`player-${player.id}`} className="video-player"></div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-
+  if (players) {
+  content = (
+    <div className="overview">
+      <ul className="overview user-list">
+        {players.map((player: Player) => (
+          <li key={player.id}>
+            <PlayerBox
+              username={player.name}
+              shameTokens={player.shame_tokens}
+              you={localStorage.getItem("id") === player.id.toString()}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
   if (lobby) {
-    displayPin = `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}`;
+    const stringPin = lobby.pin.toString();
+    displayPin = stringPin.substring(0, 3) + " " + stringPin.substr(3);
   }
+  /*
+  return (
+    <div>
+      <BaseContainer className="lobby container">
+        <h2>Game Pin</h2>
+        <h1> {displayPin} </h1>
+        <hr className="lobby hr-thin" />
+        <div className="lobby player-container">
+          {content}
+        </div>
+      </BaseContainer>
+      <div className="lobby button-container">
+        <Button className="primary-button" width={300} >
+          Start Game
+        </Button>
+        <Button className="primary-button" width={300} onClick={() => leaveLobby()}>
+          Leave Lobby
+        </Button>
+
+      </div>
+    </div>
+  );
+
+   */
 
   return (
     <div className="lobby section">
       <BaseContainer className="lobby container">
         <h2 className="lobby header">Game Pin: {displayPin}</h2>
         <hr className="lobby hr-thin" />
-        <div className="lobby player-container">{content}</div>
+        <div className="lobby player-container">
+          {content}
+        </div>
         <div className="lobby button-container">
-          <Button className="outlined" width="100%" onClick={leaveLobby}>
+          <Button className="outlined" width="100%" onClick={() => leaveLobby()}>
             Leave Lobby
           </Button>
-          <Button className="" width="100%">
+          <Button className="" width="100%" >
             Start Game
           </Button>
         </div>
       </BaseContainer>
-    </div>
-  );
-};
 
+
+    </div>
+  )
+}
 export default Lobby;
