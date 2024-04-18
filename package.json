@@ -10,7 +10,8 @@
     "react-router-dom": "^6.21.3",
     "react-scripts": "^5.0.1",
     "serve": "^14.2.1",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.1",
+    "ws": "^8.16.0"
   },
   "scripts": {
     "dev": "react-scripts start",

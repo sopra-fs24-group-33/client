@@ -10,6 +10,7 @@ import GamePin from "../../views/GamePin";
 import GameDemoFromBackend from "../../views/GameDemoFromBackend";
 import Design from "../../views/design";
 import GameArena from "../../views/GameArena";
+import WebSocket from "../../views/WebSocket";
 
 /**
  * Main router of your application.
@@ -48,6 +49,8 @@ const AppRouter = () => {
         <Route path="/test" element={<GameDemoFromBackend />}> </Route>
 
         <Route path="/design" element={<Design />}> </Route>
+
+        <Route path="/ws" element={<WebSocket />}> </Route>
 
 
       </Routes>
