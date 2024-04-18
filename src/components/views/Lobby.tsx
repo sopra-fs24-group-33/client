@@ -26,25 +26,34 @@ const Lobby = () => {
   useEffect(() => {
     const joinAndSetupStreams = async () => {
       try {
-        const appId = APP_ID;
-        const token = TOKEN;
-        const channel = CHANNEL; // Replace with your channel name
-        const uid = await client.join(appId, channel, token, null);
-
+        const uid = await client.join(APP_ID, CHANNEL, TOKEN);
         const localTracks = await AgoraRTC.createMicrophoneAndCameraTracks();
+
+        // Create a video container for the local stream
+        const localVideoContainer = document.createElement("div");
+        localVideoContainer.id = `player-${uid}`;
+        localVideoContainer.className = "video-container"; // Use the CSS class for styling
+        document.querySelector(".video-streams").appendChild(localVideoContainer);
+        localTracks[1].play(`player-${uid}`); // Play the video in the created container
+
         await client.publish(localTracks);
 
         client.on("user-published", async (user, mediaType) => {
           await client.subscribe(user, mediaType);
           if (mediaType === "video") {
             const videoTrack = user.videoTrack;
+            const remoteVideoContainer = document.createElement("div");
+            remoteVideoContainer.id = `player-${user.uid}`;
+            remoteVideoContainer.className = "video-container"; // Use the CSS class for styling
+            document.querySelector(".video-streams").appendChild(remoteVideoContainer);
             videoTrack.play(`player-${user.uid}`);
           }
         });
 
         client.on("user-unpublished", user => {
-          if (user.videoTrack) {
-            user.videoTrack.stop();
+          const videoContainer = document.getElementById(`player-${user.uid}`);
+          if (videoContainer) {
+            videoContainer.remove(); // Remove the video container from the DOM
           }
         });
 
@@ -80,38 +89,31 @@ const Lobby = () => {
     navigate("/overview");
   };
 
-  let content = <Spinner />;
-  let displayPin = "";
-
-  if (players && players.length > 0) {
-    content = (
-      <div className="overview">
-        <ul className="overview user-list">
-          {players.map((player) => (
-            <li key={player.id}>
-              <PlayerBox
-                username={player.name}
-                shameTokens={player.shame_tokens}
-                you={localStorage.getItem("id") === player.id.toString()}
-              />
-              <div id={`player-${player.id}`} className="video-player"></div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-
-  if (lobby) {
-    displayPin = `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}`;
-  }
+  let displayPin = lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : "";
 
   return (
     <div className="lobby section">
+      <div className="video-streams"> {/* This container will hold all video containers */}</div>
       <BaseContainer className="lobby container">
         <h2 className="lobby header">Game Pin: {displayPin}</h2>
         <hr className="lobby hr-thin" />
-        <div className="lobby player-container">{content}</div>
+        <div className="lobby player-container">
+          {players.length > 0 ? (
+            <ul className="overview user-list">
+              {players.map(player => (
+                <li key={player.id}>
+                  <PlayerBox
+                    username={player.name}
+                    shameTokens={player.shame_tokens}
+                    you={localStorage.getItem("id") === player.id.toString()}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Spinner />
+          )}
+        </div>
         <div className="lobby button-container">
           <Button className="outlined" width="100%" onClick={leaveLobby}>
             Leave Lobby
