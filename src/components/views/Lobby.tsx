@@ -76,18 +76,11 @@ const Lobby = () => {
       } catch (error) {
         console.error("Streaming Error:", error);
       }
-
-      return () => {
-        localTracks.current.forEach(track => {
-          track.stop();
-          track.close();
-        });
-        client.leave();
-      };
     };
 
     joinAndSetupStreams();
 
+    // this makes sure that the tracks are cleaned up when the component is unmounted
     return () => {
       localTracks.current.forEach(track => {
         track.stop();
