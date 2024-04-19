@@ -1,142 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-import User from "models/User";
-import GameLobby from "models/Lobby";
-import {useNavigate} from "react-router-dom";
-import BaseContainer from "../ui/BaseContainer";
-import { Button } from "../ui/Button";
-import Header from "./Header";
-import { Spinner } from "../ui/Spinner";
-import PlayerBox from "../ui/PlayerBox";
-import { Player } from "../../types";
-import "styles/views/Lobby.scss";
+// Lobby.js
 
+import React, { useEffect, useState } from 'react';
 
 const Lobby = () => {
-  const navigate = useNavigate();
-  const [players, setPlayers] = useState<Player[]>(null);
-  const [lobby, setLobby] = useState<GameLobby>(null);
-  const leaveLobby = async () => {
-    console.log("player id:", typeof players[0].id)
-    console.log("local storage id:", typeof localStorage.getItem("id"))
-    const player = players.find(player => player.id.toString() === localStorage.getItem("id"))
-    const lobbyPin = localStorage.getItem("pin")
-
-    console.log("lobby Pin:",lobbyPin)
-
-    console.log(player)
-
-    navigate("/overview")
-
-    try {
-      const requestBody = JSON.stringify( player )
-      const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-    } catch (error) {
-      console.error(
-        `Something went wrong while fetching the users: \n${handleError(
-          error
-        )}`
-      );
-      console.error("Details:", error);
-      alert(
-        "Something went wrong while fetching the users! See the console for details."
-      );
-    }
-
-  }
+  const [messages, setMessages] = useState([]);
+  const [ws, setWs] = useState(null);
+  const [lobby, setLobby] = useState(null);
 
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    async function fetchData() {
-      const lobbyPin = localStorage.getItem("pin")
-      try {
-        console.log("lobby id:", lobbyPin)
-        const requestBody = JSON.stringify( lobbyPin )
-        const response = await api.get(`/gamelobbies/${lobbyPin}`, requestBody);
+    const lobbyPin = localStorage.getItem('pin'); // Assume you store lobbyPin in localStorage
+    const socket = new WebSocket(`ws://localhost:8080/ws/lobby?lobby=${lobbyPin}`);
 
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+    socket.onopen = () => {
+      console.log('Connected to WebSocket');
+    };
 
-        setLobby(response.data);
-        // Get the returned users and update the state.
-        setPlayers(response.data.players);
+    socket.onmessage = (event) => {
+      const newLobby = JSON.parse(event.data);
+      setLobby(newLobby);
+      console.log("Received data:", newLobby);
+    };
 
+    socket.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
 
-        // Get current user based on token
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
 
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("request to:", response.request.responseURL);
-        console.log("status code:", response.status);
-        console.log("status text:", response.statusText);
-        console.log("requested data:", response.data);
+    setWs(socket);
 
-        // See here to get more data.
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
-    }
-
-    fetchData();
+    return () => {
+      socket.close();
+    };
   }, []);
-
-  let content = <Spinner />
-  let displayPin = null
-
-  if (players) {
-  content = (
-    <div className="overview">
-      <ul className="overview user-list">
-        {players.map((player: Player) => (
-          <li key={player.id}>
-            <PlayerBox
-              username={player.name}
-              shameTokens={player.shame_tokens}
-              boxType={localStorage.getItem("id") === player.id.toString() ? "primary" : "secondary"}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-  if (lobby) {
-    const stringPin = lobby.pin.toString();
-    displayPin = stringPin.substring(0, 3) + " " + stringPin.substr(3);
-  }
 
   return (
     <div>
-      <BaseContainer className="lobby container">
-        <h2>Game Pin</h2>
-        <h1> {displayPin} </h1>
-        <hr className="lobby hr-thin" />
-        <div className="lobby player-container">
-          {content}
-        </div>
-      </BaseContainer>
-      <div className="lobby button-container">
-        <Button className="primary-button" width={300} onClick={() => navigate("/game")} >
-          Start Game
-        </Button>
-        <Button className="primary-button" width={300} onClick={() => leaveLobby()}>
-          Leave Lobby
-        </Button>
-
-      </div>
+      {messages.map((msg, index) => (
+        <p key={index}>{msg.text}</p>
+      ))}
     </div>
   );
-}
+};
 
 export default Lobby;
