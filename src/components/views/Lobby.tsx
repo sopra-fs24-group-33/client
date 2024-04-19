@@ -34,17 +34,23 @@ const Lobby = () => {
         const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
         localTracks.current = tracks;
 
+        // Set up the local video container
         const localVideoContainer = document.createElement("div");
         localVideoContainer.id = `player-${uid}`;
         localVideoContainer.className = "video-container";
         document.querySelector(".video-streams").appendChild(localVideoContainer);
         tracks[1].play(`player-${uid}`);
 
+        // Publish the local tracks to the channel
         await client.publish(tracks);
 
         client.on("user-published", async (user, mediaType) => {
           remoteUsers.current[user.uid] = user;
+          console.log(`User published: ${user.uid}, MediaType: ${mediaType}`);
           await client.subscribe(user, mediaType);
+          console.log(`Subscribed to: ${user.uid}`);
+
+          // Check media type and handle accordingly
           if (mediaType === "video") {
             const remoteVideoContainer = document.createElement("div");
             remoteVideoContainer.id = `player-${user.uid}`;
@@ -52,12 +58,13 @@ const Lobby = () => {
             document.querySelector(".video-streams").appendChild(remoteVideoContainer);
             user.videoTrack.play(`player-${user.uid}`);
           }
-          if (mediaType === 'audio') {
+          if (mediaType === "audio") {
             user.audioTrack.play();
           }
         });
 
         client.on("user-unpublished", user => {
+          // Handle the removal of video container when a user unpublishes their video
           const videoContainer = document.getElementById(`player-${user.uid}`);
           if (videoContainer) {
             videoContainer.remove();
@@ -66,6 +73,7 @@ const Lobby = () => {
         });
 
         client.on("user-left", user => {
+          // Handle user leaving and remove their video container
           const videoContainer = document.getElementById(`player-${user.uid}`);
           if (videoContainer) {
             videoContainer.remove();
@@ -77,6 +85,7 @@ const Lobby = () => {
         console.error("Streaming Error:", error);
       }
     };
+
 
     joinAndSetupStreams();
 
