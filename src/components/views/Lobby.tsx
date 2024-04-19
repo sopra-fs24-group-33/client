@@ -100,17 +100,27 @@ const Lobby = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const pin = localStorage.getItem("pin");
+    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+    async function fetchData() {
+      const pin = localStorage.getItem("pin")
       try {
-        const response = await api.get(`/gamelobbies/${pin}`);
+        const requestBody = JSON.stringify(pin)
+        const response = await api.get(`/gamelobbies/${pin}`, requestBody);
+        console.log("This is the response data: ",  response.data)
         setLobby(response.data);
         setPlayers(response.data.players);
       } catch (error) {
-        console.error(`Error fetching lobby data: ${handleError(error)}`);
-        alert("Something went wrong while fetching the users! See the console for details.");
+        console.error(
+          `Something went wrong while fetching the users: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        alert(
+          "Something went wrong while fetching the users! See the console for details."
+        );
       }
-    };
+    }
 
     fetchData();
   }, []);
@@ -122,6 +132,8 @@ const Lobby = () => {
     console.log(player)
     navigate("/overview")
     try {
+      const requestBody = JSON.stringify( player )
+      const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
       localTracks.current.forEach(track => {
         track.stop();
         track.close();
@@ -131,19 +143,8 @@ const Lobby = () => {
     } catch (error) {
       console.error("Error leaving the lobby:", handleError(error));
       alert("Something went wrong while leaving the lobby! See the console for details.");
-      try {
-        const requestBody = JSON.stringify( player )
-        const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details.");
-      }
+
+
     }
   };
 
