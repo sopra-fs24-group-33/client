@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import GameLobby from "models/Lobby";
@@ -20,49 +20,92 @@ const CHANNEL = "main"
 
 const Lobby = () => {
   const navigate = useNavigate();
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState([]);
   const [lobby, setLobby] = useState(null);
-  const leaveLobby = async () => {
-    console.log("player id:", typeof players[0].id)
-    console.log("local storage id:", typeof localStorage.getItem("id"))
-    const player = players.find(player => player.id.toString() === localStorage.getItem("id"))
-    const lobbyPin = localStorage.getItem("pin")
+  const localTracks = useRef([]);
+  const remoteUsers = useRef({});
 
-    console.log("lobby Pin:",lobbyPin)
+  useEffect(() => {
+    const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
-    console.log(player)
+    const joinAndSetupStreams = async () => {
+      try {
+        const uid = await client.join(APP_ID, CHANNEL, TOKEN);
+        const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localTracks.current = tracks;
 
-    await client.leave();
-    navigate("/overview")
+        const localVideoContainer = document.createElement("div");
+        localVideoContainer.id = `player-${uid}`;
+        localVideoContainer.className = "video-container";
+        document.querySelector(".video-streams").appendChild(localVideoContainer);
+        tracks[1].play(`player-${uid}`);
 
-    try {
-      const requestBody = JSON.stringify( player )
-      const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-    } catch (error) {
-      console.error(
-        `Something went wrong while fetching the users: \n${handleError(
-          error
-        )}`
-      );
-      console.error("Details:", error);
-      alert(
-        "Something went wrong while fetching the users! See the console for details."
-      );
-    }
+        await client.publish(tracks);
 
-  }
+        client.on("user-published", async (user, mediaType) => {
+          remoteUsers.current[user.uid] = user;
+          await client.subscribe(user, mediaType);
+          if (mediaType === "video") {
+            const remoteVideoContainer = document.createElement("div");
+            remoteVideoContainer.id = `player-${user.uid}`;
+            remoteVideoContainer.className = "video-container";
+            document.querySelector(".video-streams").appendChild(remoteVideoContainer);
+            user.videoTrack.play(`player-${user.uid}`);
+          }
+          if (mediaType === 'audio') {
+            user.audioTrack.play();
+          }
+        });
+
+        client.on("user-unpublished", user => {
+          const videoContainer = document.getElementById(`player-${user.uid}`);
+          if (videoContainer) {
+            videoContainer.remove();
+          }
+          delete remoteUsers.current[user.uid];
+        });
+
+        client.on("user-left", user => {
+          const videoContainer = document.getElementById(`player-${user.uid}`);
+          if (videoContainer) {
+            videoContainer.remove();
+          }
+          delete remoteUsers.current[user.uid];
+        });
+
+      } catch (error) {
+        console.error("Streaming Error:", error);
+      }
+
+      return () => {
+        localTracks.current.forEach(track => {
+          track.stop();
+          track.close();
+        });
+        client.leave();
+      };
+    };
+
+    joinAndSetupStreams();
+
+    return () => {
+      localTracks.current.forEach(track => {
+        track.stop();
+        track.close();
+      });
+      client.leave();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       const pin = localStorage.getItem("pin");
       try {
         const response = await api.get(`/gamelobbies/${pin}`);
-        console.log("This is the response data: ", response.data);
-
         setLobby(response.data);
         setPlayers(response.data.players);
       } catch (error) {
-        console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
+        console.error(`Error fetching lobby data: ${handleError(error)}`);
         alert("Something went wrong while fetching the users! See the console for details.");
       }
     };
@@ -70,65 +113,43 @@ const Lobby = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const joinAndSetupStreams = async () => {
+  const leaveLobby = async () => {
+    const player = players.find(player => player.id.toString() === localStorage.getItem("id"))
+    const lobbyPin = localStorage.getItem("pin")
+    console.log("lobby Pin:",lobbyPin)
+    console.log(player)
+    navigate("/overview")
+    try {
+      localTracks.current.forEach(track => {
+        track.stop();
+        track.close();
+      });
+      await client.leave();
+      navigate("/overview");
+    } catch (error) {
+      console.error("Error leaving the lobby:", handleError(error));
+      alert("Something went wrong while leaving the lobby! See the console for details.");
       try {
-        const uid = await client.join(APP_ID, CHANNEL, TOKEN);
-        const localTracks = await AgoraRTC.createMicrophoneAndCameraTracks();
-
-        // Create a video container for the local stream
-        const localVideoContainer = document.createElement("div");
-        localVideoContainer.id = `player-${uid}`;
-        localVideoContainer.className = "video-container"; // Use the CSS class for styling
-        document.querySelector(".video-streams").appendChild(localVideoContainer);
-        localTracks[1].play(`player-${uid}`); // Play the video in the created container
-
-        await client.publish(localTracks);
-
-        client.on("user-published", async (user, mediaType) => {
-          await client.subscribe(user, mediaType);
-          if (mediaType === "video") {
-            const videoTrack = user.videoTrack;
-            const remoteVideoContainer = document.createElement("div");
-            remoteVideoContainer.id = `player-${user.uid}`;
-            remoteVideoContainer.className = "video-container"; // Use the CSS class for styling
-            document.querySelector(".video-streams").appendChild(remoteVideoContainer);
-            videoTrack.play(`player-${user.uid}`);
-          }
-        });
-
-        client.on("user-unpublished", user => {
-          const videoContainer = document.getElementById(`player-${user.uid}`);
-          if (videoContainer) {
-            videoContainer.remove(); // Remove the video container from the DOM
-          }
-        });
-
-        return () => {
-          localTracks.forEach(track => track.close());
-          client.leave();
-        };
+        const requestBody = JSON.stringify( player )
+        const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
       } catch (error) {
-        console.error("Streaming Error:", error);
+        console.error(
+          `Something went wrong while fetching the users: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        alert(
+          "Something went wrong while fetching the users! See the console for details.");
       }
-    };
-
-    joinAndSetupStreams();
-  }, []);
-
-
-  // const leaveLobby = async () => {
-  //   await client.leave();
-  //   navigate("/overview");
-  // };
-
-  let displayPin = lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : "";
+    }
+  };
 
   return (
     <div className="lobby section">
       <div className="video-streams"></div>
       <BaseContainer className="lobby container">
-        <h2 className="lobby header">Game Pin: {displayPin}</h2>
+        <h2 className="lobby header">Game Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
         <hr className="lobby hr-thin" />
         <div className="lobby player-container">
           {players.length > 0 ? (
