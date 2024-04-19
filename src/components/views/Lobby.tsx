@@ -15,13 +15,60 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-const TOKEN = "007eJxTYAhZ1vSzepXalDyFP1N88zRPL8xUuOdzoSZuu2Tpxd+1+hEKDGbmFibJphbmKclmKSappqaWJolpSUmpRpamKWamRiZp5dcV0hoCGRks57gzMTJAIIjPwpCbmJnHwAAAdmoflA=="
+const TOKEN = "007eJxTYHgXY1m313Ol9ava5N0uuWdTlG+3rWZf+j04o6R3iuCGV6sVGMzMLUySTS3MU5LNUkxSTU0tTRLTkpJSjSxNU8xMjUzSHroopTUEMjJ8Y+pjZWSAQBCfhSE3MTOPgQEApZggcA=="
 const CHANNEL = "main"
 
 const Lobby = () => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>([]);
   const [lobby, setLobby] = useState(null);
+  const leaveLobby = async () => {
+    console.log("player id:", typeof players[0].id)
+    console.log("local storage id:", typeof localStorage.getItem("id"))
+    const player = players.find(player => player.id.toString() === localStorage.getItem("id"))
+    const lobbyPin = localStorage.getItem("pin")
+
+    console.log("lobby Pin:",lobbyPin)
+
+    console.log(player)
+
+    await client.leave();
+    navigate("/overview")
+
+    try {
+      const requestBody = JSON.stringify( player )
+      const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
+    } catch (error) {
+      console.error(
+        `Something went wrong while fetching the users: \n${handleError(
+          error
+        )}`
+      );
+      console.error("Details:", error);
+      alert(
+        "Something went wrong while fetching the users! See the console for details."
+      );
+    }
+
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const pin = localStorage.getItem("pin");
+      try {
+        const response = await api.get(`/gamelobbies/${pin}`);
+        console.log("This is the response data: ", response.data);
+
+        setLobby(response.data);
+        setPlayers(response.data.players);
+      } catch (error) {
+        console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
+        alert("Something went wrong while fetching the users! See the console for details.");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const joinAndSetupStreams = async () => {
@@ -69,31 +116,17 @@ const Lobby = () => {
     joinAndSetupStreams();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const pin = localStorage.getItem("pin");
-      try {
-        const response = await api.get(`/gamelobbies/${pin}`);
-        setLobby(response.data);
-        setPlayers(response.data.players);
-      } catch (error) {
-        console.error(`Error fetching lobby data: ${handleError(error)}`);
-      }
-    };
 
-    fetchData();
-  }, []);
-
-  const leaveLobby = async () => {
-    await client.leave();
-    navigate("/overview");
-  };
+  // const leaveLobby = async () => {
+  //   await client.leave();
+  //   navigate("/overview");
+  // };
 
   let displayPin = lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : "";
 
   return (
     <div className="lobby section">
-      <div className="video-streams"> {/* This container will hold all video containers */}</div>
+      <div className="video-streams"></div>
       <BaseContainer className="lobby container">
         <h2 className="lobby header">Game Pin: {displayPin}</h2>
         <hr className="lobby hr-thin" />
