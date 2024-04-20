@@ -13,9 +13,11 @@ const Lobby = () => {
   const navigate = useNavigate();
   const lobbyPin = localStorage.getItem('pin');
   const playerId = localStorage.getItem("id");
+  const adminId = localStorage.getItem("adminId")
   const [ws, setWs] = useState(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>(null);
+  const [gameId, setGameId] = useState(null);
 
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:8080/ws/lobby?lobby=${lobbyPin}`);
@@ -28,6 +30,11 @@ const Lobby = () => {
       const newLobby = JSON.parse(event.data);
       setLobby(newLobby);
       setPlayers(newLobby.players)
+      if (newLobby.gameid) {
+        console.log("Game started!");
+        localStorage.setItem("gameId", newLobby.gameid);
+        navigate("/game")
+      }
       console.log("Received data:", newLobby);
     };
 
@@ -78,6 +85,15 @@ const Lobby = () => {
     }
   }
 
+  const startGame = async () => {
+    const response = await api.post(`/startgame/${lobbyPin}`);
+    const gamestatus = response.data;
+    localStorage.setItem("gameId", gamestatus.id);
+    console.log(gamestatus)
+
+    navigate("/game")
+  };
+
   let content = <Spinner />
   let  displayPin = null
 
@@ -115,9 +131,15 @@ const Lobby = () => {
           <Button className="outlined" width="100%" onClick={() => leaveLobby()}>
             Leave Lobby
           </Button>
-          <Button className="" width="100%" onClick={() => navigate("/game")} >
-            Start Game
+          <Button className="outlined" width="100%" onClick={() => ws.send(lobbyPin)}>
+            Send WS MSG
           </Button>
+          {/* Conditionally render the Start Game button */}
+          {adminId === playerId && (
+            <Button className="" width="100%" onClick={() => startGame()}>
+              Start Game
+            </Button>
+          )}
         </div>
       </BaseContainer>
 

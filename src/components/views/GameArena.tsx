@@ -14,16 +14,17 @@ import PlayerHand from "../ui/cards/PlayerHand";
 
 const GameArena = () => {
   const navigate = useNavigate();
-  const pin = localStorage.getItem("pin")
+  const gameId = localStorage.getItem("gameId")
   const playerId = Number(localStorage.getItem("id"))
   const [drawPhase, setDrawPhase] = useState<boolean>(true) // Set initial draw phase true
   const [game, setGame] = useState<Game>(null)
   const [playerHand, setPlayerHand] = useState<number[]>([]) // Own cards
   const [cardsPlayed, setCardsPlayed] = useState<number[]>([]); // Cards played
   const [teamMates, setTeamMates] = useState<GamePlayer[]>(null)
+  const [ws, setWs] = useState(null);
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8080/ws/game`);
+    const socket = new WebSocket(`ws://localhost:8080/ws/game?game=${gameId}`);
 
     socket.onopen = () => {
       console.log("Connected to Game WebSocket")
@@ -42,17 +43,24 @@ const GameArena = () => {
       console.error('Game WebSocket error:', error);
     };
 
+    setWs(socket);
+
     async function fetchData() {
       try {
-        const response = await api.get(`/gamelobbies/${pin}`);
-        console.log("game id:", response.data.gameid);
+        const response = await api.get(`/game/${gameId}`);
+
+        setGame(response.data);
+        console.log(response.data.players.find(p => p.id === playerId))
+        const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
+        setPlayerHand(player.cards);
+
         console.log("requested data:", response.data.players);
         console.log("teammates:",response.data.players.filter(p => p.id !== playerId))
         setTeamMates(response.data.players.filter(p => p.id !== playerId))
 
       } catch (error) {
         console.error(
-          `Something went wrong while fetching the users: \n${handleError(
+          `Something went wrong while fetching the dasdusers: \n${handleError(
             error
           )}`
         );
@@ -70,21 +78,14 @@ const GameArena = () => {
   }, []);
 
   const handleDrawCards = async () => {
-    try {
-      const response = await api.post(`/startgame/${pin}`);
-      setGame(response.data);
-      console.log(response.data.players.find(p => p.id === playerId))
-      const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
-      setPlayerHand(player.cards);
-      setDrawPhase(false)
-    } catch (error) {
-      console.error(`Failed to start game: ${handleError(error)}`);
-      alert("Failed to start game, check console for details.");
-    }
+    setDrawPhase(false)
   }
 
-  const handleCardClick = (cardValue: number) => {
+  const handleCardClick = async (cardValue: number) => {
     console.log("Card clicked with value:", cardValue);
+    const response = await api.put(`/move/${gameId}`, cardValue)
+    ws.send(gameId)
+    console.log("response data card click:", response.data)
     // Add the card to the played cards pile
     setCardsPlayed(prev => [...prev, cardValue]);
     // Remove card from players hand
@@ -96,7 +97,9 @@ const GameArena = () => {
       <div className="teammate-box" key={player.id}>
         <div className="webcam-container">{player.name}</div>
         <div className="matehand-container">
-          <MateHand count={player.cards.length} />
+          {!drawPhase && (
+            <MateHand count={player.cards.length} />
+          )}
         </div>
       </div>
     ))
@@ -128,7 +131,9 @@ const GameArena = () => {
 
         <div className="pov-container">
           <div className="pov-container hand">
-            <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
+            {!drawPhase && (
+              <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
+            )}
           </div>
           <div className="pov-container my-webcam">
             My Webcam
