@@ -33,6 +33,23 @@ const GameArena = () => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Game event received:", data);
+      setCardsPlayed(prev => [...prev, data.currentCard]);
+
+      // get current player
+      const player = new GamePlayer(data.players.find(p => p.id === playerId));
+
+      // get current level from local storage
+      const currLvl = parseInt(localStorage.getItem("lvl"))
+      console.log("new level:", data.level);
+
+      if (data.level > currLvl) {
+        setDrawPhase(true); // if new level , set draw phase true
+        localStorage.setItem("lvl", data.level)// set new level to current level
+        setPlayerHand(player.cards); // update current players hand
+        setCardsPlayed([]) // clear cards played pile
+
+      }
+      setTeamMates(data.players.filter(p => p.id !== playerId))
     }
 
     socket.onclose = () => {
@@ -53,6 +70,10 @@ const GameArena = () => {
         console.log(response.data.players.find(p => p.id === playerId))
         const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
         setPlayerHand(player.cards);
+
+        // set current level on local storage
+        localStorage.setItem("lvl", response.data.level);
+        console.log("level fetched & set:", response.data.level);
 
         console.log("requested data:", response.data.players);
         console.log("teammates:",response.data.players.filter(p => p.id !== playerId))
@@ -77,7 +98,7 @@ const GameArena = () => {
     };
   }, []);
 
-  const handleDrawCards = async () => {
+  const handleDrawCards = () => {
     setDrawPhase(false)
   }
 
@@ -87,7 +108,6 @@ const GameArena = () => {
     ws.send(gameId)
     console.log("response data card click:", response.data)
     // Add the card to the played cards pile
-    setCardsPlayed(prev => [...prev, cardValue]);
     // Remove card from players hand
     setPlayerHand(playerHand.filter(n => n !== cardValue))
   };
