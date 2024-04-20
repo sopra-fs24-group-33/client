@@ -23,12 +23,29 @@ const GameArena = () => {
   const [teamMates, setTeamMates] = useState<GamePlayer[]>(null)
 
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+    const socket = new WebSocket(`ws://localhost:8080/ws/game`);
+
+    socket.onopen = () => {
+      console.log("Connected to Game WebSocket")
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Game event received:", data);
+    }
+
+    socket.onclose = () => {
+      console.log("Game WebSocket disconnected")
+    }
+
+    socket.onerror = (error) => {
+      console.error('Game WebSocket error:', error);
+    };
+
     async function fetchData() {
       try {
         const response = await api.get(`/gamelobbies/${pin}`);
-
-
+        console.log("game id:", response.data.gameid);
         console.log("requested data:", response.data.players);
         console.log("teammates:",response.data.players.filter(p => p.id !== playerId))
         setTeamMates(response.data.players.filter(p => p.id !== playerId))
@@ -46,6 +63,10 @@ const GameArena = () => {
       }
     }
     fetchData();
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
   const handleDrawCards = async () => {

@@ -1,6 +1,6 @@
 class Game {
   constructor(data = {}) {
-    this.id = null;
+    this.gameid = null;
     this.lobbyid = null;
     this.cardStack = null;
     this.players = null;
