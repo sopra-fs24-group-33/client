@@ -1,4 +1,3 @@
-// Lobby.js
 import { api, handleError } from "helpers/api";
 import React, { useEffect, useState } from 'react';
 import { GameLobby, Player } from "../../types";
@@ -17,7 +16,6 @@ const Lobby = () => {
   const [ws, setWs] = useState(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>(null);
-  const [gameId, setGameId] = useState(null);
 
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:8080/ws/lobby?lobby=${lobbyPin}`);
@@ -69,7 +67,11 @@ const Lobby = () => {
     try {
       const player = lobby.players.find(p => p.id.toString() === playerId);
       const requestBody = JSON.stringify(player)
+      console.log("player in lobby.tsx:", requestBody)
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
+
+      localStorage.removeItem("pin")
+      localStorage.removeItem("adminId")
 
       navigate("/overview")
     } catch (error) {

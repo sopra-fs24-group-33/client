@@ -97,7 +97,7 @@
       }
     }
     &.blink-success {
-      animation: blink-success 1s ease-out;
+      animation: blink-success 0.5s ease-out;
     }
 
     @keyframes blink-failure {
@@ -109,7 +109,7 @@
       }
     }
     &.blink-failure {
-      animation: blink-failure 1s ease-out;
+      animation: blink-failure 0.5s ease-out;
     }
   }
 
@@ -172,5 +172,31 @@
   &.username {
     font-weight: 500;
     color: $accent;
+  }
+}
+
+.confetti-container {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Adjust based on your needs */
+  overflow: visible; /* Keeps overflowing parts hidden */
+}
+
+.confetti-emoji {
+  position: absolute;
+  bottom: 0; /* Start at the bottom of the container */
+  width: 100px; /* Set the size of the emoji */
+  animation: floatUp 4s ease-in-out infinite;
+  /* You can add multiple emojis with varying animation delays to create a continuous effect */
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translateY(-40vh) scale(0.75) rotate(360deg); /* Move up and rotate */
+    opacity: 0; /* Fade out at the top */
   }
 }

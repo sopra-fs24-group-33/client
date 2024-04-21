@@ -15,10 +15,12 @@ import Popup from "../ui/PopUp";
 
 const GameArena = () => {
   const navigate = useNavigate();
+  const lobbyPin = localStorage.getItem("pin");
   const gameId = localStorage.getItem("gameId")
   const playerId = Number(localStorage.getItem("id"))
   const [drawPhase, setDrawPhase] = useState<boolean>(true) // Set initial draw phase true
   const [game, setGame] = useState<Game>(null)
+  const [player, setPlayer] = useState<GamePlayer>(null);
   const [playerHand, setPlayerHand] = useState<number[]>([]) // Own cards
   const [cardsPlayed, setCardsPlayed] = useState<number[]>([]); // Cards played
   const [teamMates, setTeamMates] = useState<GamePlayer[]>(null)
@@ -46,10 +48,11 @@ const GameArena = () => {
       setTimeout(() => {
         // This timeout effectively ends the cooldown period.
         lastCardPlayTime.current = 0;
-      }, 1000); // Set cooldown for 1 second
+      }, 500); // Set cooldown for 1 second
 
       // get current player
-      const player = new GamePlayer(data.players.find(p => p.id === playerId));
+      const currentPlayer = new GamePlayer(data.players.find(p => p.id === playerId));
+      setPlayer(currentPlayer)
 
       // get current level from local storage
       const currLvl = parseInt(localStorage.getItem("lvl"))
@@ -62,7 +65,7 @@ const GameArena = () => {
         setPopupType('levelUp')
         setDrawPhase(true); // if new level , set draw phase true
         localStorage.setItem("lvl", data.level)// set new level to current level
-        setPlayerHand(player.cards); // update current players hand
+        setPlayerHand(currentPlayer.cards); // update current players hand
       }
       // TODO: maybe sort the game players in backend instead of sorting it always here
       const sortedAndFilteredPlayers = data.players
@@ -126,7 +129,12 @@ const GameArena = () => {
     navigate("/lobby")
   }
 
-  const handleLeaveGame = () => {
+  const handleLeaveGame = async () => {
+    const requestBody = JSON.stringify(player)
+    console.log("player in game.tsx:", requestBody)
+    const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
+    localStorage.removeItem("pin")
+    localStorage.removeItem("adminId")
     navigate("/overview")
   }
 
@@ -140,7 +148,7 @@ const GameArena = () => {
     }
     setTimeout(() => {
       setMoveStatus('');
-    }, 1000); // Reset after 1 second
+    }, 500); // Reset after 1 second
   }
 
   const handleDrawCards = () => {
@@ -150,7 +158,7 @@ const GameArena = () => {
 
   const handleCardClick = async (cardValue: number) => {
     const now = new Date().getTime();
-    if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 1000) {
+    if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
       console.log("Card clicked with value:", cardValue);
       const response = await api.put(`/move/${gameId}`, cardValue)
       ws.send(gameId)
