@@ -10,6 +10,7 @@ import GamePlayer from "models/GamePlayer";
 import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
+import Popup from "../ui/PopUp";
 
 
 const GameArena = () => {
@@ -23,8 +24,9 @@ const GameArena = () => {
   const [teamMates, setTeamMates] = useState<GamePlayer[]>(null)
   const [ws, setWs] = useState(null);
   const [moveStatus, setMoveStatus] = useState('');
-  const [successfulMove, setSuccessfulMove] = useState(false);
+  const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
   const lastCardPlayTime = useRef(0);
+
 
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:8080/ws/game?game=${gameId}`);
@@ -57,6 +59,7 @@ const GameArena = () => {
       handleMove(data.successfulMove);
 
       if (data.level > currLvl) {
+        setPopupType('levelUp')
         setDrawPhase(true); // if new level , set draw phase true
         localStorage.setItem("lvl", data.level)// set new level to current level
         setPlayerHand(player.cards); // update current players hand
@@ -115,12 +118,25 @@ const GameArena = () => {
     };
   }, []);
 
+  const closePopup = () => {
+    setPopupType(null);
+  };
+
+  const handleNewGame = () => {
+    navigate("/lobby")
+  }
+
+  const handleLeaveGame = () => {
+    navigate("/overview")
+  }
+
   const handleMove = (successfulMove : number) => {
 
     if (successfulMove === 1) {
       setMoveStatus('blink-success');
     } else if (successfulMove === 2) {
       setMoveStatus('blink-failure');
+      setPopupType('lose')
     }
     setTimeout(() => {
       setMoveStatus('');
@@ -182,6 +198,15 @@ const GameArena = () => {
         </div>
 
         <div className="game-arena-container">
+          {popupType && (
+            <Popup
+              type={popupType}
+              isVisible={!!popupType}
+              onClose={closePopup}
+              onNewGame={handleNewGame}
+              onLeaveGame={handleLeaveGame}
+            />
+          )}
           <div className="game-arena-container table-border">
             <div className={tableClasses}>
               {mainContent}
