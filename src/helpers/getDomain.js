@@ -12,3 +12,15 @@ export const getDomain = () => {
 
   return isProduction() ? prodUrl : devUrl
 }
+
+export const getParsedDomain = () => {
+  const prodUrl = "https://sopra-fs24-group-33-server.oa.r.appspot.com";
+  const devUrl = "http://localhost:8080";
+  const isProd = isProduction();
+
+  const selectedUrl = isProd ? prodUrl : devUrl;
+  const domain = new URL(selectedUrl);
+
+  return domain.hostname + (domain.port ? ':' + domain.port : '');
+};
+

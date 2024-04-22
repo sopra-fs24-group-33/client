@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api, handleError } from "helpers/api";
+import { getParsedDomain } from "helpers/getDomain";
 import { GameLobby, Player } from "../../types";
 import { Spinner } from "../ui/Spinner";
 import PlayerBox from "../ui/PlayerBox";
@@ -7,6 +8,7 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
+// @ts-ignore
 import AgoraRTC from "agora-rtc-sdk-ng";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
@@ -15,6 +17,7 @@ const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsam
 const CHANNEL = "main"
 
 const Lobby = () => {
+  const domain = getParsedDomain();
   const navigate = useNavigate();
   const lobbyPin = localStorage.getItem('pin');
   const playerId = localStorage.getItem("id");
@@ -100,7 +103,7 @@ const Lobby = () => {
   }, []);
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8080/ws/lobby?lobby=${lobbyPin}`);
+    const socket = new WebSocket(`ws://${domain}/ws/lobby?lobby=${lobbyPin}`);
 
     socket.onopen = () => {
       console.log('Connected to WebSocket');

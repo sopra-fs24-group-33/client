@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api, handleError } from "helpers/api";
+import { getParsedDomain } from "helpers/getDomain";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import {useNavigate} from "react-router-dom";
@@ -14,6 +15,7 @@ import Popup from "../ui/PopUp";
 
 
 const GameArena = () => {
+  const domain = getParsedDomain();
   const navigate = useNavigate();
   const lobbyPin = localStorage.getItem("pin");
   const gameId = localStorage.getItem("gameId")
@@ -31,7 +33,7 @@ const GameArena = () => {
 
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8080/ws/game?game=${gameId}`);
+    const socket = new WebSocket(`ws://${domain}/ws/game?game=${gameId}`);
 
     socket.onopen = () => {
       console.log("Connected to Game WebSocket")
@@ -46,7 +48,7 @@ const GameArena = () => {
       const now = new Date().getTime();
       lastCardPlayTime.current = now;
       setTimeout(() => {
-        // This timeout effectively ends the cooldown period.
+        // This timeout effectively ends the cooldown period
         lastCardPlayTime.current = 0;
       }, 500); // Set cooldown for 1 second
 
