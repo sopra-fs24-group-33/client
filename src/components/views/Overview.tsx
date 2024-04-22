@@ -187,7 +187,7 @@ const Overview = () => {
 
         <div className="overview rules-logout-button-wrapper">
           <Button onClick={() => logout()}>Logout</Button>
-          <Button className="outlined square">Rules</Button>
+          <Button className="outlined square" onClick={() => navigate("/rules")}>Rules</Button>
         </div>
       </div>
     );
