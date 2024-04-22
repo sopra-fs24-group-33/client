@@ -7,10 +7,15 @@
   font-family: 'HelveticaNeueLTProBdExO';
   src:  url('../assets/fonts/helvetica-neue-lt-pro-2-cufonfonts/HelveticaNeueLTProBdExO.otf') format('opentype');
 }
-//for buttons and subheading
+//for buttons and subheading (same as heading but not in italics
 @font-face {
   font-family: 'HelveticaNeueLTProBdEx';
   src:  url('../assets/fonts/helvetica-neue-lt-pro-2-cufonfonts/HelveticaNeueLTProBdEx.otf') format('opentype');
+}
+//for light headings
+@font-face {
+  font-family: 'HelveticaNeueLTProEx';
+  src:  url('../assets/fonts/helvetica-neue-lt-pro-2-cufonfonts/HelveticaNeueLTProEx.otf') format('opentype');
 }
 //for text
 @font-face {

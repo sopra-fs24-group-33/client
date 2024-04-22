@@ -6,7 +6,7 @@ import Home from "../../views/Home";
 import Register from "../../views/Register";
 import Overview from "../../views/Overview";
 import Lobby from "../../views/Lobby";
-import GamePin from "../../views/GamePin";
+import GamePin from "../../views/Join";
 import GameDemoFromBackend from "../../views/GameDemoFromBackend";
 import Design from "../../views/design";
 import GameArena from "../../views/GameArena";

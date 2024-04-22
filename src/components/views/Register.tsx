@@ -8,6 +8,8 @@ import "styles/views/Login.scss";
 import PropTypes from "prop-types";
 // @ts-ignore
 import Background from "../../assets/AltBackground.svg";
+// @ts-ignore
+import Logo from "../../assets/Logo.svg";
 
 const FormField = (props) => {
   return (
@@ -85,9 +87,12 @@ const Register = () => {
       <BaseContainer>
         <div className="login container">
           <div className="login form">
-            <h2>
-              Register
-            </h2>
+            <div className="login header">
+              <h2>
+                Register
+              </h2>
+              <img src={Logo} alt="" style={{width: "65px", height:"65px"}} />
+            </div>
             <FormField
               label="Username"
               value={username}

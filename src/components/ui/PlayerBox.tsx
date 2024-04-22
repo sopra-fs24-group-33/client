@@ -26,7 +26,7 @@ const PlayerBox = ({ username, shameTokens, you }) => {
 PlayerBox.propTypes = {
   username: PropTypes.string,
   shameTokens: PropTypes.number,
-  you: PropTypes.bool,
+  you: PropTypes.boolean,
 };
 
 export default PlayerBox;

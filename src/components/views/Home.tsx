@@ -44,9 +44,8 @@ const Home = () => {
             }}>
               Welcome to
             </h3>
-            <h1>
-              DE GAME
-            </h1>
+            <h1>DE GAME</h1>
+
             <h3 style={{
               textAlign: "right",
               width: "100%",
@@ -59,8 +58,7 @@ const Home = () => {
         </div>
         <div className="home button-container">
           <Button className="large outlined"
-                  width="100%"
-                  onClick={() => navigate('/register')}>
+                  width="100%" onClick={() => navigate('/register')}>
             Register
           </Button>
           <Button className="large"

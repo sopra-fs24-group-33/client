@@ -22,7 +22,7 @@ import "../../styles/_theme.scss";
 const Overview = () => {
 
   const navigate = useNavigate();
-  const id = localStorage.getItem("id");
+
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
   const [curPlayer, setCurPlayer] = useState<Player>(null);
@@ -31,6 +31,7 @@ const Overview = () => {
   const [isScrollable, setIsScrollable] = useState(false);
 
   const logout = async () => {
+    const id = localStorage.getItem("id");
     localStorage.removeItem("id");
     localStorage.removeItem("token");
     await api.delete(`/players/${id}`)
@@ -50,7 +51,7 @@ const Overview = () => {
       const lobby = new Lobby(response.data)
 
 
-      localStorage.setItem("adminId", curPlayer.id)
+      localStorage.setItem("leader", curPlayer.token)
       localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");
@@ -235,7 +236,7 @@ const Overview = () => {
 
           <div className="overview sub-container">
             <div className="overview header">
-              <h2>Online</h2>
+                <h2>Online</h2>
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />

@@ -30,6 +30,11 @@
     flex-direction: column;
     justify-content: center;
   }
+  &.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
   &.input {
     height: 50px;
     color: $textColor;
@@ -59,10 +64,6 @@
     justify-content: center;
     margin-top: 2em;
     gap: 1em;
-  }
-  & h2 {
-    font-size: 30px;
-    margin: 0.1em 0;
   }
   &.pin-form {
     display: flex;
