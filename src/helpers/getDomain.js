@@ -13,14 +13,16 @@ export const getDomain = () => {
   return isProduction() ? prodUrl : devUrl
 }
 
-export const getParsedDomain = () => {
+export const getWSPreFix = () => {
   const prodUrl = "https://sopra-fs24-group-33-server.oa.r.appspot.com";
   const devUrl = "http://localhost:8080";
   const isProd = isProduction();
 
-  const selectedUrl = isProd ? prodUrl : devUrl;
-  const domain = new URL(selectedUrl);
+  const url = isProd ? prodUrl : devUrl;
+  const parsedUrl = new URL(url);
 
-  return domain.hostname + (domain.port ? ':' + domain.port : '');
+  // Use wss:// if the original URL is https, otherwise use ws://
+  const protocol = parsedUrl.protocol === 'https:' ? 'wss://' : 'ws://';
+  return `${protocol}${parsedUrl.hostname}${parsedUrl.port ? ':' + parsedUrl.port : ''}/ws`;
 };
 

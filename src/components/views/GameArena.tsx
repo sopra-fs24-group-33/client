@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { getParsedDomain } from "helpers/getDomain";
+import { getWSPreFix } from "helpers/getDomain";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import {useNavigate} from "react-router-dom";
@@ -15,7 +15,7 @@ import Popup from "../ui/PopUp";
 
 
 const GameArena = () => {
-  const domain = getParsedDomain();
+  const prefix = getWSPreFix();
   const navigate = useNavigate();
   const lobbyPin = localStorage.getItem("pin");
   const gameId = localStorage.getItem("gameId")
@@ -33,7 +33,7 @@ const GameArena = () => {
 
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://${domain}/ws/game?game=${gameId}`);
+    const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
 
     socket.onopen = () => {
       console.log("Connected to Game WebSocket")
