@@ -7,9 +7,10 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import Header from "./Header";
 import { Spinner } from "../ui/Spinner";
-import PlayerBox from "../ui/PlayerBox";
+import OldPlayerBox from "../ui/old-PlayerBox";
 import { Player } from "../../types";
 import "styles/views/Lobby.scss";
+import PlayerBox from "../ui/PlayerBox";
 
 
 const Lobby = () => {
@@ -50,33 +51,18 @@ const Lobby = () => {
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
-      const lobbyPin = localStorage.getItem("pin")
+      const pin = localStorage.getItem("pin")
       try {
-        console.log("lobby id:", lobbyPin)
-        const requestBody = JSON.stringify( lobbyPin )
-        const response = await api.get(`/gamelobbies/${lobbyPin}`, requestBody);
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const requestBody = JSON.stringify(pin)
+        const response = await api.get(`/gamelobbies/${pin}`, requestBody);
+        console.log("This is the response data: ",  response.data)
 
         setLobby(response.data);
-        // Get the returned users and update the state.
         setPlayers(response.data.players);
 
 
-        // Get current user based on token
 
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("request to:", response.request.responseURL);
-        console.log("status code:", response.status);
-        console.log("status text:", response.statusText);
-        console.log("requested data:", response.data);
 
-        // See here to get more data.
-        console.log(response);
       } catch (error) {
         console.error(
           `Something went wrong while fetching the users: \n${handleError(
@@ -94,7 +80,7 @@ const Lobby = () => {
   }, []);
 
   let content = <Spinner />
-  let displayPin = null
+  let  displayPin = null
 
   if (players) {
   content = (
@@ -105,7 +91,7 @@ const Lobby = () => {
             <PlayerBox
               username={player.name}
               shameTokens={player.shame_tokens}
-              boxType={localStorage.getItem("id") === player.id.toString() ? "primary" : "secondary"}
+              you={localStorage.getItem("id") === player.id.toString()}
             />
           </li>
         ))}
@@ -117,6 +103,7 @@ const Lobby = () => {
     const stringPin = lobby.pin.toString();
     displayPin = stringPin.substring(0, 3) + " " + stringPin.substr(3);
   }
+  /*
   return (
     <div>
       <BaseContainer className="lobby container">
@@ -138,5 +125,29 @@ const Lobby = () => {
       </div>
     </div>
   );
+
+   */
+
+  return (
+    <div className="lobby section">
+      <BaseContainer className="lobby container">
+        <h2 className="lobby header">Game Pin: {displayPin}</h2>
+        <hr className="lobby hr-thin" />
+        <div className="lobby player-container">
+          {content}
+        </div>
+        <div className="lobby button-container">
+          <Button className="outlined" width="100%" onClick={() => leaveLobby()}>
+            Leave Lobby
+          </Button>
+          <Button className="" width="100%" >
+            Start Game
+          </Button>
+        </div>
+      </BaseContainer>
+
+
+    </div>
+  )
 }
 export default Lobby;

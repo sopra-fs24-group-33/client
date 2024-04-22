@@ -1,49 +1,16 @@
 @import "../theme";
 
 .player-box {
-  &.primary {
+  &.box {
     position: relative;
     margin-bottom: 1.5em;
-    width: 30em;
-    height: 4em;
+    width: 320px;
+    height: 50px;
     padding: 15px;
     border-radius: $borderRadius;
     display: flex;
     align-items: center;
-    border: 2px solid white;
-    background: linear-gradient(to right, #7F76FF, #9A6BFF, #FF3585);
-  }
-
-  &.secondary {
-    position: relative;
-    margin-bottom: 1.5em;
-    width: 30em;
-    height: 4em;
-    padding: 15px;
-    border-radius: $borderRadius;
-    display: flex;
-    align-items: center;
-    background: linear-gradient(to right, #AAA4FF, #B795FF, #FF81B3);
-  }
-
-  &.empty {
-    cursor: pointer;
-    position: relative;
-    margin-bottom: 1.5em;
-    width: 30em;
-    height: 4em;
-    padding: 15px;
-    border-radius: $borderRadius;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-    background: transparent;
-  }
-
-  &.add-symbol {
-    color: white;
-    font-size: 25px;
+    background: linear-gradient(to right, $lila, $pink 95%);
   }
 
   &.username {
@@ -51,9 +18,6 @@
     text-overflow: ellipsis; // Adds an ellipsis if the text overflows
     white-space: nowrap; // Keeps the text on a single line
     margin-left: 10px;
-    font-weight: 400;
-    color: white;
-    font-size: 25px;
   }
 }
 
@@ -61,11 +25,10 @@
   display: flex;
   align-items: center;
   margin-left: auto;
-  margin-right: 10px;
 }
 
 .shame-token-wrapper {
-  gap: 5px;
+  gap: 10px;
   display: flex;
   align-items: center; /* Align items vertically in the center */
 }
@@ -76,28 +39,9 @@
 }
 
 .shame-token-count {
-  margin-left: 0.35em;
-  font-weight: 400;
   color: white;
-  font-size: 20px;
 }
 
-.player-slot {
-  position: relative;
-  margin-bottom: 1.5em;
-  width: 30em;
-  height: 4em;
-  padding: 15px;
-  border-radius: $borderRadius;
-  display: flex;
-  align-items: center;
-  background: white;
-
-  .add-symbol {
-    color: black;
-    font-size: 40px;
-  }
-}
 
 
 

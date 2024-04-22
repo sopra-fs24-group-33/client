@@ -6,7 +6,7 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import Header from "./Header";
 import { Spinner } from "../ui/Spinner";
-import PlayerBox from "../ui/PlayerBox";
+import OldPlayerBox from "../ui/old-PlayerBox";
 import PropTypes from "prop-types";
 import { Player } from "../../types";
 
@@ -59,9 +59,9 @@ FormFieldPin.propTypes = {
   onChange: PropTypes.func,
 };
 
-const GamePin = () => {
+const Join = () => {
   const navigate = useNavigate();
-  const [gamePin, setGamePin] = useState<number>(null);
+  const [pin, setPin] = useState<number>(null);
   const userId = localStorage.getItem("id");
 
   const [players, setPlayers] = useState<Player[]>(null);
@@ -70,9 +70,9 @@ const GamePin = () => {
     const player = players.find(user => user.token === localStorage.getItem("token"));
 
     console.log("Player:", player)
-    console.log("Game Pin:", typeof gamePin)
+    console.log("Game Pin:", typeof pin)
 
-    const withoutSpacing = gamePin.replace(/\s/g, '')
+    const withoutSpacing = pin.replace(/\s/g, '')
     const finalPin = parseInt(withoutSpacing, 10);
 
     console.log("Game Pin Final:",  finalPin)
@@ -96,11 +96,6 @@ const GamePin = () => {
     async function fetchData() {
       try {
         const response = await api.get("/players");
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
         setPlayers(response.data);
@@ -130,26 +125,28 @@ const GamePin = () => {
     fetchData();
   }, []);
 
+
   return (
     <BaseContainer>
       <div className="login container">
-        <div className="login pin-form">
+        <div className="login form">
           <h2>Enter Game Pin</h2>
           <FormFieldPin
-            value={gamePin}
-            onChange={(pin: number) => setGamePin(pin)}
+            value={pin}
+            onChange={(pin: number) => setPin(pin)}
           />
-          <div className="overview button-container">
-            <Button className="primary-button" width={100} onClick={() => doJoin()}>
-              Continue
-            </Button>
-            <Button className="primary-button" width={100} onClick={() => navigate("/overview")}>
+          <div className="login button-container">
+            <Button className="outlined" width="100%" onClick={() => navigate("/overview")}>
               Cancel
+            </Button>
+            <Button width="100%" onClick={() => doJoin()}>
+              Continue
             </Button>
           </div>
         </div>
       </div>
     </BaseContainer>
   )
+
 }
-export default GamePin;
+export default Join;
