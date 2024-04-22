@@ -58,5 +58,32 @@
     margin-top: 2em;
     gap: 1em;
   }
+  .video-streams {
+    display: flex;          // Use flexbox to align children horizontally
+    justify-content: center; // Center-align the video containers
+    align-items: center;    // Vertically align the video containers in the middle
+    overflow-x: auto;       // Allows horizontal scrolling if many videos are present
+    padding: 20px;          // Add some padding around the containers
+    margin-top: 20px;       // Space above the video stream container
 
+    .video-container {
+      max-height: 100%;
+      border: 2px solid black;
+      background-color: #203A49;
+      border-radius: 50%; /* Make the container circular */
+      overflow: hidden; /* Ensure content fits within the circular shape */
+      /* Adjust width and height to maintain aspect ratio */
+      width: 300px; /* Example width */
+      height: 300px; /* Make height equal to width for a perfect circle */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .video-player {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;      // Cover the area without losing aspect ratio
+      }
+    }
+  }
 }
