@@ -21,7 +21,7 @@ const Lobby = () => {
   const adminId = localStorage.getItem("adminId")
   const [ws, setWs] = useState(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
-  const [players, setPlayers] = useState<Player[]>(null);
+  const [players, setPlayers] = useState<Player[]>([]);
   const localTracks = useRef([]);
   const remoteUsers = useRef({});
 
