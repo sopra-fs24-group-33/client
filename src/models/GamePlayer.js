@@ -1,3 +1,5 @@
+import User from "./User";
+
 class GamePlayer {
   constructor(data = {}) {
     this.id = null;
@@ -9,3 +11,5 @@ class GamePlayer {
     Object.assign(this, data);
   }
 }
+
+export default GamePlayer;

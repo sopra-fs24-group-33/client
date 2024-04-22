@@ -8,14 +8,25 @@
  */
 
 .game {
+
   &.container {
-    background: $background;
-    padding: 1.5em;
-    border-radius: $borderRadius;
+    overflow: hidden; /* Allow content to overflow outside the padding */
+    height: 100vh;
+    width: 100vw;
+    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: $dropShadow;
+  }
+  &.arena {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+    height: 500px;
+    border-radius: 5em;
+    border: 10px solid white;
   }
   &.user-list {
     list-style: none;
@@ -29,6 +40,118 @@
   }
   & p,h2 {
     margin: 0.5em 0;
+  }
+}
+
+.teammates-container {
+  display: flex;
+  justify-content: space-around; // Align children to the bottom
+  align-items: flex-start; // Center children horizontally (optional)
+  width: 100vw;
+  height: 45vh;
+
+  .teammate-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  // Center-aligns the webcam and matehand vertically
+    width: 24%;  // Assuming 4 teammates, each gets 24% of the width, adjust as needed
+    margin: 0 0.5%;  // Optional margin for spacing between containers
+  }
+
+  .webcam-container {
+    width: 30vh;  // Takes full width of the teammate-container
+    height: 30vh;  // Fixed height, adjust as needed
+    background-color: grey;  // Just for visibility
+    z-index: 1;
+  }
+
+  .matehand-container {
+    width: 100%;  // Full width to match the webcam container above
+    margin-top: -5vh;
+    z-index: 2;
+  }
+}
+
+.game-arena-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 45vh;
+  background-color: transparent;//rgba(255, 0, 0, 0.42);
+
+  &.table {
+    width: 80vw;
+    height: 57vh;
+    border-radius: 1vw;
+    box-shadow:
+            0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), /* Outer glow */
+            inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5); /* Inner glow */
+
+    @keyframes blink-success {
+      0%, 100% {
+        box-shadow: 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 1vw 1.25vh $pink, inset 0 0 1vw 1.25vh $pink;
+      }
+    }
+    &.blink-success {
+      animation: blink-success 0.5s ease-out;
+    }
+
+    @keyframes blink-failure {
+      0%, 100% {
+        box-shadow: 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 1vw 1.25vh $blue, inset 0 0 1vw 1.25vh $blue;
+      }
+    }
+    &.blink-failure {
+      animation: blink-failure 0.5s ease-out;
+    }
+  }
+
+
+  &.table-border {
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    width: 85vw;
+    height: 65vh;
+    box-shadow:
+            0 0 1vw 0.5vh rgba(255, 255, 255, 0.15), /* Outer glow */
+            inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.15); /* Inner glow */
+    border-radius: 1vw;
+  }
+}
+
+.pov-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100vw;
+  height: 25vh;
+  background-color: transparent;//rgba(0, 0, 255, 0.46);
+
+  &.hand {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100vw;
+    height: 20vh;
+    background-color: transparent;//rgba(255, 20, 147, 0.33);
+  }
+  &.my-webcam {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 225px;
+    height: 225px;
+    background-color: grey;
   }
 }
 
@@ -50,10 +173,30 @@
     font-weight: 500;
     color: $accent;
   }
-  &.id {
-    margin-left: auto;
-    margin-right: 10px;
-    font-family: $fontMono;
-    font-weight: 300;
+}
+
+.confetti-container {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Adjust based on your needs */
+  overflow: visible; /* Keeps overflowing parts hidden */
+}
+
+.confetti-emoji {
+  position: absolute;
+  bottom: 0; /* Start at the bottom of the container */
+  width: 100px; /* Set the size of the emoji */
+  animation: floatUp 4s ease-in-out infinite;
+  /* You can add multiple emojis with varying animation delays to create a continuous effect */
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  40%, 100% {
+    transform: translateY(-40vh) scale(0.75) rotate(360deg); /* Move up and rotate */
+    opacity: 0; /* Fade out at the top */
   }
 }

@@ -1,16 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api, handleError } from "helpers/api";
-import User from "models/User";
-import GameLobby from "models/Lobby";
-import {useNavigate} from "react-router-dom";
+import { GameLobby, Player } from "../../types";
+import { Spinner } from "../ui/Spinner";
+import PlayerBox from "../ui/PlayerBox";
 import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
-import Header from "./Header";
-import { Spinner } from "../ui/Spinner";
-import OldPlayerBox from "../ui/old-PlayerBox";
-import { Player } from "../../types";
+import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
-import PlayerBox from "../ui/PlayerBox";
 import AgoraRTC from "agora-rtc-sdk-ng";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
@@ -18,11 +14,14 @@ const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
 const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsamGekmyWYpJqamppkpiWlJRqZGmaYmZqZJKWoqGW1hDIyOCXaMXCyACBID4LQ25iZh4DAwBEzRs+"
 const CHANNEL = "main"
 
-
 const Lobby = () => {
   const navigate = useNavigate();
-  const [players, setPlayers] = useState([]);
-  const [lobby, setLobby] = useState(null);
+  const lobbyPin = localStorage.getItem('pin');
+  const playerId = localStorage.getItem("id");
+  const adminId = localStorage.getItem("adminId")
+  const [ws, setWs] = useState(null);
+  const [lobby, setLobby] = useState<GameLobby>(null);
+  const [players, setPlayers] = useState<Player[]>(null);
   const localTracks = useRef([]);
   const remoteUsers = useRef({});
 
@@ -101,45 +100,64 @@ const Lobby = () => {
   }, []);
 
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    async function fetchData() {
-      const pin = localStorage.getItem("pin")
-      try {
-        const requestBody = JSON.stringify(pin)
-        const response = await api.get(`/gamelobbies/${pin}`, requestBody);
-        console.log("This is the response data: ",  response.data)
-        setLobby(response.data);
-        setPlayers(response.data.players);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
+    const socket = new WebSocket(`ws://localhost:8080/ws/lobby?lobby=${lobbyPin}`);
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket');
+    };
+
+    socket.onmessage = (event) => {
+      const newLobby = JSON.parse(event.data);
+      setLobby(newLobby);
+      setPlayers(newLobby.players)
+      if (newLobby.gameid) {
+        console.log("Game started!");
+        localStorage.setItem("gameId", newLobby.gameid);
+        navigate("/game")
       }
+      console.log("Received data:", newLobby);
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    setWs(socket);
+
+    function handleBeforeUnload(event) {
+      leaveLobby(); // Asynchronously try to notify the server
+      // Optionally add a custom message to the event
+      // event.returnValue = "Are you sure you want to leave?";
     }
 
-    fetchData();
+    // Add the event listener for closing window/tab
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Clean up function for useEffect
+    return () => {
+      socket.close();
+      // Remove the event listener when the component unmounts
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   const leaveLobby = async () => {
-    const player = players.find(player => player.id.toString() === localStorage.getItem("id"))
-    const lobbyPin = localStorage.getItem("pin")
-    console.log("lobby Pin:",lobbyPin)
-    console.log(player)
-    navigate("/overview")
     try {
-      const requestBody = JSON.stringify( player )
+      const player = lobby.players.find(p => p.id.toString() === playerId);
+      const requestBody = JSON.stringify(player)
+      console.log("player in lobby.tsx:", requestBody)
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
       localTracks.current.forEach(track => {
         track.stop();
         track.close();
       });
       await client.leave();
+      localStorage.removeItem("pin")
+      localStorage.removeItem("adminId")
       navigate("/overview");
     } catch (error) {
       console.error("Error leaving the lobby:", handleError(error));
@@ -147,6 +165,15 @@ const Lobby = () => {
 
 
     }
+  };
+
+  const startGame = async () => {
+    const response = await api.post(`/startgame/${lobbyPin}`);
+    const gamestatus = response.data;
+    localStorage.setItem("gameId", gamestatus.id);
+    console.log(gamestatus)
+
+    navigate("/game")
   };
 
   return (
@@ -176,7 +203,7 @@ const Lobby = () => {
           <Button className="outlined" width="100%" onClick={leaveLobby}>
             Leave Lobby
           </Button>
-          <Button className="" width="100%">
+          <Button className="" width="100%" onClick={startGame}>
             Start Game
           </Button>
         </div>

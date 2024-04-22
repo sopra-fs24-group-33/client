@@ -23,7 +23,7 @@ export type GameLobby = {
 };
 
 export type Game = {
-  id: number;
+  gameid: number;
   lobbyid: number;
   cardStack: number[];
   players: GamePlayer[];

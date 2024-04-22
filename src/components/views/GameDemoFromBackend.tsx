@@ -25,6 +25,7 @@ const GameDemoFromBackend = () => {
   };
 
   const doMove = async () => {
+    console.log("Integer Value:", integerValue);
     const id = localStorage.getItem("gameid");
     const current = await api.get(`/game/${id}`);
     console.log(current.data)

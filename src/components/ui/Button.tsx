@@ -13,7 +13,10 @@ export const Button = props => (
 
 
 Button.propTypes = {
-  width: PropTypes.number,
+  width: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]), // Accept both number and string
   style: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.node,

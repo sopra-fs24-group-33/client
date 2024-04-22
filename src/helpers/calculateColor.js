@@ -7,10 +7,10 @@ function interpolateColor(color1, color2, factor) {
   return result;
 }
 
-function colorForValue(value) {
+export function colorForValue(value) {
   // Convert hex colors to RGB
-  const startColor = [252, 58, 135]; // #FC3A87
-  const endColor = [66, 53, 251]; // #4235FB
+  const startColor = [66, 53, 251]; // #4235FB
+  const endColor = [252, 58, 135]; // #FC3A87
 
   // Normalize the value to a range of 0 to 1
   const normalizedValue = (value - 1) / (98); // Adjusted for 1-99 range
@@ -25,6 +25,3 @@ function colorForValue(value) {
 // Example usage:
 const cardValue = 50; // Example card value
 const cardColor = colorForValue(cardValue); // Gets the interpolated color based on value
-
-// Use `cardColor` as your color value in styles
-console.log(cardColor); // Outputs the color for the card value
