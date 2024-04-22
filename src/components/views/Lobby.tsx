@@ -13,6 +13,7 @@ import "styles/views/Lobby.scss";
 import PlayerBox from "../ui/PlayerBox";
 
 
+
 const Lobby = () => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>(null);
