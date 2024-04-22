@@ -39,10 +39,15 @@ const Overview = () => {
     navigate("/home");
   };
 
-  window.addEventListener('beforeunload', function(event) {
-    logout();
+  window.addEventListener('unload', function(event) {
     event.preventDefault();
+    console.log(this.localStorage);
+    logout();
+    console.log("hallo");
+    console.log(event);
   });
+
+
 
   const createLobby = async () => {
     // Get current player based on token
@@ -284,10 +289,6 @@ const Overview = () => {
 
         </div>
       </div>
-      <script type="text/javascript">
-        window.addEventListener(`beforeunload`, function (event) {
-          event.preventDefault()});
-      </script> 
     </div>
 
   );
