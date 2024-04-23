@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api, handleError } from "helpers/api";
+import { getWSPreFix } from "helpers/getDomain";
 import { GameLobby, Player } from "../../types";
 import { Spinner } from "../ui/Spinner";
 import PlayerBox from "../ui/PlayerBox";
@@ -7,106 +8,48 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
+import { agoraService } from "helpers/agora";
+// @ts-ignore
 import AgoraRTC from "agora-rtc-sdk-ng";
 
-const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsamGekmyWYpJqamppkpiWlJRqZGmaYmZqZJKWoqGW1hDIyOCXaMXCyACBID4LQ25iZh4DAwBEzRs+"
-const CHANNEL = "main"
+// const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+// const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
+// const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsamGekmyWYpJqamppkpiWlJRqZGmaYmZqZJKWoqGW1hDIyOCXaMXCyACBID4LQ25iZh4DAwBEzRs+"
+// const CHANNEL = "main"
 
 const Lobby = () => {
+  const prefix = getWSPreFix();
   const navigate = useNavigate();
   const lobbyPin = localStorage.getItem('pin');
   const playerId = localStorage.getItem("id");
   const adminId = localStorage.getItem("adminId")
   const [ws, setWs] = useState(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
-  const [players, setPlayers] = useState<Player[]>(null);
-  const localTracks = useRef([]);
-  const remoteUsers = useRef({});
+  const [players, setPlayers] = useState<Player[]>([]);
+  const userId = localStorage.getItem("id");
+
+
+  // agora
+  // const localTracks = useRef([]);
+  // const remoteUsers = useRef({});
 
   useEffect(() => {
-    const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    agoraService.joinAndSetupStreams(userId);
 
-    const joinAndSetupStreams = async () => {
-      try {
-        const uid = await client.join(APP_ID, CHANNEL, TOKEN);
-        const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
-        localTracks.current = tracks;
-
-        // Set up the local video container
-        const localVideoContainer = document.createElement("div");
-        localVideoContainer.id = `player-${uid}`;
-        localVideoContainer.className = "video-container";
-        document.querySelector(".video-streams").appendChild(localVideoContainer);
-        tracks[1].play(`player-${uid}`);
-
-        // Publish the local tracks to the channel
-        await client.publish(tracks);
-
-        client.on("user-published", async (user, mediaType) => {
-          remoteUsers.current[user.uid] = user;
-          console.log(`User published: ${user.uid}, MediaType: ${mediaType}`);
-          await client.subscribe(user, mediaType);
-          console.log(`Subscribed to: ${user.uid}`);
-
-          // Check media type and handle accordingly
-          if (mediaType === "video") {
-            const remoteVideoContainer = document.createElement("div");
-            remoteVideoContainer.id = `player-${user.uid}`;
-            remoteVideoContainer.className = "video-container";
-            document.querySelector(".video-streams").appendChild(remoteVideoContainer);
-            user.videoTrack.play(`player-${user.uid}`);
-          }
-          if (mediaType === "audio") {
-            user.audioTrack.play();
-          }
-        });
-
-        client.on("user-unpublished", user => {
-          // Handle the removal of video container when a user unpublishes their video
-          const videoContainer = document.getElementById(`player-${user.uid}`);
-          if (videoContainer) {
-            videoContainer.remove();
-          }
-          delete remoteUsers.current[user.uid];
-        });
-
-        client.on("user-left", user => {
-          // Handle user leaving and remove their video container
-          const videoContainer = document.getElementById(`player-${user.uid}`);
-          if (videoContainer) {
-            videoContainer.remove();
-          }
-          delete remoteUsers.current[user.uid];
-        });
-
-      } catch (error) {
-        console.error("Streaming Error:", error);
-      }
-    };
-
-
-    joinAndSetupStreams();
-
-    // this makes sure that the tracks are cleaned up when the component is unmounted
     return () => {
-      localTracks.current.forEach(track => {
-        track.stop();
-        track.close();
-      });
-      client.leave();
+      agoraService.cleanup();
     };
   }, []);
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8080/ws/lobby?lobby=${lobbyPin}`);
+    const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
 
     socket.onopen = () => {
       console.log('Connected to WebSocket');
     };
 
     socket.onmessage = (event) => {
+      console.log("received msg:", event.data)
       const newLobby = JSON.parse(event.data);
       setLobby(newLobby);
       setPlayers(newLobby.players)
@@ -136,8 +79,6 @@ const Lobby = () => {
 
     // Add the event listener for closing window/tab
     window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Clean up function for useEffect
     return () => {
       socket.close();
       // Remove the event listener when the component unmounts
@@ -151,11 +92,6 @@ const Lobby = () => {
       const requestBody = JSON.stringify(player)
       console.log("player in lobby.tsx:", requestBody)
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-      localTracks.current.forEach(track => {
-        track.stop();
-        track.close();
-      });
-      await client.leave();
       localStorage.removeItem("pin")
       localStorage.removeItem("adminId")
       navigate("/overview");
@@ -203,9 +139,11 @@ const Lobby = () => {
           <Button className="outlined" width="100%" onClick={leaveLobby}>
             Leave Lobby
           </Button>
-          <Button className="" width="100%" onClick={startGame}>
-            Start Game
-          </Button>
+          {adminId === playerId && (
+            <Button className="" width="100%" onClick={() => startGame()}>
+              Start Game
+            </Button>
+          )}
         </div>
       </BaseContainer>
     </div>
