@@ -51,7 +51,7 @@ const Overview = () => {
       const lobby = new Lobby(response.data)
 
 
-      localStorage.setItem("leader", curPlayer.token)
+      localStorage.setItem("adminId", curPlayer.id)
       localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");

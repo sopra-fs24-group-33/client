@@ -110,6 +110,7 @@ const Lobby = () => {
     };
 
     socket.onmessage = (event) => {
+      console.log("received msg:", event.data)
       const newLobby = JSON.parse(event.data);
       setLobby(newLobby);
       setPlayers(newLobby.players)
@@ -206,9 +207,11 @@ const Lobby = () => {
           <Button className="outlined" width="100%" onClick={leaveLobby}>
             Leave Lobby
           </Button>
-          <Button className="" width="100%" onClick={startGame}>
-            Start Game
-          </Button>
+          {adminId === playerId && (
+            <Button className="" width="100%" onClick={() => startGame()}>
+              Start Game
+            </Button>
+          )}
         </div>
       </BaseContainer>
     </div>
