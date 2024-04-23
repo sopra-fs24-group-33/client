@@ -70,11 +70,10 @@ const GameArena = () => {
         setPlayerHand(currentPlayer.cards); // update current players hand
       }
       // TODO: maybe sort the game players in backend instead of sorting it always here
-      const sortedAndFilteredPlayers = data.players
+      const FilteredPlayers = data.players
         .filter(p => p.id !== playerId)
-        .sort((a,b) => a.name.localeCompare(b.name));
 
-      setTeamMates(sortedAndFilteredPlayers)
+      setTeamMates(FilteredPlayers)
     }
 
     socket.onclose = () => {
