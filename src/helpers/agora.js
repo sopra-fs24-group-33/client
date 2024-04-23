@@ -2,25 +2,31 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 
 // Configuration constants
 const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsamGekmyWYpJqamppkpiWlJRqZGmaYmZqZJKWoqGW1hDIyOCXaMXCyACBID4LQ25iZh4DAwBEzRs+"
+const TOKEN = "007eJxTYBB8tHHz9J2uh2vkFi0P3l8op7o9MdZGLfPtvL3ei8JOrtqjwGBmbmGSbGphnpJslmKSampqaZKYlpSUamRpmmJmamSStrBRPa0hkJFhe7UIKyMDBIL4LAy5iZl5DAwAeeYfug=="
 const CHANNEL = "main"
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
 export const agoraService = {
-  localTracks: [],
-  remoteUsers: {},
+  channelParameters: {
+    localAudioTrack: null,
+    localVideoTrack: null,
+    remoteAudioTrack: null,
+    remoteVideoTrack: null,
+    remoteUid: null,
+  },
 
   async joinAndSetupStreams(userId) {
+    this.cleanup(); // Clean existing tracks before joining
     try {
       const uid = await client.join(APP_ID, CHANNEL, TOKEN, userId);
-      const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
-      this.localTracks = tracks;
+      const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+      this.channelParameters.localAudioTrack = audioTrack;
+      this.channelParameters.localVideoTrack = videoTrack;
 
       // Setup local video container
-      this.setupVideoContainer(uid, tracks[1]);
-
-      await client.publish(tracks);
+      this.setupVideoContainer(uid, videoTrack);
+      await client.publish([audioTrack, videoTrack]);
 
       client.on("user-published", async (user, mediaType) => {
         this.handleUserPublished(user, mediaType);
@@ -48,12 +54,13 @@ export const agoraService = {
   },
 
   handleUserPublished(user, mediaType) {
-    this.remoteUsers[user.uid] = user;
     console.log(`User published: ${user.uid}, MediaType: ${mediaType}`);
     client.subscribe(user, mediaType).then(() => {
       console.log(`Subscribed to: ${user.uid}`);
+      this.channelParameters.remoteUid = user.uid;
 
       if (mediaType === "video") {
+        this.channelParameters.remoteVideoTrack = user.videoTrack;
         const remoteVideoContainer = document.createElement("div");
         remoteVideoContainer.id = `player-${user.uid}`;
         remoteVideoContainer.className = "video-container";
@@ -62,32 +69,41 @@ export const agoraService = {
       }
 
       if (mediaType === "audio") {
-        user.audioTrack.play();
+        this.channelParameters.remoteAudioTrack = user.audioTrack;
+        user.audioTrack.play(); // Note: Depending on requirements, you might not actually "play" an audio track like this.
       }
     });
   },
 
   handleUserUnpublished(user) {
-    const videoContainer = document.getElementById(`player-${user.uid}`);
-    if (videoContainer) {
-      videoContainer.remove();
+    if (this.channelParameters.remoteUid === user.uid) {
+      const videoContainer = document.getElementById(`player-${user.uid}`);
+      if (videoContainer) {
+        videoContainer.remove();
+      }
+      this.channelParameters.remoteVideoTrack = null;
+      this.channelParameters.remoteAudioTrack = null;
+      this.channelParameters.remoteUid = null;
     }
-    delete this.remoteUsers[user.uid];
   },
 
   handleUserLeft(user) {
-    const videoContainer = document.getElementById(`player-${user.uid}`);
-    if (videoContainer) {
-      videoContainer.remove();
+    if (this.channelParameters.remoteUid === user.uid) {
+      this.handleUserUnpublished(user);
     }
-    delete this.remoteUsers[user.uid];
   },
 
   cleanup() {
-    this.localTracks.forEach(track => {
-      track.stop();
-      track.close();
-    });
+    if (this.channelParameters.localAudioTrack) {
+      this.channelParameters.localAudioTrack.stop();
+      this.channelParameters.localAudioTrack.close();
+      this.channelParameters.localAudioTrack = null;
+    }
+    if (this.channelParameters.localVideoTrack) {
+      this.channelParameters.localVideoTrack.stop();
+      this.channelParameters.localVideoTrack.close();
+      this.channelParameters.localVideoTrack = null;
+    }
     client.leave();
   }
 };
