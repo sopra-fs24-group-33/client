@@ -30,6 +30,7 @@ const GameArena = () => {
   const [moveStatus, setMoveStatus] = useState('');
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
   const lastCardPlayTime = useRef(0);
+  const [reveal, setReveal] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const GameArena = () => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Game event received:", data);
+      setGame(data)
       setCardsPlayed(prev => [...prev, data.currentCard]);
 
       // COOLDOWNN
@@ -65,9 +67,6 @@ const GameArena = () => {
 
       if (data.level > currLvl) {
         setPopupType('levelUp')
-        setDrawPhase(true); // if new level , set draw phase true
-        localStorage.setItem("lvl", data.level)// set new level to current level
-        setPlayerHand(currentPlayer.cards); // update current players hand
       }
       // TODO: maybe sort the game players in backend instead of sorting it always here
       const FilteredPlayers = data.players
@@ -124,7 +123,16 @@ const GameArena = () => {
 
   const closePopup = () => {
     setPopupType(null);
+    setDrawPhase(true);
+    localStorage.setItem("lvl", game.level)// set new level to current level
+    setPlayerHand(player.cards); // update current players hand
   };
+
+  const revealCards = () => {
+    setReveal(true);
+    setPopupType(null);
+    setDrawPhase(true);
+  }
 
   const handleNewGame = () => {
     navigate("/lobby")
@@ -153,13 +161,18 @@ const GameArena = () => {
   }
 
   const handleDrawCards = () => {
+    console.log("DRAWINGGGGG")
     setDrawPhase(false)
+    setReveal(false); // Hide teammate cards
     setCardsPlayed([]) // clear cards played pile
   }
 
   const handleCardClick = async (cardValue: number) => {
     const now = new Date().getTime();
-    if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
+    if (reveal) {
+      console.log("Can't play current card. Draw again...")
+    }
+    else if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
       console.log("Card clicked with value:", cardValue);
       const response = await api.put(`/move/${gameId}`, cardValue)
       ws.send(gameId)
@@ -177,9 +190,7 @@ const GameArena = () => {
       <div className="teammate-box" key={player.id}>
         <div className="webcam-container">{player.name}</div>
         <div className="matehand-container">
-          {!drawPhase && (
-            <MateHand count={player.cards.length} />
-          )}
+            <MateHand cardValues={player.cards}  revealCards={reveal}/>
         </div>
       </div>
     ))
@@ -211,7 +222,8 @@ const GameArena = () => {
             <Popup
               type={popupType}
               isVisible={!!popupType}
-              onClose={closePopup}
+              onNext={closePopup}
+              onReveal={revealCards}
               onNewGame={handleNewGame}
               onLeaveGame={handleLeaveGame}
             />
@@ -225,7 +237,7 @@ const GameArena = () => {
 
         <div className="pov-container">
           <div className="pov-container hand">
-            {!drawPhase && (
+            {(!drawPhase || reveal) && (
               <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
             )}
           </div>
