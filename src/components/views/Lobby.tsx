@@ -91,12 +91,6 @@ const Lobby = () => {
       const requestBody = JSON.stringify(player)
       console.log("player in lobby.tsx:", requestBody)
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-      // localTracks.current.forEach(track => {
-      //   track.stop();
-      //   track.close();
-      // });
-      //todo await client.leave();
-      //agoraService.cleanup();
       localStorage.removeItem("pin")
       localStorage.removeItem("adminId")
       navigate("/overview");
