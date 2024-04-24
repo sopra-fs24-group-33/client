@@ -14,12 +14,12 @@ interface CardFrontProps {
 const CardFront: React.FC<CardFrontProps> = ({ value, onClick, className }) => {
   const valueColor = colorForValue(value);
   const handleClick = () => {
-    // @ts-ignore
+    if (className == "card-container") // only for player hand
     onClick(value);
   }
 
   return (
-    <div className={`card-container ${className}`} onClick={handleClick}>
+    <div className={className} onClick={handleClick}>
       <img src={cardFront} alt={`Card value: ${value}`} className="card-img" />
       <div className="card-value" style={{ color: valueColor }}>
         {value}

@@ -12,7 +12,7 @@ const PlayerHand: React.FC<PlayerHandProps> = ({ cardValues, onClick }) => {
     <div className="player-hand">
       {cardValues.map((value, index) => (
         // The key prop is correctly used here for React's internal use and does not need to be declared in CardFront's propTypes.
-        <CardFront key={index} value={value} onClick={onClick} />
+        <CardFront key={index} value={value} onClick={onClick} className="card-container" />
       ))}
     </div>
   );
