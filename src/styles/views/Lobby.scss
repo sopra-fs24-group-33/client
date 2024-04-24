@@ -58,6 +58,18 @@
     margin-top: 2em;
     gap: 1em;
   }
+  .player-video {
+    margin: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+
+  .video-container {
+    width: 320px;
+    height: 240px;
+    background-color: #000;
+  }
+
   .video-streams {
     display: flex;          // Use flexbox to align children horizontally
     justify-content: center; // Center-align the video containers

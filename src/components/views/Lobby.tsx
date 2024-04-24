@@ -9,14 +9,8 @@ import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
 import { agoraService } from "helpers/agora";
+import VideoStreamComponent from "helpers/VideoStreamComponent";
 // @ts-ignore
-import AgoraRTC from "agora-rtc-sdk-ng";
-
-// const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-// const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-// const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsamGekmyWYpJqamppkpiWlJRqZGmaYmZqZJKWoqGW1hDIyOCXaMXCyACBID4LQ25iZh4DAwBEzRs+"
-// const CHANNEL = "main"
-
 const Lobby = () => {
   const prefix = getWSPreFix();
   const navigate = useNavigate();
@@ -27,19 +21,51 @@ const Lobby = () => {
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const userId = localStorage.getItem("id");
+  const [teamMates, setTeamMates] = useState([]);
 
 
-  // agora
-  // const localTracks = useRef([]);
-  // const remoteUsers = useRef({});
 
   useEffect(() => {
-    agoraService.joinAndSetupStreams(userId);
+    //const userId = playerId || Math.floor(Math.random() * 10000).toString(); // Use player ID or generate random
+
+    // Functions to handle stream events
+    const handleUserPublished = (user, videoTrack) => {
+      setTeamMates(prev => [...prev, { id: user.uid, name: user.uid, videoTrack }]);
+    };
+
+    const handleUserUnpublished = (user) => {
+      setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+    };
+
+    // Connect and setup streams
+    agoraService.joinAndPublishStreams(
+      userId,
+      handleUserPublished,
+      handleUserUnpublished
+    );
 
     return () => {
       agoraService.cleanup();
     };
   }, []);
+
+  const handleUserPublished = (user, mediaType) => {
+    setTeamMates(prev => [...prev, { id: user.uid, name: user.uid, videoTrack: user.videoTrack }]);
+  };
+
+  const handleUserUnpublished = (user) => {
+    setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+  };
+
+  let teamContent = teamMates ? (
+    teamMates.map((player) => (
+      <div className="teammate-box" key={player.id}>
+        <div className="webcam-container" ref={el => player.videoTrack?.play(el)}>
+          {player.name}
+        </div>
+      </div>
+    ))
+  ) : <Spinner />;
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
@@ -114,9 +140,12 @@ const Lobby = () => {
 
   return (
     <div className="lobby section">
-      <div className="video-streams"></div>
+      <div className="teammates-container">
+        {teamContent}
+      </div>
       <BaseContainer className="lobby container">
-        <h2 className="lobby header">Game Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
+        <h2 className="lobby header">Game
+          Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
         <hr className="lobby hr-thin" />
         <div className="lobby player-container">
           {players.length > 0 ? (
