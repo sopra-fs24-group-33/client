@@ -31,6 +31,7 @@ const GameArena = () => {
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
   const lastCardPlayTime = useRef(0);
   const [reveal, setReveal] = useState<boolean>(false);
+  const [cardValue, setCardValue] = useState(null);
 
 
   useEffect(() => {
@@ -128,7 +129,8 @@ const GameArena = () => {
     setPlayerHand(player.cards); // update current players hand
   };
 
-  const revealCards = () => {
+  const revealCards = async () => {
+
     setReveal(true);
     setPopupType(null);
     setDrawPhase(true);
@@ -138,10 +140,9 @@ const GameArena = () => {
     navigate("/lobby")
   }
 
-  const handleLeaveGame = async () => {
+  const handleLeaveGame = () => {
     const requestBody = JSON.stringify(player)
     console.log("player in game.tsx:", requestBody)
-    const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
     localStorage.removeItem("pin")
     localStorage.removeItem("adminId")
     navigate("/overview")
@@ -160,14 +161,31 @@ const GameArena = () => {
     }, 500); // Reset after 1 second
   }
 
-  const handleDrawCards = () => {
-    console.log("DRAWINGGGGG")
-    setDrawPhase(false)
+  const handleDrawCards = async () => {
+    if (reveal === true) {
+      let response = null
+      if (parseInt(localStorage.getItem("adminId")) === playerId) {
+        response = await api.put(`/move/${gameId}`, 100);
+      } else {
+        response = await api.get(`/game/${gameId}`);
+      }
+      console.log("HANDLE DRAW CARDS RESPONSE:", response.data)
+      const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
+      setPlayerHand(player.cards)
+
+      const FilteredPlayers = response.data.players
+        .filter(p => p.id !== playerId)
+
+      setTeamMates(FilteredPlayers)
+    }
+
+    setDrawPhase(false);
     setReveal(false); // Hide teammate cards
     setCardsPlayed([]) // clear cards played pile
   }
 
   const handleCardClick = async (cardValue: number) => {
+    setCardValue(cardValue)
     const now = new Date().getTime();
     if (reveal) {
       console.log("Can't play current card. Draw again...")
