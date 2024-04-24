@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
 import { agoraService } from "helpers/agora";
 // @ts-ignore
-import AgoraRTC from "agora-rtc-sdk-ng";
+// import AgoraRTC from "agora-rtc-sdk-ng";
 
 // const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 // const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
