@@ -118,6 +118,7 @@ const Overview = () => {
     fetchData();
   }, []);
 
+
   let contentOnline = <Spinner />
   if (players) {
     contentOnline = (
@@ -139,10 +140,12 @@ const Overview = () => {
 
   let contentLosers = <Spinner />
   if (users) {
+    const sortedUsers = users.slice().sort((a, b) => b.shame_tokens - a.shame_tokens);
+
     contentLosers = (
       <div className="overview">
         <ul className="overview user-list">
-          {users.map((user: User) => (
+          {sortedUsers.map((user: User) => (
             <li key={user.id}>
               <PlayerBox
                 username={user.username}
@@ -154,6 +157,19 @@ const Overview = () => {
         </ul>
       </div>
     );
+  }
+
+  let totalOnlineShameTokens = 0;
+  let totalLosersShameTokens = 0;
+
+// Calculate total shame tokens for online players
+  if (players) {
+    totalOnlineShameTokens = players.reduce((total, player) => total + player.shame_tokens, 0);
+  }
+
+// Calculate total shame tokens for losers
+  if (users) {
+    totalLosersShameTokens = users.reduce((total, user) => total + user.shame_tokens, 0);
   }
 
   let contentUserInfo: any;
@@ -221,7 +237,7 @@ const Overview = () => {
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />
-                  <h3 className="shame-token-count light">77</h3>
+                  <h3 className="shame-token-count light">{totalOnlineShameTokens}</h3>
                 </div>
               </div>
             </div>
@@ -238,7 +254,7 @@ const Overview = () => {
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />
-                  <span className="shame-token-count">77</span>
+                  <h3 className="shame-token-count light">{totalLosersShameTokens}</h3>
                 </div>
               </div>
             </div>

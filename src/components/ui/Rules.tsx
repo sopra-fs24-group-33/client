@@ -4,16 +4,16 @@ import PropTypes from "prop-types";
 import "../../styles/ui/Ruels.scss";
 
 const rulesText = "De Game is a card game that requires teamwork, good communication\n" +
-  "          and reading other people's minds. De Game consists of 99 cards, each\n" +
-  "          of which has a number between 1 and 99 on it. In every level, each\n" +
-  "          player draws as many cards as the level you are at, so in the first\n" +
-  "          level everyone holds one card. The aim is to lay down the cards in\n" +
-  "          ascending order without knowing what the other participants hold and\n" +
-  "          while not being specific or implying about what number they have on\n" +
-  "          their cards. Upon success the group levels up and upon failure the\n" +
-  "          level has to be re-done. If two players screw up, they both receive\n" +
+  "          and reading other people's minds. A deck consists of 99 cards, each with\n" +
+  "          a number ranging from 1 to 99. In every level, each\n" +
+  "          player draws as many cards as the current level suggests, so in the first\n" +
+  "          level everyone holds one card. The aim is to play the cards in\n" +
+  "          correct ascending order. The players don't know what the other participants hold in their hands\n" +
+  "          and my not be specific about what number they have. \n" +
+  "          Upon success the hole group levels up and upon failure the\n" +
+  "          level has to be replayed. If two players screw up, they both get\n" +
   "          a “shame token”. De Game is over as soon as no cards are left on the\n" +
-  "          stack, so each card/number is played once."
+  "          stack, so each card is played once."
 
 const Rules = ({ onClose }) => {
   return (
