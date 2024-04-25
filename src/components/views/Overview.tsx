@@ -26,7 +26,7 @@ const Overview = () => {
 
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
-  const [curPlayer, setCurPlayer] = useState<Player>(null);
+  const [curUser, setCurUser] = useState<User>(null);
   const [showRules, setShowRules] = useState(false);
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
@@ -52,7 +52,7 @@ const Overview = () => {
   const createLobby = async () => {
     // Get current player based on token
     try {
-      const requestBody = JSON.stringify( curPlayer )
+      const requestBody = JSON.stringify( curUser )
       console.log("this is the requesto body: " + requestBody)
       const response = await api.post("/gamelobbies", requestBody);
 
@@ -61,7 +61,7 @@ const Overview = () => {
       const lobby = new Lobby(response.data)
 
 
-      localStorage.setItem("adminId", curPlayer.id)
+      localStorage.setItem("adminId", curUser.id)
       localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");
@@ -91,7 +91,7 @@ const Overview = () => {
         setUsers(responseUsers.data);
 
         // Get current player based on token
-        setCurPlayer(responsePlayers.data.find(user => user.token === localStorage.getItem("token")));
+        setCurUser(responseUsers.data.find(user => user.token === localStorage.getItem("token")));
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -173,31 +173,34 @@ const Overview = () => {
   }
 
   let contentUserInfo: any;
-  if (curPlayer) {
+
+  if (curUser) {
+    const passwordStars = '*'.repeat(curUser.password.length);
+
     contentUserInfo = (
       <div className="overview sub-container">
 
         <div className="overview">
           <div className="overview header-hey-username">
             <h2 className="light">Hey&nbsp;</h2>
-            <h2>{curPlayer.name}</h2>
+            <h2>{curUser.username}</h2>
           </div>
           <div className="overview outer-text-wrapper">
             <div className="overview inner-text-wrapper">
               <p>username</p>
-              <p>{curPlayer.name}</p>
+              <p>{curUser.username}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Password</p>
-              <p>*****</p>
+              <p>{passwordStars}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Shame Tokens</p>
-              <p>{curPlayer.shame_tokens}</p>
+              <p>{curUser.shame_tokens}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Games Played</p>
-              <p>0</p>
+              <p>{curUser.gamesplayed ? curUser.gamesplayed : 0}</p>
             </div>
           </div>
         </div>
