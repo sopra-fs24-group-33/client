@@ -49,22 +49,27 @@ const Lobby = () => {
     };
   }, []);
 
-  const handleUserPublished = (user, mediaType) => {
-    setTeamMates(prev => [...prev, { id: user.uid, name: user.uid, videoTrack: user.videoTrack }]);
-  };
-
-  const handleUserUnpublished = (user) => {
-    setTeamMates(prev => prev.filter(p => p.id !== user.uid));
-  };
+  // const handleUserPublished = (user, mediaType) => {
+  //   setTeamMates(prev => [...prev, { id: user.uid, name: user.uid, videoTrack: user.videoTrack }]);
+  // };
+  //
+  // const handleUserUnpublished = (user) => {
+  //   setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+  // };
 
   let teamContent = teamMates ? (
     teamMates.map((player) => (
       <div className="teammate-box" key={player.id}>
-        <div className="webcam-container" ref={el => player.videoTrack?.play(el)}>
+        <div className="webcam-container" ref={el => {
+          if (el && player.videoTrack) {
+            player.videoTrack.play(el);
+          }
+        }}>
           {player.name}
         </div>
       </div>
     ))
+
   ) : <Spinner />;
 
   useEffect(() => {
