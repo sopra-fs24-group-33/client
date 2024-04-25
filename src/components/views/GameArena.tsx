@@ -36,26 +36,37 @@ const GameArena = () => {
 
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
+  const videoRefs = useRef(new Map());
 
+  useEffect(() => {
+    teamMatesStream.forEach((videoTrack, id) => {
+      const videoElement = videoRefs.current.get(id);
+      if (videoElement && videoTrack) {
+        videoTrack.play(videoElement);
+      }
+    });
+  }, [teamMatesStream]);
+
+  const handleUserPublished = (user, videoTrack) => {
+    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+  };
+
+  const handleUserUnpublished = (user) => {
+    setTeamMatesStream(prev => {
+      const updated = new Map(prev);
+      updated.delete(user.uid);
+      return updated;
+    });
+  };
+
+  const handleLocalUserJoined = (videoTrack) => {
+    setLocalStream(videoTrack);
+  };
 
   useEffect(() => {
 
     // Functions to handle stream events
-    const handleUserPublished = (user, videoTrack) => {
-      setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
-    };
 
-    const handleUserUnpublished = (user) => {
-      setTeamMatesStream(prev => {
-        const updated = new Map(prev);
-        updated.delete(user.uid);
-        return updated;
-      });
-    };
-
-    const handleLocalUserJoined = (videoTrack) => {
-      setLocalStream(videoTrack);
-    };
 
     // Connect and setup streams
     agoraService.joinAndPublishStreams(
@@ -240,28 +251,18 @@ const GameArena = () => {
   };
 
 
-  let teamContent = teamMates.length > 0 ? (
-    teamMates.map(player => {
-      // Retrieve the videoTrack for this player from the map using the player's id
-      const videoTrack = teamMatesStream.get(player.id);
-
-      return (
-        <div className="teammate-box" key={player.id}>
-          <div className="webcam-container" ref={el => {
-            // Only attempt to play the video if the element and videoTrack are available
-            if (el && videoTrack) {
-              videoTrack.play(el);
-            }
-          }}>
-            {player.name}
-          </div>
-          <div className="matehand-container">
-            <MateHand cardValues={player.cards}  revealCards={reveal}/>
-          </div>
-        </div>
-      );
-    })
-  ) : <Spinner />;
+  let teamContent = Array.from(teamMatesStream).map(([id, videoTrack]) => (
+    <div className="teammate-box" key={id}>
+      <div className="webcam-container" ref={el => {
+        videoRefs.current.set(id, el);
+      }}>
+        { /* Placeholder for player name or other content */ }
+      </div>
+      <div className="matehand-container">
+        {/* Example placeholder if needed */}
+      </div>
+    </div>
+  ));
 
 
   let mainContent = drawPhase ? (
