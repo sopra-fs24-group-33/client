@@ -22,6 +22,7 @@ const Lobby = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const userId = localStorage.getItem("id");
   const [teamMates, setTeamMates] = useState([]);
+  const [localStream, setLocalStream] = useState(null);
 
 
 
@@ -37,25 +38,29 @@ const Lobby = () => {
       setTeamMates(prev => prev.filter(p => p.id !== user.uid));
     };
 
+    const handleLocalUserJoined = (videoTrack) => {
+      setLocalStream(videoTrack);
+      // added to team mates to display local stream
+      setTeamMates(prevTeamMates => [
+        ...prevTeamMates,
+        { id: playerId, name: "Your Stream", videoTrack }
+      ]);
+    };
+
     // Connect and setup streams
     agoraService.joinAndPublishStreams(
       userId,
       handleUserPublished,
-      handleUserUnpublished
+      handleUserUnpublished,
+      handleLocalUserJoined
     );
 
     return () => {
       agoraService.cleanup();
     };
-  }, []);
+  }, [userId]);
 
-  // const handleUserPublished = (user, mediaType) => {
-  //   setTeamMates(prev => [...prev, { id: user.uid, name: user.uid, videoTrack: user.videoTrack }]);
-  // };
-  //
-  // const handleUserUnpublished = (user) => {
-  //   setTeamMates(prev => prev.filter(p => p.id !== user.uid));
-  // };
+
 
   let teamContent = teamMates ? (
     teamMates.map((player) => (

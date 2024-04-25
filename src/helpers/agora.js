@@ -14,13 +14,14 @@ let localTracks = {
 
 
 export const agoraService = {
-  async joinAndPublishStreams(userId, handleUserPublished, handleUserUnpublished) {
+  async joinAndPublishStreams(userId, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
     try {
       await client.join(APP_ID, CHANNEL, TOKEN, userId);
 
       // Create and publish local tracks
       [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
       await client.publish(Object.values(localTracks));
+      handleLocalUserJoined(localTracks.videoTrack);
 
       // Handle other users' publications
       client.on("user-published", async (user, mediaType) => {
