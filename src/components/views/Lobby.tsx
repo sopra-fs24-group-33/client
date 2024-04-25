@@ -41,10 +41,7 @@ const Lobby = () => {
     const handleLocalUserJoined = (videoTrack) => {
       setLocalStream(videoTrack);
       // added to team mates to display local stream
-      setTeamMates(prevTeamMates => [
-        ...prevTeamMates,
-        { id: playerId, name: "Your Stream", videoTrack }
-      ]);
+      setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream", videoTrack }]);
     };
 
     // Connect and setup streams
@@ -60,7 +57,7 @@ const Lobby = () => {
     };
   }, [userId]);
 
-
+  console.log("teamMates", teamMates);
 
   let teamContent = teamMates ? (
     teamMates.map((player) => (
