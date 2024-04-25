@@ -24,32 +24,33 @@ const Lobby = () => {
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
 
+  const handleUserPublished = (user, videoTrack) => {
+    setTeamMates(prev => [...prev, { id: user.uid, name: user.uid,  }]); //todo this is ugly
+    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+    console.log("# user published", user, videoTrack);
 
+  };
+
+  const handleUserUnpublished = (user) => {
+    setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+    setTeamMatesStream(prev => {
+      const updated = new Map(prev);
+      updated.delete(user.uid);
+      return updated;
+    });
+  };
+
+  const handleLocalUserJoined = (videoTrack) => {
+    setLocalStream(videoTrack);
+    // added to team mates to display local stream
+    setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream",  }]);
+    setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
+  };
 
   useEffect(() => {
 
     // Functions to handle stream events
-    const handleUserPublished = (user, videoTrack) => {
-      setTeamMates(prev => [...prev, { id: user.uid, name: user.uid,  }]); //todo this is ugly
-      setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
 
-    };
-
-    const handleUserUnpublished = (user) => {
-      setTeamMates(prev => prev.filter(p => p.id !== user.uid));
-      setTeamMatesStream(prev => {
-        const updated = new Map(prev);
-        updated.delete(user.uid);
-        return updated;
-      });
-    };
-
-    const handleLocalUserJoined = (videoTrack) => {
-      setLocalStream(videoTrack);
-      // added to team mates to display local stream
-      setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream",  }]);
-      setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
-    };
 
     // Connect and setup streams
     agoraService.joinAndPublishStreams(
@@ -138,7 +139,7 @@ const Lobby = () => {
 
     navigate("/game")
   };
-  console.log("players", players, "setTeamMatesStream", teamMatesStream)
+  console.log("# players", players, "setTeamMatesStream", teamMatesStream)
 
   let teamContent = teamMatesStream.size > 0 ? (
     Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
