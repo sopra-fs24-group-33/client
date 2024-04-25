@@ -278,8 +278,11 @@ const GameArena = () => {
               <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
             )}
           </div>
-          <div className="pov-container my-webcam">
-            My Webcam
+          <div className="pov-container my-webcam" ref={el => {
+            if (el && localStream) {
+              localStream.play(el);
+            }
+          }}>
           </div>
         </div>
 
