@@ -12,6 +12,7 @@ import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/PopUp";
+import { agoraService } from "helpers/agora";
 
 
 const GameArena = () => {
@@ -25,12 +26,47 @@ const GameArena = () => {
   const [player, setPlayer] = useState<GamePlayer>(null);
   const [playerHand, setPlayerHand] = useState<number[]>([]) // Own cards
   const [cardsPlayed, setCardsPlayed] = useState<number[]>([]); // Cards played
-  const [teamMates, setTeamMates] = useState<GamePlayer[]>(null)
+  const [teamMates, setTeamMates] = useState<GamePlayer[]>([])
   const [ws, setWs] = useState(null);
   const [moveStatus, setMoveStatus] = useState('');
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
   const lastCardPlayTime = useRef(0);
 
+  const [teamMatesStream, setTeamMatesStream] = useState(new Map());
+  const [localStream, setLocalStream] = useState(null);
+
+
+  useEffect(() => {
+
+    // Functions to handle stream events
+    const handleUserPublished = (user, videoTrack) => {
+      setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+    };
+
+    const handleUserUnpublished = (user) => {
+      setTeamMatesStream(prev => {
+        const updated = new Map(prev);
+        updated.delete(user.uid);
+        return updated;
+      });
+    };
+
+    const handleLocalUserJoined = (videoTrack) => {
+      setLocalStream(videoTrack);
+    };
+
+    // Connect and setup streams
+    agoraService.joinAndPublishStreams(
+      playerId,
+      handleUserPublished,
+      handleUserUnpublished,
+      handleLocalUserJoined
+    );
+
+    return () => {
+      agoraService.cleanup();
+    };
+  }, [playerId]);
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
@@ -172,18 +208,31 @@ const GameArena = () => {
     }
   };
 
-  let teamContent = teamMates ? (
-    teamMates.map((player) => (
-      <div className="teammate-box" key={player.id}>
-        <div className="webcam-container">{player.name}</div>
-        <div className="matehand-container">
-          {!drawPhase && (
-            <MateHand count={player.cards.length} />
-          )}
+  let teamContent = teamMates.length > 0 ? (
+    teamMates.map(player => {
+      // Retrieve the videoTrack for this player from the map using the player's id
+      const videoTrack = teamMatesStream.get(player.id);
+
+      return (
+        <div className="teammate-box" key={player.id}>
+          <div className="webcam-container" ref={el => {
+            // Only attempt to play the video if the element and videoTrack are available
+            if (el && videoTrack) {
+              videoTrack.play(el);
+            }
+          }}>
+            {player.name}
+          </div>
+          <div className="matehand-container">
+            {!drawPhase && player.cards && (
+              <MateHand count={player.cards.length} />
+            )}
+          </div>
         </div>
-      </div>
-    ))
+      );
+    })
   ) : <Spinner />;
+
 
   let mainContent = drawPhase ? (
     <div>
