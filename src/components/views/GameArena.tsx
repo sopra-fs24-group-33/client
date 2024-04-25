@@ -31,6 +31,8 @@ const GameArena = () => {
   const [moveStatus, setMoveStatus] = useState('');
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
   const lastCardPlayTime = useRef(0);
+  const [reveal, setReveal] = useState<boolean>(false);
+  const [cardValue, setCardValue] = useState(null);
 
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
@@ -78,6 +80,7 @@ const GameArena = () => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Game event received:", data);
+      setGame(data)
       setCardsPlayed(prev => [...prev, data.currentCard]);
 
       // COOLDOWNN
@@ -101,9 +104,6 @@ const GameArena = () => {
 
       if (data.level > currLvl) {
         setPopupType('levelUp')
-        setDrawPhase(true); // if new level , set draw phase true
-        localStorage.setItem("lvl", data.level)// set new level to current level
-        setPlayerHand(currentPlayer.cards); // update current players hand
       }
       // TODO: maybe sort the game players in backend instead of sorting it always here
       const FilteredPlayers = data.players
@@ -160,16 +160,25 @@ const GameArena = () => {
 
   const closePopup = () => {
     setPopupType(null);
+    setDrawPhase(true);
+    localStorage.setItem("lvl", game.level)// set new level to current level
+    setPlayerHand(player.cards); // update current players hand
   };
+
+  const revealCards = async () => {
+
+    setReveal(true);
+    setPopupType(null);
+    setDrawPhase(true);
+  }
 
   const handleNewGame = () => {
     navigate("/lobby")
   }
 
-  const handleLeaveGame = async () => {
+  const handleLeaveGame = () => {
     const requestBody = JSON.stringify(player)
     console.log("player in game.tsx:", requestBody)
-    const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
     localStorage.removeItem("pin")
     localStorage.removeItem("adminId")
     navigate("/overview")
@@ -188,14 +197,36 @@ const GameArena = () => {
     }, 500); // Reset after 1 second
   }
 
-  const handleDrawCards = () => {
-    setDrawPhase(false)
+  const handleDrawCards = async () => {
+    if (reveal === true) {
+      let response = null
+      if (parseInt(localStorage.getItem("adminId")) === playerId) {
+        response = await api.put(`/move/${gameId}`, 100);
+      } else {
+        response = await api.get(`/game/${gameId}`);
+      }
+      console.log("HANDLE DRAW CARDS RESPONSE:", response.data)
+      const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
+      setPlayerHand(player.cards)
+
+      const FilteredPlayers = response.data.players
+        .filter(p => p.id !== playerId)
+
+      setTeamMates(FilteredPlayers)
+    }
+
+    setDrawPhase(false);
+    setReveal(false); // Hide teammate cards
     setCardsPlayed([]) // clear cards played pile
   }
 
   const handleCardClick = async (cardValue: number) => {
+    setCardValue(cardValue)
     const now = new Date().getTime();
-    if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
+    if (reveal) {
+      console.log("Can't play current card. Draw again...")
+    }
+    else if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
       console.log("Card clicked with value:", cardValue);
       const response = await api.put(`/move/${gameId}`, cardValue)
       ws.send(gameId)
@@ -207,6 +238,7 @@ const GameArena = () => {
       console.log("Wait for cooldown to end")
     }
   };
+
 
   let teamContent = teamMates.length > 0 ? (
     teamMates.map(player => {
@@ -224,9 +256,7 @@ const GameArena = () => {
             {player.name}
           </div>
           <div className="matehand-container">
-            {!drawPhase && player.cards && (
-              <MateHand count={player.cards.length} />
-            )}
+            <MateHand cardValues={player.cards}  revealCards={reveal}/>
           </div>
         </div>
       );
@@ -260,7 +290,8 @@ const GameArena = () => {
             <Popup
               type={popupType}
               isVisible={!!popupType}
-              onClose={closePopup}
+              onNext={closePopup}
+              onReveal={revealCards}
               onNewGame={handleNewGame}
               onLeaveGame={handleLeaveGame}
             />
@@ -274,7 +305,7 @@ const GameArena = () => {
 
         <div className="pov-container">
           <div className="pov-container hand">
-            {!drawPhase && (
+            {(!drawPhase || reveal) && (
               <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
             )}
           </div>

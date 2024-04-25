@@ -4,20 +4,22 @@ import { Button } from "./Button";
 interface PopupProps {
   type: 'win' | 'lose' | 'levelUp';
   isVisible: boolean;
-  onClose: () => void; // Function to call when closing the popup
+  onNext: () => void; // Function to call when closing the popup
+  onReveal: () => void;
   onNewGame: () => void;
   onLeaveGame: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({ type, isVisible, onClose, onNewGame, onLeaveGame }) => {
+const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewGame, onLeaveGame }) => {
   if (!isVisible) {
     return null;
   }
 
   const messages = {
-    win: 'Congratulations! You won the entire game!',
-    lose: 'Sorry, you lost the game. Try again?',
-    levelUp: 'Congratulations! You\'ve reached the next level!'
+    win: 'Flawless Victory!',
+    end: 'Game Over. No more cards left!',
+    lose: 'Round Lost.',
+    levelUp: 'Round Won! You\'ve reached the next level!'
   };
 
   const actions = {
@@ -26,11 +28,10 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onClose, onNewGame, onLe
       { label: 'Leave', action: onLeaveGame }
     ],
     lose: [
-      { label: 'Start New Game', action: onNewGame },
-      { label: 'Leave', action: onLeaveGame }
+      { label: 'Reveal Cards', action: onReveal }
     ],
     levelUp: [
-      { label: 'Next Level', action: onClose }
+      { label: 'Next Level', action: onNext }
     ]
   };
 
