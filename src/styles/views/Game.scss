@@ -65,6 +65,11 @@
     z-index: 1;
   }
 
+  .player-name {
+    color: white;  // Makes the text white
+    margin-top: 10px;  // Space between the video container and the name
+  }
+
   .matehand-container {
     width: 100%;  // Full width to match the webcam container above
     margin-top: -5vh;

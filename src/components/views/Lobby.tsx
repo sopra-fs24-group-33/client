@@ -9,13 +9,6 @@ import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
 import { agoraService } from "helpers/agora";
-// @ts-ignore
-// import AgoraRTC from "agora-rtc-sdk-ng";
-
-// const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-// const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-// const TOKEN = "007eJxTYGDSsjmawTR/5qfn7QkeaRpJCWElSzQnlH/LZVGWlpfJ2KfAYGZuYZJsamGekmyWYpJqamppkpiWlJRqZGmaYmZqZJKWoqGW1hDIyOCXaMXCyACBID4LQ25iZh4DAwBEzRs+"
-// const CHANNEL = "main"
 
 const Lobby = () => {
   const prefix = getWSPreFix();
@@ -27,19 +20,54 @@ const Lobby = () => {
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const userId = localStorage.getItem("id");
+  const [teamMates, setTeamMates] = useState([])
+  const [teamMatesStream, setTeamMatesStream] = useState(new Map());
+  const [localStream, setLocalStream] = useState(null);
 
+  const handleUserPublished = (user, videoTrack) => {
+    setTeamMates(prev => [...prev, { id: user.uid, name: user.uid,  }]); //todo this is ugly
+    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+    console.log("# user published", user, videoTrack);
 
-  // agora
-  // const localTracks = useRef([]);
-  // const remoteUsers = useRef({});
+  };
+
+  const handleUserUnpublished = (user) => {
+    setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+    setTeamMatesStream(prev => {
+      const updated = new Map(prev);
+      updated.delete(user.uid);
+      return updated;
+    });
+  };
+
+  const handleLocalUserJoined = (videoTrack) => {
+    setLocalStream(videoTrack);
+    // added to team mates to display local stream
+    setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream",  }]);
+    setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
+  };
 
   useEffect(() => {
-    agoraService.joinAndSetupStreams(userId);
+
+    // Functions to handle stream events
+
+
+    // Connect and setup streams
+    agoraService.joinAndPublishStreams(
+      userId,
+      handleUserPublished,
+      handleUserUnpublished,
+      handleLocalUserJoined
+    );
 
     return () => {
       agoraService.cleanup();
     };
-  }, []);
+  }, [userId]);
+
+
+
+
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
@@ -111,12 +139,35 @@ const Lobby = () => {
 
     navigate("/game")
   };
+  console.log("# players", players, "setTeamMatesStream", teamMatesStream)
+
+  let teamContent = teamMatesStream.size > 0 ? (
+    Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
+
+      const mate = teamMates.find(mate => mate.id === id);
+      return (
+        <div className="teammate-box" key={id}>
+          <div className="webcam-container" ref={el => {
+            if (el) {
+              videoTrack.play(el);
+            }
+          }}>
+            {/* You can place an overlay or icon here if needed */}
+          </div>
+          <div className="player-name">{mate ? mate.name : "Loading..."}</div>
+        </div>
+      );
+    })
+  ) : <Spinner />;
 
   return (
     <div className="lobby section">
-      <div className="video-streams"></div>
+      <div className="teammates-container">
+        {teamContent}
+      </div>
       <BaseContainer className="lobby container">
-        <h2 className="lobby header">Game Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
+        <h2 className="lobby header">Game
+          Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
         <hr className="lobby hr-thin" />
         <div className="lobby player-container">
           {players.length > 0 ? (
