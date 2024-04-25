@@ -20,7 +20,8 @@ const Lobby = () => {
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const userId = localStorage.getItem("id");
-  const [teamMatesStream, setTeamMatesStream] = useState([])
+  const [teamMates, setTeamMates] = useState([])
+  const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
 
 
@@ -29,17 +30,25 @@ const Lobby = () => {
 
     // Functions to handle stream events
     const handleUserPublished = (user, videoTrack) => {
-      setTeamMatesStream(prev => [...prev, { id: user.uid, name: user.uid, videoTrack }]);
+      setTeamMates(prev => [...prev, { id: user.uid, name: user.uid,  }]); //todo this is ugly
+      setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+
     };
 
     const handleUserUnpublished = (user) => {
-      setTeamMatesStream(prev => prev.filter(p => p.id !== user.uid));
+      setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+      setTeamMatesStream(prev => {
+        const updated = new Map(prev);
+        updated.delete(user.uid);
+        return updated;
+      });
     };
 
     const handleLocalUserJoined = (videoTrack) => {
       setLocalStream(videoTrack);
       // added to team mates to display local stream
-      setTeamMatesStream(prev => [...prev,{ id: playerId, name: "Your Stream", videoTrack }]);
+      setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream",  }]);
+      setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
     };
 
     // Connect and setup streams
@@ -55,21 +64,24 @@ const Lobby = () => {
     };
   }, [userId]);
 
-  console.log("teamMatesStream", teamMatesStream);
+  console.log("teamMates", teamMates);
 
-  let teamContent = teamMatesStream ? (
-    teamMatesStream.map((mate) => (
-      <div className="teammate-box" key={mate.id}>
-        <div className="webcam-container" ref={el => {
-          if (el && mate.videoTrack) {
-            mate.videoTrack.play(el);
-          }
-        }}>
-          {mate.name}
+  let teamContent = teamMatesStream.size > 0 ? (
+    Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
+
+      const mate = teamMates.find(mate => mate.id === id);
+      return (
+        <div className="teammate-box" key={id}>
+          <div className="webcam-container" ref={el => {
+            if (el) {
+              videoTrack.play(el);
+            }
+          }}>
+            {mate ? mate.name : "Loading..."}
+          </div>
         </div>
-      </div>
-    ))
-
+      );
+    })
   ) : <Spinner />;
 
   useEffect(() => {
