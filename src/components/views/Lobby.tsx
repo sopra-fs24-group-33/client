@@ -9,8 +9,7 @@ import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
 import { agoraService } from "helpers/agora";
-import VideoStreamComponent from "helpers/VideoStreamComponent";
-// @ts-ignore
+
 const Lobby = () => {
   const prefix = getWSPreFix();
   const navigate = useNavigate();
@@ -21,27 +20,26 @@ const Lobby = () => {
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const userId = localStorage.getItem("id");
-  const [teamMates, setTeamMates] = useState([]);
+  const [teamMatesStream, setTeamMatesStream] = useState([])
   const [localStream, setLocalStream] = useState(null);
 
 
 
   useEffect(() => {
-    //const userId = playerId || Math.floor(Math.random() * 10000).toString(); // Use player ID or generate random
 
     // Functions to handle stream events
     const handleUserPublished = (user, videoTrack) => {
-      setTeamMates(prev => [...prev, { id: user.uid, name: user.uid, videoTrack }]);
+      setTeamMatesStream(prev => [...prev, { id: user.uid, name: user.uid, videoTrack }]);
     };
 
     const handleUserUnpublished = (user) => {
-      setTeamMates(prev => prev.filter(p => p.id !== user.uid));
+      setTeamMatesStream(prev => prev.filter(p => p.id !== user.uid));
     };
 
     const handleLocalUserJoined = (videoTrack) => {
       setLocalStream(videoTrack);
       // added to team mates to display local stream
-      setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream", videoTrack }]);
+      setTeamMatesStream(prev => [...prev,{ id: playerId, name: "Your Stream", videoTrack }]);
     };
 
     // Connect and setup streams
@@ -57,17 +55,17 @@ const Lobby = () => {
     };
   }, [userId]);
 
-  console.log("teamMates", teamMates);
+  console.log("teamMatesStream", teamMatesStream);
 
-  let teamContent = teamMates ? (
-    teamMates.map((player) => (
-      <div className="teammate-box" key={player.id}>
+  let teamContent = teamMatesStream ? (
+    teamMatesStream.map((mate) => (
+      <div className="teammate-box" key={mate.id}>
         <div className="webcam-container" ref={el => {
-          if (el && player.videoTrack) {
-            player.videoTrack.play(el);
+          if (el && mate.videoTrack) {
+            mate.videoTrack.play(el);
           }
         }}>
-          {player.name}
+          {mate.name}
         </div>
       </div>
     ))
