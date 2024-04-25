@@ -17,6 +17,7 @@ import Background from "../../assets/AltBackground.svg";
 import shame_logo from "../../assets/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
 import "../../styles/_theme.scss";
+import Rules from "../ui/Rules";
 
 
 const Overview = () => {
@@ -26,9 +27,18 @@ const Overview = () => {
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
   const [curPlayer, setCurPlayer] = useState<Player>(null);
-
+  const [showRules, setShowRules] = useState(false);
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
+
+  const handleShowRules = () => {
+    setShowRules(true);
+  }
+  const handleCloseRules = () => {
+    setShowRules(false);
+  }
+
+
 
   const logout = async () => {
     const id = localStorage.getItem("id");
@@ -178,40 +188,12 @@ const Overview = () => {
 
         <div className="overview rules-logout-button-wrapper">
           <Button onClick={() => logout()}>Logout</Button>
-          <Button className="outlined square">Rules</Button>
+          <Button className="outlined square" onClick={handleShowRules}>Rules</Button>
         </div>
+
       </div>
     );
   }
-
-  /*
-  * ALTER CODE von Herr dr. Srirangarasa
-
-    return (
-      <div className="overview section">
-        <BaseContainer className="overview container">
-          <h2>Players Online</h2>
-          <hr className="overview hr-thin" />
-          <div className="overview player-container">
-            {content}
-          </div>
-        </BaseContainer>
-        <div className='overview button-container'>
-          <Button className="primary-button" width={300} onClick={() => createLobby()}>
-            Create Lobby
-          </Button>
-          <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
-            Join Lobby
-          </Button>
-
-        </div>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
-      </div>
-    );
-
-   */
 
   return (
     <div style={{
@@ -227,7 +209,6 @@ const Overview = () => {
     }}>
       <div className="overview section">
         <BaseContainer className="overview container">
-
           {contentUserInfo}
 
           <div className="overview vertical-line-box">
@@ -249,7 +230,6 @@ const Overview = () => {
             </div>
           </div>
 
-
           <div className="overview sub-container">
             <div className="overview header">
               <di>
@@ -266,6 +246,7 @@ const Overview = () => {
               {contentLosers}
             </div>
           </div>
+
         </BaseContainer>
 
         <div className="overview button-container">
@@ -275,11 +256,11 @@ const Overview = () => {
           <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
             Join Lobby
           </Button>
-
         </div>
-
       </div>
+      {showRules && <Rules onClose={handleCloseRules}/>}
     </div>
+
 
   );
 };
