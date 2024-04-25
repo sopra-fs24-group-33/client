@@ -151,8 +151,9 @@ const Lobby = () => {
               videoTrack.play(el);
             }
           }}>
-            {mate ? mate.name : "Loading..."}
+            {/* You can place an overlay or icon here if needed */}
           </div>
+          <div className="player-name">{mate ? mate.name : "Loading..."}</div>
         </div>
       );
     })
