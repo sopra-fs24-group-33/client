@@ -15,30 +15,30 @@ let localTracks = {
 
 export const agoraService = {
   async joinAndPublishStreams(userId, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
+    // Set up event listeners as early as possible
+    client.on("user-published", async (user, mediaType) => {
+      await client.subscribe(user, mediaType);
+      console.log("# Subscribed to user", user.uid, "for media type", mediaType);
+      if (mediaType === "video") {
+        handleUserPublished(user, user.videoTrack);
+      }
+      // Additional handling for audio if needed
+    });
+
+    client.on("user-unpublished", user => {
+      handleUserUnpublished(user);
+    });
+
     try {
       await client.join(APP_ID, CHANNEL, TOKEN, userId);
-
       console.log("# Joined channel with user ID:", userId);
 
-      // Create and publish local tracks
       [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+
+      // After joining, publish local tracks
       await client.publish(Object.values(localTracks));
       console.log("# Published local tracks");
       handleLocalUserJoined(localTracks.videoTrack);
-
-      // Handle other users' publications
-      client.on("user-published", async (user, mediaType) => {
-        await client.subscribe(user, mediaType);
-        console.log("# Published extern user", user, mediaType);
-        if (mediaType === "video") {
-          handleUserPublished(user, user.videoTrack);
-        }
-        // Additional handling for audio if necessary
-      });
-
-      client.on("user-unpublished", user => {
-        handleUserUnpublished(user);
-      });
 
     } catch (error) {
       console.error("Error in Agora Stream Setup:", error);
@@ -51,5 +51,6 @@ export const agoraService = {
     localTracks.audioTrack?.close();
     await client.leave();
     client.removeAllListeners();
+    console.log("# Agora cleanup done.");
   }
 };

@@ -37,25 +37,26 @@ const GameArena = () => {
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
 
+  const handleUserPublished = (user, videoTrack) => {
+    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+  };
+
+  const handleUserUnpublished = (user) => {
+    setTeamMatesStream(prev => {
+      const updated = new Map(prev);
+      updated.delete(user.uid);
+      return updated;
+    });
+  };
+
+  const handleLocalUserJoined = (videoTrack) => {
+    setLocalStream(videoTrack);
+  };
 
   useEffect(() => {
 
     // Functions to handle stream events
-    const handleUserPublished = (user, videoTrack) => {
-      setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
-    };
 
-    const handleUserUnpublished = (user) => {
-      setTeamMatesStream(prev => {
-        const updated = new Map(prev);
-        updated.delete(user.uid);
-        return updated;
-      });
-    };
-
-    const handleLocalUserJoined = (videoTrack) => {
-      setLocalStream(videoTrack);
-    };
 
     // Connect and setup streams
     agoraService.joinAndPublishStreams(
