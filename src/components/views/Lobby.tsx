@@ -64,25 +64,9 @@ const Lobby = () => {
     };
   }, [userId]);
 
-  console.log("teamMates", teamMates);
 
-  let teamContent = teamMatesStream.size > 0 ? (
-    Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
 
-      const mate = teamMates.find(mate => mate.id === id);
-      return (
-        <div className="teammate-box" key={id}>
-          <div className="webcam-container" ref={el => {
-            if (el) {
-              videoTrack.play(el);
-            }
-          }}>
-            {mate ? mate.name : "Loading..."}
-          </div>
-        </div>
-      );
-    })
-  ) : <Spinner />;
+
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
@@ -154,6 +138,25 @@ const Lobby = () => {
 
     navigate("/game")
   };
+  console.log("players", players, "setTeamMatesStream", teamMatesStream)
+
+  let teamContent = teamMatesStream.size > 0 ? (
+    Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
+
+      const mate = teamMates.find(mate => mate.id === id);
+      return (
+        <div className="teammate-box" key={id}>
+          <div className="webcam-container" ref={el => {
+            if (el) {
+              videoTrack.play(el);
+            }
+          }}>
+            {mate ? mate.name : "Loading..."}
+          </div>
+        </div>
+      );
+    })
+  ) : <Spinner />;
 
   return (
     <div className="lobby section">
