@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import { getWSPreFix } from "helpers/getDomain";
 import { GameLobby, Player } from "../../types";
@@ -47,23 +47,36 @@ const Lobby = () => {
     setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
   };
 
+
   useEffect(() => {
 
-    // Functions to handle stream events
+    const setupStreams = async () => {
+      try {
+        const response = await api.get(`agoratoken/${lobbyPin}/${userId}`);
 
+        console.log("# agora token response", response);
+        agoraService.joinAndPublishStreams(
+          userId,
+          response.data,
+          String(lobbyPin),
+          handleUserPublished,
+          handleUserUnpublished,
+          handleLocalUserJoined
+        );
+      } catch (error) {
+        console.error('Failed to get Agora token:', error);
+        // Handle errors, e.g., show notification or error message to user
+      }
+    };
 
-    // Connect and setup streams
-    agoraService.joinAndPublishStreams(
-      userId,
-      handleUserPublished,
-      handleUserUnpublished,
-      handleLocalUserJoined
-    );
+    // Call the async function
+    setupStreams();
 
+    // Specify how to clean up after this effect:
     return () => {
       agoraService.cleanup();
     };
-  }, [userId]);
+  }, [userId, lobbyPin]);
 
 
 
