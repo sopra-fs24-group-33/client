@@ -12,6 +12,7 @@ import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/PopUp";
+import { createBufferSourceAudioTrack } from "agora-rtc-sdk-ng/esm";
 
 
 const GameArena = () => {
@@ -22,29 +23,34 @@ const GameArena = () => {
   const playerId = Number(localStorage.getItem("id"))
   const [drawPhase, setDrawPhase] = useState<boolean>(true) // Set initial draw phase true
   const [game, setGame] = useState<Game>(null)
+  const [players, setPlayers] = useState([]);
   const [player, setPlayer] = useState<GamePlayer>(null);
   const [playerHand, setPlayerHand] = useState<number[]>([]) // Own cards
   const [cardsPlayed, setCardsPlayed] = useState<number[]>([]); // Cards played
-  const [teamMates, setTeamMates] = useState<GamePlayer[]>(null)
+  const [teamMates, setTeamMates] = useState<GamePlayer[]>([])
   const [ws, setWs] = useState(null);
   const [moveStatus, setMoveStatus] = useState('');
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
   const lastCardPlayTime = useRef(0);
   const [reveal, setReveal] = useState<boolean>(false);
-  const [cardValue, setCardValue] = useState(null);
+  const [readyWS, setReadyWS] = useState(null);
+  const [playersReady, setPlayersReady] = useState<number>(0);
+  const [showTeamHand, setShowTeamHand] = useState<boolean>(false);
+  const [lost, setLost] = useState<boolean>(false)
 
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
 
     socket.onopen = () => {
-      console.log("Connected to Game WebSocket")
+      console.log("Connected to WebSocket[Game]")
     };
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Game event received:", data);
       setGame(data)
+      setPlayers(data.players)
       setCardsPlayed(prev => [...prev, data.currentCard]);
 
       // COOLDOWNN
@@ -61,13 +67,14 @@ const GameArena = () => {
 
       // get current level from local storage
       const currLvl = parseInt(localStorage.getItem("lvl"))
-      console.log("new level:", data.level);
 
       // animates border, TODO: winning and loosing [pop-up]
       handleMove(data.successfulMove);
 
       if (data.level > currLvl) {
         setPopupType('levelUp')
+        setShowTeamHand(false);
+        localStorage.removeItem("inGame")
       }
       // TODO: maybe sort the game players in backend instead of sorting it always here
       const FilteredPlayers = data.players
@@ -87,21 +94,25 @@ const GameArena = () => {
     setWs(socket);
 
     async function fetchData() {
+      console.log("haha....")
       try {
         const response = await api.get(`/game/${gameId}`);
-
+        console.log("Received Data:", response.data)
         setGame(response.data);
-        console.log(response.data.players.find(p => p.id === playerId))
+        setPlayers(response.data.players)
         const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
         setPlayerHand(player.cards);
+        console.log("player hands:", player.cards);
 
         // set current level on local storage
         localStorage.setItem("lvl", response.data.level);
-        console.log("level fetched & set:", response.data.level);
 
-        console.log("requested data:", response.data.players);
-        console.log("teammates:",response.data.players.filter(p => p.id !== playerId))
         setTeamMates(response.data.players.filter(p => p.id !== playerId))
+
+        if (localStorage.getItem("inGame")) {
+          setShowTeamHand(true);
+          setCardsPlayed(prev => [...prev, 0, response.data.currentCard]);
+        }
 
       } catch (error) {
         console.error(
@@ -122,6 +133,37 @@ const GameArena = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const socket = new WebSocket(`${prefix}/ready?lobbyPin=${lobbyPin}`);
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket[ReadyStatus]');
+    };
+
+    socket.onmessage = (event) => {
+      const data =  JSON.parse(event.data);
+      console.log("Received Data from READY WEBSOCKET:", data);
+      if (data.event) {
+        handleDrawCards();
+        setPlayersReady(0);
+      } else {
+        console.log("Set Players Ready:", data);
+        console.log("Type of data:", typeof data);
+        setPlayersReady(data)
+      }
+    }
+
+    socket.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    setReadyWS(socket);
+  }, []);
+
   const closePopup = () => {
     setPopupType(null);
     setDrawPhase(true);
@@ -129,20 +171,22 @@ const GameArena = () => {
     setPlayerHand(player.cards); // update current players hand
   };
 
-  const revealCards = async () => {
-
+  const revealCards = () => {
+    console.log("setting reveal to true")
     setReveal(true);
     setPopupType(null);
     setDrawPhase(true);
+    localStorage.removeItem("inGame")
   }
 
   const handleNewGame = () => {
     navigate("/lobby")
   }
 
-  const handleLeaveGame = () => {
+  const handleLeaveGame = async () => {
     const requestBody = JSON.stringify(player)
     console.log("player in game.tsx:", requestBody)
+    const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
     localStorage.removeItem("pin")
     localStorage.removeItem("adminId")
     navigate("/overview")
@@ -155,20 +199,34 @@ const GameArena = () => {
     } else if (successfulMove === 2) {
       setMoveStatus('blink-failure');
       setPopupType('lose')
+      console.log("setting lost to true")
+      setLost(true);
     }
     setTimeout(() => {
       setMoveStatus('');
     }, 500); // Reset after 1 second
   }
 
-  const handleDrawCards = async () => {
+  const readyDrawCards = async () => {
     if (reveal === true) {
-      let response = null
+      console.log("reveal is true")
       if (parseInt(localStorage.getItem("adminId")) === playerId) {
-        response = await api.put(`/move/${gameId}`, 100);
-      } else {
-        response = await api.get(`/game/${gameId}`);
+        console.log("Admin updated the game.")
+        const response = await api.put(`/move/${gameId}`, 100); // ensures that only one makes a put request to update the statews
+        setLost(true);
       }
+    }
+    console.log("playersReady: ", playersReady);
+    console.log("game players length: ", game.players.length);
+    readyWS.send(game.players.length);
+  }
+
+  const handleDrawCards = async () => {
+    setShowTeamHand(true);
+    // TODO: RESET READY PARTICIPANTS
+    console.log("lost:", lost)
+    if (lost === true) {
+      const response = await api.get(`/game/${gameId}`);
       console.log("HANDLE DRAW CARDS RESPONSE:", response.data)
       const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
       setPlayerHand(player.cards)
@@ -177,15 +235,22 @@ const GameArena = () => {
         .filter(p => p.id !== playerId)
 
       setTeamMates(FilteredPlayers)
+      console.log("Setting lost to false")
+      setLost(false);
+    } else {
+      console.log("hä....")
     }
-
+    console.log("setting reveal back to false")
+    setReveal(false);
     setDrawPhase(false);
-    setReveal(false); // Hide teammate cards
+    localStorage.setItem("inGame", "1"); // TODO: LET ME COOK?
     setCardsPlayed([]) // clear cards played pile
+  }
+  const isReady = () => {
+    readyWS.send(game.players.length);
   }
 
   const handleCardClick = async (cardValue: number) => {
-    setCardValue(cardValue)
     const now = new Date().getTime();
     if (reveal) {
       console.log("Can't play current card. Draw again...")
@@ -194,7 +259,6 @@ const GameArena = () => {
       console.log("Card clicked with value:", cardValue);
       const response = await api.put(`/move/${gameId}`, cardValue)
       ws.send(gameId)
-      console.log("response data card click:", response.data)
       // Add the card to the played cards pile
       // Remove card from players hand
       setPlayerHand(playerHand.filter(n => n !== cardValue))
@@ -208,19 +272,20 @@ const GameArena = () => {
       <div className="teammate-box" key={player.id}>
         <div className="webcam-container">{player.name}</div>
         <div className="matehand-container">
-            <MateHand cardValues={player.cards}  revealCards={reveal}/>
+          {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal}/>}
         </div>
       </div>
     ))
   ) : <Spinner />;
 
-  let mainContent = drawPhase ? (
+  let mainContent = drawPhase && localStorage.getItem("inGame") === null ? (
     <div>
-      <Button className="primary-button" onClick={handleDrawCards}>Draw Cards
+      <Button className="primary-button" onClick={readyDrawCards}>
+        Draw Cards {playersReady}/{players.length}
       </Button>
       <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
     </div>
-  ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
+  ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />;
 
   let tableClasses = `game-arena-container table ${moveStatus}`;
 
@@ -255,7 +320,7 @@ const GameArena = () => {
 
         <div className="pov-container">
           <div className="pov-container hand">
-            {(!drawPhase || reveal) && (
+            {(localStorage.getItem("inGame") || reveal) && (
               <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
             )}
           </div>
