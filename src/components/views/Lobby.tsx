@@ -19,13 +19,15 @@ const Lobby = () => {
   const [ws, setWs] = useState(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [playersMap, setPlayersMap] = useState(new Map());
   const userId = localStorage.getItem("id");
   const [teamMates, setTeamMates] = useState([])
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
 
   const handleUserPublished = (user, videoTrack) => {
-    setTeamMates(prev => [...prev, { id: user.uid, name: user.uid,  }]); //todo this is ugly
+
+    setTeamMates(prev => [...prev, { id: user.uid, name: "neme",  }]); //todo this is ugly
     setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
     console.log("# user published", user, videoTrack);
 
@@ -43,7 +45,7 @@ const Lobby = () => {
   const handleLocalUserJoined = (videoTrack) => {
     setLocalStream(videoTrack);
     // added to team mates to display local stream
-    setTeamMates(prev => [...prev,{ id: playerId, name: "Your Stream",  }]);
+    setTeamMates(prev => [...prev,{ id: playerId, name:  "neme",  }]);
     setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
   };
 
@@ -88,6 +90,8 @@ const Lobby = () => {
     console.log("admin id:", adminId)
     console.log("player id:", playerId)
 
+
+
     socket.onopen = () => {
       console.log('Connected to WebSocket');
     };
@@ -102,6 +106,13 @@ const Lobby = () => {
         localStorage.setItem("gameId", newLobby.gameid);
         navigate("/game")
       }
+
+      const newMap = new Map();
+      newLobby.players.forEach(player => {
+        newMap.set(player.id, player);
+      });
+      setPlayersMap(newMap);
+
       console.log("Received data:", newLobby);
     };
 
@@ -160,7 +171,9 @@ const Lobby = () => {
   let teamContent = teamMatesStream.size > 0 ? (
     Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
 
-      const mate = teamMates.find(mate => mate.id === id);
+      const player = playersMap.get(parseInt(id));
+
+
       return (
         <div className="teammate-box" key={id}>
           <div className="webcam-container" ref={el => {
@@ -170,7 +183,7 @@ const Lobby = () => {
           }}>
             {/* You can place an overlay or icon here if needed */}
           </div>
-          <div className="player-name">{mate ? mate.name : "Loading..."}</div>
+          <div className="player-name">{player ? player.name : "Loading..."}</div>
         </div>
       );
     })
