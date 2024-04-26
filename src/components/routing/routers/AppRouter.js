@@ -7,10 +7,7 @@ import Register from "../../views/Register";
 import Overview from "../../views/Overview";
 import Lobby from "../../views/Lobby";
 import GamePin from "../../views/Join";
-import GameDemoFromBackend from "../../views/GameDemoFromBackend";
-import Design from "../../views/design";
 import GameArena from "../../views/GameArena";
-import WebSocket from "../../views/WebSocket";
 
 /**
  * Main router of your application.
@@ -45,13 +42,6 @@ const AppRouter = () => {
         <Route path="/lobby" element={<Lobby />}> </Route>
 
         <Route path="/join" element={<GamePin />}> </Route>
-
-        <Route path="/test" element={<GameDemoFromBackend />}> </Route>
-
-        <Route path="/design" element={<Design />}> </Route>
-
-        <Route path="/ws" element={<WebSocket />}> </Route>
-
 
       </Routes>
     </BrowserRouter>

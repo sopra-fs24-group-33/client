@@ -6,7 +6,6 @@ import Background from "../../assets/AltBackground.svg";
 import Deck_backside from "../../assets/Deck_backside.svg";
 import { Button } from "../ui/Button";
 import "styles/views/Home.scss";
-import BaseContainer from "../ui/BaseContainer";
 
 
 const Home = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "./Button";
 import PropTypes from "prop-types";
-import "../../styles/ui/Ruels.scss";
+import "../../styles/ui/Rules.scss";
 
 const rulesText = "De Game is a card game that requires teamwork, good communication\n" +
   "          and reading other people's minds. A deck consists of 99 cards, each with\n" +

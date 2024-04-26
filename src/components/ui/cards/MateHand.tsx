@@ -2,7 +2,7 @@ import React from "react";
 // @ts-ignore
 import cardBackImage from "../../../assets/cards/Card Backside.svg"; // Adjust the path as necessary
 import CardFront from "./CardFront";
-import "../../../styles/ui/MateHand.scss";
+import "../../../styles/ui/cards/MateHand.scss";
 
 interface CardBackRowProps {
   cardValues: number[];  // Number of card backs to display

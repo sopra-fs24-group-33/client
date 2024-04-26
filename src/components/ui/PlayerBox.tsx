@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "../../styles/ui/PlayerBox.scss"; // Adjust the path to your SCSS file
-import ShameToken from "./ShameToken";
 // @ts-ignore
 import shame_logo from "../../assets/shame_logo.svg";
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { getWSPreFix } from "helpers/getDomain";
 import { GameLobby, Player } from "../../types";

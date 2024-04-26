@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import User from "models/User";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
-import Header from "./Header";
-import { Spinner } from "../ui/Spinner";
-import OldPlayerBox from "../ui/old-PlayerBox";
 import PropTypes from "prop-types";
 import { Player } from "../../types";
 

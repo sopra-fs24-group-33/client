@@ -1,5 +1,3 @@
-import User from "./User";
-
 class GamePlayer {
   constructor(data = {}) {
     this.id = null;

@@ -4,12 +4,9 @@ import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import {useNavigate} from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
 import PlayerBox from "components/ui/PlayerBox";
 import { Player, User } from "types";
-import { Simulate } from "react-dom/test-utils";
-import error = Simulate.error;
 import Lobby from "models/Lobby";
 // @ts-ignore
 import Background from "../../assets/AltBackground.svg";

@@ -1,6 +1,5 @@
-// CardFront.tsx
 import React from "react";
-import "../../../styles/ui/CardFront.scss";
+import "../../../styles/ui/cards/CardFront.scss";
 // @ts-ignore
 import cardFront from "../../../assets/cards/Card Frontside.svg";
 import { colorForValue } from "../../../helpers/calculateColor.js";

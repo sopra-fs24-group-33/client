@@ -1,5 +1,3 @@
-import { GamePlayer } from "../types";
-
 /**
  * Lobby model
  */

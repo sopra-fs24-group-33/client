@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 
 
@@ -8,6 +7,7 @@ import AppRouter from "./components/routing/routers/AppRouter";
  * React Template by Lucas Pelloni
  * Overhauled by Kyrill Hux
  * Updated by Marco Leder
+ * Used by F24 Group 33
  */
 const App = () => {
   return (
