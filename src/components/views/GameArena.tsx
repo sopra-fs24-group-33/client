@@ -38,17 +38,38 @@ const GameArena = () => {
   const [localStream, setLocalStream] = useState(null);
   const videoRefs = useRef(new Map());
 
+  const allStreamsReady = () => {
+    return teamMates.every(player => teamMatesStream.has(player.id));
+  };
+
   useEffect(() => {
+    // Update video elements with streams when available
     teamMatesStream.forEach((videoTrack, id) => {
       const videoElement = videoRefs.current.get(id);
       if (videoElement && videoTrack) {
         videoTrack.play(videoElement);
       }
     });
-  }, [teamMatesStream]);
+  }, [teamMatesStream, teamMates]);
+
+  const setVideoRef = (playerId, element) => {
+    if (element) {
+      videoRefs.current.set(playerId, element);
+      // Force update to attach stream
+      const videoTrack = teamMatesStream.get(playerId);
+      if (videoTrack) {
+        videoTrack.play(element);
+      }
+    } else {
+      videoRefs.current.delete(playerId);
+    }
+  };
+
 
   const handleUserPublished = (user, videoTrack) => {
     setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+    console.log("# user published", user, videoTrack);
+
   };
 
   const handleUserUnpublished = (user) => {
@@ -65,21 +86,36 @@ const GameArena = () => {
 
   useEffect(() => {
 
-    // Functions to handle stream events
 
+    const setupStreams = async () => {
+      try {
 
-    // Connect and setup streams
-    agoraService.joinAndPublishStreams(
-      playerId,
-      handleUserPublished,
-      handleUserUnpublished,
-      handleLocalUserJoined
-    );
+        //const response = await fetchAgoraToken(room, role, tokentype, userId);
+        const response = await api.get(`agoratoken/${lobbyPin}/${playerId}`);
 
+        console.log("# agora token response", response);
+        agoraService.joinAndPublishStreams(
+          playerId,
+          response.data,
+          String(lobbyPin),
+          handleUserPublished,
+          handleUserUnpublished,
+          handleLocalUserJoined
+        );
+      } catch (error) {
+        console.error('Failed to get Agora token:', error);
+        // Handle errors, e.g., show notification or error message to user
+      }
+    };
+
+    // Call the async function
+    setupStreams();
+
+    // Specify how to clean up after this effect:
     return () => {
       agoraService.cleanup();
     };
-  }, [playerId]);
+  }, [lobbyPin]);
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
@@ -253,18 +289,14 @@ const GameArena = () => {
 
   let teamContent = teamMates.length > 0 ? (
     teamMates.map(player => {
-      // Retrieve the videoTrack for this player from the map using the player's id
-      const videoTrack = teamMatesStream.get(player.id);
-
       return (
         <div className="teammate-box" key={player.id}>
-          <div className="webcam-container" ref={el => {
-            // Only attempt to play the video if the element and videoTrack are available
-            if (el && videoTrack) {
-              videoTrack.play(el);
-            }
-          }}>
-            {player.name}
+          <div className="webcam-container" ref={el => setVideoRef(player.id, el)}>
+            {teamMatesStream.has(player.id) ? (
+              <div>{player.name}</div>  //
+            ) : (
+              <Spinner />
+            )}
           </div>
           <div className="matehand-container">
             <MateHand cardValues={player.cards}  revealCards={reveal}/>
@@ -273,7 +305,6 @@ const GameArena = () => {
       );
     })
   ) : <Spinner />;
-
 
   let mainContent = drawPhase ? (
     <div>

@@ -1,9 +1,14 @@
 import AgoraRTC from "agora-rtc-sdk-ng";
 
+//const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
+
 // Configuration constants
-const APP_ID = "6784c587dc6d4e5594afbbe295d6524f"
-const TOKEN = "007eJxTYHB/I23or7zzgWdaZeR/jj0lUWGL/Xde2F5Uc6XwwB/mFZIKDGbmFibJphbmKclmKSappqaWJolpSUmpRpamKWamRiZpzxy10hoCGRmsEj+yMDJAIIjPwpCbmJnHwAAATocfjA=="
+const APP_ID = "bb103a1b0b3c477ea5bae0cc1c32525f"
+const APP_CERTIFICATE = 'd016d99bc4d8434aa063a0efe54412f1';
+const TOKEN = "007eJxTYOiS/mZd5f3JSMcu4JPdxOXzHszyYcmTPcnKd2/Cnfh379MUGMzMLUySTS3MU5LNUkxSTU0tTRLTkpJSjSxNU8xMjUzSXu7VTmsIZGR4bHCKkZEBAkF8FobcxMw8BgYAUhcgHw=="
 const CHANNEL = "main"
+
+
 
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
@@ -14,7 +19,7 @@ let localTracks = {
 
 
 export const agoraService = {
-  async joinAndPublishStreams(userId, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
+  async joinAndPublishStreams(userId, Token,lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
     // Set up event listeners as early as possible
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
@@ -30,7 +35,11 @@ export const agoraService = {
     });
 
     try {
-      await client.join(APP_ID, CHANNEL, TOKEN, userId);
+      console.log("# Joining with APP_ID:", APP_ID);
+      console.log("# Channel Name:", lobbyPin);
+      console.log("# Token:", Token);
+      console.log("# User ID:", userId);
+      await client.join(APP_ID, lobbyPin, Token, userId);
       console.log("# Joined channel with user ID:", userId);
 
       [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
