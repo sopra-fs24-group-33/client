@@ -30,14 +30,25 @@ const GameArena = () => {
   const [teamMates, setTeamMates] = useState<GamePlayer[]>([])
   const [ws, setWs] = useState(null);
   const [moveStatus, setMoveStatus] = useState('');
-  const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | null>(null);
+  const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | 'end' | null>(null);
   const lastCardPlayTime = useRef(0);
   const [reveal, setReveal] = useState<boolean>(false);
   const [readyWS, setReadyWS] = useState(null);
   const [playersReady, setPlayersReady] = useState<number>(0);
   const [showTeamHand, setShowTeamHand] = useState<boolean>(false);
-  const [lost, setLost] = useState<boolean>(false)
+  const [lost, setLost] = useState(() => {
+    return localStorage.getItem('lost') === 'true';
+  })
+  const [drawButtonClicked, setDrawButtonClicked] = useState(false);
 
+  useEffect(() => {
+    console.log("Current lost state:", lost);
+  }, [lost]);
+
+  useEffect(() => {
+    const lostStatus = localStorage.getItem('lost') === 'true';
+    setLost(lostStatus);
+  }, []);
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
@@ -164,6 +175,11 @@ const GameArena = () => {
     setReadyWS(socket);
   }, []);
 
+  const resetLostStatus = () => {
+    localStorage.removeItem('lost'); // Clear lost status
+    setLost(false); // Update React state if still necessary
+  };
+
   const closePopup = () => {
     setPopupType(null);
     setDrawPhase(true);
@@ -179,7 +195,12 @@ const GameArena = () => {
     localStorage.removeItem("inGame")
   }
 
-  const handleNewGame = () => {
+  const handleNewGame = async () => {
+    try {
+      await api.delete(`/endgame/${gameId}`)
+    } catch (error) {
+      console.error(error);
+    }
     navigate("/lobby")
   }
 
@@ -193,7 +214,7 @@ const GameArena = () => {
   }
 
   const handleMove = (successfulMove : number) => {
-
+    console.log("hiasdasd")
     if (successfulMove === 1) {
       setMoveStatus('blink-success');
     } else if (successfulMove === 2) {
@@ -201,6 +222,10 @@ const GameArena = () => {
       setPopupType('lose')
       console.log("setting lost to true")
       setLost(true);
+      localStorage.setItem('lost', 'true');
+    } else if (successfulMove === 3) {
+      console.log("hi")
+      setPopupType('end')
     }
     setTimeout(() => {
       setMoveStatus('');
@@ -208,12 +233,12 @@ const GameArena = () => {
   }
 
   const readyDrawCards = async () => {
+    setDrawButtonClicked(true);
     if (reveal === true) {
       console.log("reveal is true")
       if (parseInt(localStorage.getItem("adminId")) === playerId) {
         console.log("Admin updated the game.")
         const response = await api.put(`/move/${gameId}`, 100); // ensures that only one makes a put request to update the statews
-        setLost(true);
       }
     }
     console.log("playersReady: ", playersReady);
@@ -237,6 +262,10 @@ const GameArena = () => {
       setTeamMates(FilteredPlayers)
       console.log("Setting lost to false")
       setLost(false);
+
+      if (response.data.successfulMove === 3) {
+        handleMove(3);
+      }
     } else {
       console.log("hä....")
     }
@@ -245,6 +274,7 @@ const GameArena = () => {
     setDrawPhase(false);
     localStorage.setItem("inGame", "1"); // TODO: LET ME COOK?
     setCardsPlayed([]) // clear cards played pile
+    setDrawButtonClicked(false);
   }
   const isReady = () => {
     readyWS.send(game.players.length);
@@ -252,7 +282,7 @@ const GameArena = () => {
 
   const handleCardClick = async (cardValue: number) => {
     const now = new Date().getTime();
-    if (reveal) {
+    if (lost) {
       console.log("Can't play current card. Draw again...")
     }
     else if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
@@ -280,7 +310,7 @@ const GameArena = () => {
 
   let mainContent = drawPhase && localStorage.getItem("inGame") === null ? (
     <div>
-      <Button className="primary-button" onClick={readyDrawCards}>
+      <Button className="primary-button" onClick={readyDrawCards} disabled={drawButtonClicked}>
         Draw Cards {playersReady}/{players.length}
       </Button>
       <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
@@ -301,6 +331,9 @@ const GameArena = () => {
         </div>
 
         <div className="game-arena-container">
+          <Button className="primary-button" onClick={handleNewGame}>
+            New Game
+          </Button>
           {popupType && (
             <Popup
               type={popupType}

@@ -27,6 +27,10 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
       { label: 'New Game', action: onNewGame },
       { label: 'Leave', action: onLeaveGame }
     ],
+    end: [
+      { label: 'New Game', action: onNewGame},
+      { label: 'Leave', action: onLeaveGame}
+    ],
     lose: [
       { label: 'Reveal Cards', action: onReveal }
     ],
