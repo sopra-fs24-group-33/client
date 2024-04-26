@@ -27,6 +27,7 @@ const Overview = () => {
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
   const [curUser, setCurUser] = useState<User>(null);
+  const [player, setPlayer] = useState<Player>(null);
   const [showRules, setShowRules] = useState(false);
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
@@ -52,7 +53,7 @@ const Overview = () => {
   const createLobby = async () => {
     // Get current player based on token
     try {
-      const requestBody = JSON.stringify( curUser )
+      const requestBody = JSON.stringify( player )
       console.log("this is the requesto body: " + requestBody)
       const response = await api.post("/gamelobbies", requestBody);
 
@@ -61,7 +62,7 @@ const Overview = () => {
       const lobby = new Lobby(response.data)
 
 
-      localStorage.setItem("adminId", curUser.id)
+      localStorage.setItem("adminId", player.id)
       localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");
@@ -92,6 +93,7 @@ const Overview = () => {
 
         // Get current player based on token
         setCurUser(responseUsers.data.find(user => user.token === localStorage.getItem("token")));
+        setPlayer(responsePlayers.data.find(p => p.token === localStorage.getItem("token")));
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.

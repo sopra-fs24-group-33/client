@@ -72,6 +72,9 @@ const Lobby = () => {
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
 
+    console.log("admin id:", adminId)
+    console.log("player id:", playerId)
+
     socket.onopen = () => {
       console.log('Connected to WebSocket');
     };
