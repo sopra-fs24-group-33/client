@@ -18,6 +18,7 @@ const FormField = (props) => {
     <div className="login field">
       <label className="login label">{props.label}</label>
       <input
+        type={props.type} // Added type prop
         className="login input"
         placeholder="enter here.."
         value={props.value}
@@ -30,8 +31,10 @@ const FormField = (props) => {
 FormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
+  type: PropTypes.string, // Added type propType
   onChange: PropTypes.func,
 };
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -97,14 +100,17 @@ const Login = () => {
             </div>
             <FormField
               label="Username"
+              type="text" // Specify type as text for username
               value={username}
-              onChange={(un: string) => setUsername(un)}
+              onChange={(un) => setUsername(un)}
             />
             <FormField
               label="Password"
+              type="password" // Specify type as password for password
               value={password}
               onChange={(n) => setPassword(n)}
             />
+
             <div className="login button-container">
               <Button
                 width="100%"

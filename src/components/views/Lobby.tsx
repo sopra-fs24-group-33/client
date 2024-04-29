@@ -116,7 +116,7 @@ const Lobby = () => {
       console.log("Received data:", newLobby);
     };
 
-    socket.onclose = () => {
+    socket.onclose = async () => {
       console.log('WebSocket disconnected');
     };
 
@@ -126,18 +126,24 @@ const Lobby = () => {
 
     setWs(socket);
 
-    function handleBeforeUnload(event) {
-      leaveLobby(); // Asynchronously try to notify the server
-      // Optionally add a custom message to the event
-      // event.returnValue = "Are you sure you want to leave?";
+    async function handleBeforeUnload(event) {
+      // TODO: when refreshing this gets triggered, but I want to trigger this when closing
+      console.log("TEST::::::::::::::::::")
+//      event.preventDefault(); // Optionally prompt the user to confirm exit
+//      // Asynchronously notify the server that the user is leaving the lobby
+//      await leaveLobby(); // Call leaveLobby synchronously using async/await
+//      // Clear the local storage items
+//      localStorage.removeItem("pin");
+//      localStorage.removeItem("adminId");
+//      navigate("/overview"); // Navigate the user away after successful API call
+      // The return value for modern browsers to show the confirmation dialog
+//      event.returnValue = ''; // Chrome requires returnValue to be set
     }
 
     // Add the event listener for closing window/tab
-    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       socket.close();
       // Remove the event listener when the component unmounts
-      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
 

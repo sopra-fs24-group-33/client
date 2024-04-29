@@ -76,6 +76,7 @@ const Overview = () => {
   }
 
   useEffect(() => {
+    console.log("lobby Pin:", localStorage.getItem("pin"))
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
@@ -214,6 +215,9 @@ const Overview = () => {
 
       </div>
     );
+  } else {
+    contentUserInfo=
+    <Button onClick={() => logout()}>Logout</Button>;
   }
 
   return (

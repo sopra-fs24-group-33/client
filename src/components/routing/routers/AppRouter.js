@@ -12,53 +12,39 @@ import Design from "../../views/design";
 import GameArena from "../../views/GameArena";
 import WebSocket from "../../views/WebSocket";
 
-/**
- * Main router of your application.
- * In the following class, different routes are rendered. In our case, there is a Login Route with matches the path "/login"
- * and another Router that matches the route "/game".
- * The main difference between these two routes is the following:
- * /login renders another component without any sub-route
- * /game renders a Router that contains other sub-routes that render in turn other react components
- * Documentation about routing in React: https://reactrouter.com/en/main/start/tutorial 
- */
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
 
-        <Route path="/" element={
-          <Navigate to="/home" replace />
-        }/>
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
-        <Route path="/home" element={<Home/>} />
-
-        <Route path="/login" element={<LoginGuard />}>
-          <Route path="/login" element={<Login/>} />
+        <Route path="/home" element={<LoginGuard />}>
+          <Route index element={<Home />} />
         </Route>
 
-        <Route path="/register" element={<Register />}> </Route>
+        <Route path="/login" element={<LoginGuard />}>
+          <Route index element={<Login />} />
+        </Route>
 
-        <Route path="/overview" element={<Overview />}> </Route>
+        <Route path="/register" element={<LoginGuard />}>
+          <Route index element={<Register />} />
+        </Route>
 
-        <Route path="/game" element={<GameArena />}> </Route>
+        <Route path="/overview" element={<Overview />} />
+        <Route path="/game" element={<GameArena />} />
+        <Route path="/lobby" element={<Lobby />} />
+        <Route path="/join" element={<GamePin />} />
+        <Route path="/test" element={<GameDemoFromBackend />} />
+        <Route path="/design" element={<Design />} />
+        <Route path="/ws" element={<WebSocket />} />
 
-        <Route path="/lobby" element={<Lobby />}> </Route>
-
-        <Route path="/join" element={<GamePin />}> </Route>
-
-        <Route path="/test" element={<GameDemoFromBackend />}> </Route>
-
-        <Route path="/design" element={<Design />}> </Route>
-
-        <Route path="/ws" element={<WebSocket />}> </Route>
-
+        {/* Catch-all route */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
 
       </Routes>
     </BrowserRouter>
   );
 };
 
-/*
-* Don't forget to export your component!
- */
 export default AppRouter;
