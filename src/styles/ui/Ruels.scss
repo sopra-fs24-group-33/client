@@ -1,0 +1,54 @@
+@import "../theme";
+
+.rules {
+
+  &.divider {
+    border: none; // Remove the default border
+    height: 1px; // Make it 1px high
+    background-color: white; // Set the color of the divider
+  }
+
+  &.text {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+
+}
+
+.backdrop {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  display: flex; // use flex to center the modal box
+  align-items: center; // center vertically
+  justify-content: center; // center horizontally
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+
+.modal {
+  width: 600px;
+  background-color: black;
+  color: white;
+  padding: 20px;
+  padding-bottom: 2em;
+  border: 1px solid black;
+  border-radius: 0.75em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  animation: animatetop 0.4s;
+
+  // Define your keyframes for animatetop inside the SCSS as well
+  @keyframes animatetop {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

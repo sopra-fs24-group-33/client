@@ -17,6 +17,7 @@ import Background from "../../assets/AltBackground.svg";
 import shame_logo from "../../assets/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
 import "../../styles/_theme.scss";
+import Rules from "../ui/Rules";
 
 
 const Overview = () => {
@@ -25,10 +26,20 @@ const Overview = () => {
 
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
-  const [curPlayer, setCurPlayer] = useState<Player>(null);
-
+  const [curUser, setCurUser] = useState<User>(null);
+  const [player, setPlayer] = useState<Player>(null);
+  const [showRules, setShowRules] = useState(false);
   const containerRef = useRef(null);
   const [isScrollable, setIsScrollable] = useState(false);
+
+  const handleShowRules = () => {
+    setShowRules(true);
+  }
+  const handleCloseRules = () => {
+    setShowRules(false);
+  }
+
+
 
   const logout = async () => {
     const id = localStorage.getItem("id");
@@ -42,7 +53,7 @@ const Overview = () => {
   const createLobby = async () => {
     // Get current player based on token
     try {
-      const requestBody = JSON.stringify( curPlayer )
+      const requestBody = JSON.stringify( player )
       console.log("this is the requesto body: " + requestBody)
       const response = await api.post("/gamelobbies", requestBody);
 
@@ -51,7 +62,7 @@ const Overview = () => {
       const lobby = new Lobby(response.data)
 
 
-      localStorage.setItem("adminId", curPlayer.id)
+      localStorage.setItem("adminId", player.id)
       localStorage.setItem("pin", lobby.pin)
 
       navigate("/lobby");
@@ -81,7 +92,8 @@ const Overview = () => {
         setUsers(responseUsers.data);
 
         // Get current player based on token
-        setCurPlayer(responsePlayers.data.find(user => user.token === localStorage.getItem("token")));
+        setCurUser(responseUsers.data.find(user => user.token === localStorage.getItem("token")));
+        setPlayer(responsePlayers.data.find(p => p.token === localStorage.getItem("token")));
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -108,6 +120,7 @@ const Overview = () => {
     fetchData();
   }, []);
 
+
   let contentOnline = <Spinner />
   if (players) {
     contentOnline = (
@@ -129,10 +142,12 @@ const Overview = () => {
 
   let contentLosers = <Spinner />
   if (users) {
+    const sortedUsers = users.slice().sort((a, b) => b.shame_tokens - a.shame_tokens);
+
     contentLosers = (
       <div className="overview">
         <ul className="overview user-list">
-          {users.map((user: User) => (
+          {sortedUsers.map((user: User) => (
             <li key={user.id}>
               <PlayerBox
                 username={user.username}
@@ -146,72 +161,60 @@ const Overview = () => {
     );
   }
 
+  let totalOnlineShameTokens = 0;
+  let totalLosersShameTokens = 0;
+
+// Calculate total shame tokens for online players
+  if (players) {
+    totalOnlineShameTokens = players.reduce((total, player) => total + player.shame_tokens, 0);
+  }
+
+// Calculate total shame tokens for losers
+  if (users) {
+    totalLosersShameTokens = users.reduce((total, user) => total + user.shame_tokens, 0);
+  }
+
   let contentUserInfo: any;
-  if (curPlayer) {
+
+  if (curUser) {
+    const passwordStars = '*'.repeat(curUser.password.length);
+
     contentUserInfo = (
       <div className="overview sub-container">
 
         <div className="overview">
           <div className="overview header-hey-username">
             <h2 className="light">Hey&nbsp;</h2>
-            <h2>{curPlayer.name}</h2>
+            <h2>{curUser.username}</h2>
           </div>
           <div className="overview outer-text-wrapper">
             <div className="overview inner-text-wrapper">
               <p>username</p>
-              <p>{curPlayer.name}</p>
+              <p>{curUser.username}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Password</p>
-              <p>*****</p>
+              <p>{passwordStars}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Shame Tokens</p>
-              <p>{curPlayer.shame_tokens}</p>
+              <p>{curUser.shame_tokens}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Games Played</p>
-              <p>0</p>
+              <p>{curUser.gamesplayed ? curUser.gamesplayed : 0}</p>
             </div>
           </div>
         </div>
 
         <div className="overview rules-logout-button-wrapper">
           <Button onClick={() => logout()}>Logout</Button>
-          <Button className="outlined square">Rules</Button>
+          <Button className="outlined square" onClick={handleShowRules}>Rules</Button>
         </div>
+
       </div>
     );
   }
-
-  /*
-  * ALTER CODE von Herr dr. Srirangarasa
-
-    return (
-      <div className="overview section">
-        <BaseContainer className="overview container">
-          <h2>Players Online</h2>
-          <hr className="overview hr-thin" />
-          <div className="overview player-container">
-            {content}
-          </div>
-        </BaseContainer>
-        <div className='overview button-container'>
-          <Button className="primary-button" width={300} onClick={() => createLobby()}>
-            Create Lobby
-          </Button>
-          <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
-            Join Lobby
-          </Button>
-
-        </div>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
-      </div>
-    );
-
-   */
 
   return (
     <div style={{
@@ -227,7 +230,6 @@ const Overview = () => {
     }}>
       <div className="overview section">
         <BaseContainer className="overview container">
-
           {contentUserInfo}
 
           <div className="overview vertical-line-box">
@@ -240,7 +242,7 @@ const Overview = () => {
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />
-                  <h3 className="shame-token-count light">77</h3>
+                  <h3 className="shame-token-count light">{totalOnlineShameTokens}</h3>
                 </div>
               </div>
             </div>
@@ -248,7 +250,6 @@ const Overview = () => {
               {contentOnline}
             </div>
           </div>
-
 
           <div className="overview sub-container">
             <div className="overview header">
@@ -258,7 +259,7 @@ const Overview = () => {
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
                   <img src={shame_logo} alt="" style={{}} />
-                  <span className="shame-token-count">77</span>
+                  <h3 className="shame-token-count light">{totalLosersShameTokens}</h3>
                 </div>
               </div>
             </div>
@@ -266,6 +267,7 @@ const Overview = () => {
               {contentLosers}
             </div>
           </div>
+
         </BaseContainer>
 
         <div className="overview button-container">
@@ -275,11 +277,11 @@ const Overview = () => {
           <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
             Join Lobby
           </Button>
-
         </div>
-
       </div>
+      {showRules && <Rules onClose={handleCloseRules}/>}
     </div>
+
 
   );
 };

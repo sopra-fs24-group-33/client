@@ -12,7 +12,7 @@ import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/PopUp";
-import { createBufferSourceAudioTrack } from "agora-rtc-sdk-ng/esm";
+import { agoraService } from "helpers/agora";
 
 
 const GameArena = () => {
@@ -41,14 +41,88 @@ const GameArena = () => {
   })
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
 
-  useEffect(() => {
-    console.log("Current lost state:", lost);
-  }, [lost]);
+  const [teamMatesStream, setTeamMatesStream] = useState(new Map());
+  const [localStream, setLocalStream] = useState(null);
+  const videoRefs = useRef(new Map());
+
+  const allStreamsReady = () => {
+    return teamMates.every(player => teamMatesStream.has(player.id));
+  };
 
   useEffect(() => {
-    const lostStatus = localStorage.getItem('lost') === 'true';
-    setLost(lostStatus);
-  }, []);
+    // Update video elements with streams when available
+    teamMatesStream.forEach((videoTrack, id) => {
+      const videoElement = videoRefs.current.get(id);
+      if (videoElement && videoTrack) {
+        videoTrack.play(videoElement);
+      }
+    });
+  }, [teamMatesStream, teamMates]);
+
+  const setVideoRef = (playerId, element) => {
+    if (element) {
+      videoRefs.current.set(playerId, element);
+      // Force update to attach stream
+      const videoTrack = teamMatesStream.get(playerId);
+      if (videoTrack) {
+        videoTrack.play(element);
+      }
+    } else {
+      videoRefs.current.delete(playerId);
+    }
+  };
+
+
+  const handleUserPublished = (user, videoTrack) => {
+    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
+    console.log("# user published", user, videoTrack);
+
+  };
+
+  const handleUserUnpublished = (user) => {
+    setTeamMatesStream(prev => {
+      const updated = new Map(prev);
+      updated.delete(user.uid);
+      return updated;
+    });
+  };
+
+  const handleLocalUserJoined = (videoTrack) => {
+    setLocalStream(videoTrack);
+  };
+
+  useEffect(() => {
+
+
+    const setupStreams = async () => {
+      try {
+
+        //const response = await fetchAgoraToken(room, role, tokentype, userId);
+        const response = await api.get(`agoratoken/${lobbyPin}/${playerId}`);
+
+        console.log("# agora token response", response);
+        agoraService.joinAndPublishStreams(
+          playerId,
+          response.data,
+          String(lobbyPin),
+          handleUserPublished,
+          handleUserUnpublished,
+          handleLocalUserJoined
+        );
+      } catch (error) {
+        console.error('Failed to get Agora token:', error);
+        // Handle errors, e.g., show notification or error message to user
+      }
+    };
+
+    // Call the async function
+    setupStreams();
+
+    // Specify how to clean up after this effect:
+    return () => {
+      agoraService.cleanup();
+    };
+  }, [lobbyPin]);
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
@@ -105,15 +179,14 @@ const GameArena = () => {
     setWs(socket);
 
     async function fetchData() {
-      console.log("haha....")
       try {
         const response = await api.get(`/game/${gameId}`);
         console.log("Received Data:", response.data)
         setGame(response.data);
         setPlayers(response.data.players)
+        console.log(response.data.players.find(p => p.id === playerId))
         const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
         setPlayerHand(player.cards);
-        console.log("player hands:", player.cards);
 
         // set current level on local storage
         localStorage.setItem("lvl", response.data.level);
@@ -182,8 +255,8 @@ const GameArena = () => {
     setPlayerHand(player.cards); // update current players hand
   };
 
-  const revealCards = () => {
-    console.log("setting reveal to true")
+  const revealCards = async () => {
+
     setReveal(true);
     setPopupType(null);
     setDrawPhase(true);
@@ -209,7 +282,7 @@ const GameArena = () => {
   }
 
   const handleMove = (successfulMove : number) => {
-    console.log("hiasdasd")
+
     if (successfulMove === 1) {
       setMoveStatus('blink-success');
     } else if (successfulMove === 2) {
@@ -292,15 +365,24 @@ const GameArena = () => {
     }
   };
 
-  let teamContent = teamMates ? (
-    teamMates.map((player) => (
-      <div className="teammate-box" key={player.id}>
-        <div className="webcam-container">{player.name}</div>
-        <div className="matehand-container">
-          {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal}/>}
+
+  let teamContent = teamMates.length > 0 ? (
+    teamMates.map(player => {
+      return (
+        <div className="teammate-box" key={player.id}>
+          <div className="webcam-container" ref={el => setVideoRef(player.id, el)}>
+            {teamMatesStream.has(player.id) ? (
+              <div>{player.name}</div>  //
+            ) : (
+              <Spinner />
+            )}
+          </div>
+          <div className="matehand-container">
+            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal}/>}
+          </div>
         </div>
-      </div>
-    ))
+      );
+    })
   ) : <Spinner />;
 
   let mainContent = drawPhase && localStorage.getItem("inGame") === null ? (
@@ -310,7 +392,7 @@ const GameArena = () => {
       </Button>
       <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
     </div>
-  ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />;
+  ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
 
   let tableClasses = `game-arena-container table ${moveStatus}`;
 
@@ -327,7 +409,7 @@ const GameArena = () => {
 
         <div className="game-arena-container">
           <Button className="primary-button" onClick={handleNewGame}>
-            New Game
+            (Temp)New Game
           </Button>
           {popupType && (
             <Popup
@@ -352,8 +434,11 @@ const GameArena = () => {
               <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
             )}
           </div>
-          <div className="pov-container my-webcam">
-            My Webcam
+          <div className="pov-container my-webcam" ref={el => {
+            if (el && localStream) {
+              localStream.play(el);
+            }
+          }}>
           </div>
         </div>
 
