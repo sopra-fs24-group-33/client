@@ -175,11 +175,6 @@ const GameArena = () => {
     setReadyWS(socket);
   }, []);
 
-  const resetLostStatus = () => {
-    localStorage.removeItem('lost'); // Clear lost status
-    setLost(false); // Update React state if still necessary
-  };
-
   const closePopup = () => {
     setPopupType(null);
     setDrawPhase(true);
@@ -249,8 +244,8 @@ const GameArena = () => {
   const handleDrawCards = async () => {
     setShowTeamHand(true);
     // TODO: RESET READY PARTICIPANTS
-    console.log("lost:", lost)
-    if (lost === true) {
+    console.log("lost:", localStorage.getItem('lost'))
+    if (localStorage.getItem('lost')) {
       const response = await api.get(`/game/${gameId}`);
       console.log("HANDLE DRAW CARDS RESPONSE:", response.data)
       const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
@@ -261,7 +256,7 @@ const GameArena = () => {
 
       setTeamMates(FilteredPlayers)
       console.log("Setting lost to false")
-      setLost(false);
+      localStorage.removeItem('lost')
 
       if (response.data.successfulMove === 3) {
         handleMove(3);
@@ -282,7 +277,7 @@ const GameArena = () => {
 
   const handleCardClick = async (cardValue: number) => {
     const now = new Date().getTime();
-    if (lost) {
+    if (localStorage.getItem("lost")) {
       console.log("Can't play current card. Draw again...")
     }
     else if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
