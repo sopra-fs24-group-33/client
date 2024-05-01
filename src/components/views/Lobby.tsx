@@ -8,7 +8,9 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
-import { agoraService } from "helpers/agora";
+// import { agoraService } from "helpers/agora";
+import { useAgoraService } from 'helpers/agoracontext';
+
 
 const Lobby = () => {
   const prefix = getWSPreFix();
@@ -24,6 +26,7 @@ const Lobby = () => {
   const [teamMates, setTeamMates] = useState([])
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
+  const agoraService = useAgoraService();
 
   const handleUserPublished = (user, videoTrack) => {
 
@@ -56,7 +59,6 @@ const Lobby = () => {
       try {
         const response = await api.get(`agoratoken/${lobbyPin}/${userId}`);
 
-        console.log("# agora token response", response);
         agoraService.joinAndPublishStreams(
           userId,
           response.data,
@@ -65,6 +67,8 @@ const Lobby = () => {
           handleUserUnpublished,
           handleLocalUserJoined
         );
+
+
       } catch (error) {
         console.error('Failed to get Agora token:', error);
         // Handle errors, e.g., show notification or error message to user
@@ -111,7 +115,7 @@ const Lobby = () => {
       if (newLobby.gameid) {
         console.log("Game started!");
         localStorage.setItem("gameId", newLobby.gameid);
-        navigate("/game")
+        navigate('/game');
       }
 
       const newMap = new Map();
@@ -179,10 +183,12 @@ const Lobby = () => {
 
     navigate("/game")
   };
-  console.log("# players", players, "setTeamMatesStream", teamMatesStream)
+  console.log("# players", players)
+  console.log("# setTeamMatesStream", teamMatesStream)
+  console.log("# agoraService.getVideoTracks", agoraService.getVideoTracks());
 
-  let teamContent = teamMatesStream.size > 0 ? (
-    Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
+  let teamContent = players.length > 0 ? (
+    Array.from(agoraService.getVideoTracks().entries()).map(([id, videoTrack]) => {
 
       const player = playersMap.get(parseInt(id));
 

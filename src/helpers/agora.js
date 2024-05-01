@@ -18,48 +18,44 @@ let localTracks = {
 };
 
 
+// Store for the video tracks
+const videoTracks = new Map();
+
 export const agoraService = {
-  async joinAndPublishStreams(userId, Token,lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
-    // Set up event listeners as early as possible
+  async joinAndPublishStreams(userId, Token, lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
-      console.log("# Subscribed to user", user.uid, "for media type", mediaType);
       if (mediaType === "video") {
+        videoTracks.set(user.uid, user.videoTrack);
         handleUserPublished(user, user.videoTrack);
       }
-      // Additional handling for audio if needed
     });
 
     client.on("user-unpublished", user => {
+      videoTracks.delete(user.uid);
       handleUserUnpublished(user);
     });
 
     try {
-      console.log("# Joining with APP_ID:", APP_ID);
-      console.log("# Channel Name:", lobbyPin);
-      console.log("# Token:", Token);
-      console.log("# User ID:", userId);
       await client.join(APP_ID, lobbyPin, Token, userId);
-      console.log("# Joined channel with user ID:", userId);
-
       [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
-
-      // After joining, publish local tracks
+      videoTracks.set(userId, localTracks.videoTrack);
       await client.publish(Object.values(localTracks));
-      console.log("# Published local tracks");
       handleLocalUserJoined(localTracks.videoTrack);
-
     } catch (error) {
       console.error("Error in Agora Stream Setup:", error);
     }
   },
 
-  async cleanup() {
-    // Unpublish and close local tracks
+  cleanup() {
     localTracks.videoTrack?.close();
     localTracks.audioTrack?.close();
-    await client.leave();
+    client.leave();
     client.removeAllListeners();
-    console.log("# Agora cleanup done.");
+    videoTracks.clear();
+  },
+
+  getVideoTracks() {
+    return videoTracks;
   }
 };
