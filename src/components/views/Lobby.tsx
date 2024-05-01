@@ -80,7 +80,7 @@ const Lobby = () => {
 
     // Specify how to clean up after this effect:
     return () => {
-      agoraService.cleanup();
+      // agoraService.cleanup();
     };
   }, [userId, lobbyPin]);
 
@@ -106,6 +106,7 @@ const Lobby = () => {
       console.log("received msg:", event.data)
       if (event.data === "leave") {
         localStorage.removeItem("pin");
+        agoraService.cleanup();
         navigate("/overview");
         return;
       }
@@ -166,6 +167,7 @@ const Lobby = () => {
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
       localStorage.removeItem("pin")
       localStorage.removeItem("adminId")
+      agoraService.cleanup();
       navigate("/overview");
     } catch (error) {
       console.error("Error leaving the lobby:", handleError(error));
@@ -180,7 +182,6 @@ const Lobby = () => {
     const gamestatus = response.data;
     localStorage.setItem("gameId", gamestatus.id);
     console.log(gamestatus)
-
     navigate("/game")
   };
   console.log("# players", players)
