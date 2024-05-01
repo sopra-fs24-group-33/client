@@ -46,16 +46,23 @@ const Overview = () => {
     }
 
     try {
-      const requestBody = JSON.stringify( player )
-      const response = await api.post(`/gamelobbies/${finalPin}`, requestBody)
-
-      localStorage.setItem("pin", withoutSpacing);
-
-      navigate("/lobby")
+      const response = await api.get(`/gamelobbies/${finalPin}`)
+      if (response.data.players.length >= 5) {
+        setError("Lobby is full")
+        return;
+      }
     } catch (error) {
       setError("Invalid Game Pin")
+      return;
     }
+
+    const requestBody = JSON.stringify( player )
+    await api.post(`/gamelobbies/${finalPin}`, requestBody)
+    localStorage.setItem("pin", withoutSpacing);
+    navigate("/lobby")
+
   }
+
 
 
 

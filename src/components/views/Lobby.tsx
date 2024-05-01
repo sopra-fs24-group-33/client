@@ -233,7 +233,7 @@ const Lobby = () => {
             Leave Lobby
           </Button>
           {adminId === playerId && (
-            <Button className="" width="100%" onClick={() => startGame()}>
+            <Button className="" width="100%" onClick={() => startGame()} disabled={players.length <= 1}>
               Start Game
             </Button>
           )}
