@@ -3,6 +3,7 @@
 .rules {
 
   &.divider {
+    width: 60%;
     border: none; // Remove the default border
     height: 1px; // Make it 1px high
     background-color: white; // Set the color of the divider
@@ -44,7 +45,7 @@
   @keyframes animatetop {
     from {
       opacity: 0;
-      transform: translateY(-100%);
+      transform: translateY(-15%);
     }
     to {
       opacity: 1;

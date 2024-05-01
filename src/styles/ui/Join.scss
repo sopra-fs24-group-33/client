@@ -1,0 +1,85 @@
+@import "../theme";
+
+.join {
+
+  &.divider {
+    border: none; // Remove the default border
+    height: 1px; // Make it 1px high
+    width: 70%;
+    background-color: white; // Set the color of the divider
+  }
+
+  &.text {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+
+  &.input {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    height: 50px;
+    color: $textColor;
+    border: double 1px white;
+    border-radius: 15px;
+    background-color: transparent;
+    text-indent: 0;
+    text-align: center;
+    caret-color: darkgrey;
+
+    &:focus {
+      border: double 1px transparent;
+      border-left-width: 0;
+      border-right-width: 0;
+      border-radius: 15px;
+      background-image: linear-gradient(to right, black, black), linear-gradient(to right, #FC3A87, #4235FB);
+      background-clip: content-box, border-box;
+      text-indent: 0px;
+    }
+  }
+
+}
+
+.backdrop {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  display: flex; // use flex to center the modal box
+  align-items: center; // center vertically
+  justify-content: center; // center horizontally
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+
+.modal {
+  width: 600px;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 20px;
+  padding-bottom: 2em;
+  border: 1px solid black;
+  border-radius: 0.75em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  animation: animatetop 0.4s;
+
+  // Define your keyframes for animatetop inside the SCSS as well
+  @keyframes animatetop {
+    from {
+      opacity: 0;
+      transform: translateY(-15%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

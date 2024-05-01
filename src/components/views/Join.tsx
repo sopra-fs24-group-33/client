@@ -1,152 +1,92 @@
-import React, { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-import User from "models/User";
-import { Form, useNavigate } from "react-router-dom";
-import BaseContainer from "../ui/BaseContainer";
-import { Button } from "../ui/Button";
-import Header from "./Header";
-import { Spinner } from "../ui/Spinner";
-import OldPlayerBox from "../ui/old-PlayerBox";
-import PropTypes from "prop-types";
-import { Player } from "../../types";
+import React, { useEffect, useRef, useState } from "react";
+import PropTypes from 'prop-types';
+import "../../styles/views/Login.scss";
+import "../../styles/ui/Join.scss";
+import "../../styles/views/Overview.scss";
+import { Button } from "../ui/Button";  // Ensure this path is correct and styles are appropriate for the popup
 
-const FormField = (props) => {
-  return (
-    <div className="login field">
-      <label className="login label">{props.label}</label>
-      <input
-        className="login input"
-        placeholder="enter here.."
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-      />
-    </div>
-  );
-};
+const FormFieldPin = ({ label, value, onChange, onKeyDown}) => {
+  const inputRef = useRef(null);
 
-FormField.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-};
-
-const FormFieldPin = (props) => {
+  useEffect(() => {
+    // Automatically focus the input field when the component is mounted
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
   const handleInputChange = (e) => {
-    // Remove non-numeric characters and limit the length to 6
     let inputValue = e.target.value.replace(/\D/g, '').substring(0, 6);
-    // Insert a space after the third character for visual representation
     let formattedValue = inputValue.replace(/(\d{3})(?=\d)/g, '$1 ');
-    // Update the state with the formatted input for visual representation
-    props.onChange(formattedValue);
+    onChange(formattedValue);
   };
 
   return (
-    <div className="login field">
-      <label className="login label">{props.label}</label>
+    <div className="login field" style={{
+      width:"40%"
+    }} >
+      <label className="login label">{label}</label>
       <input
-        className="login input"
-        placeholder="enter here.."
-        value={props.value} // Use value for visual representation
+        className="join input"
+        ref={inputRef}
+        placeholder="123 456"
+        value={value}
         onChange={handleInputChange}
+        onKeyDown={onKeyDown}
       />
     </div>
   );
 };
 
 FormFieldPin.propTypes = {
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
   value: PropTypes.string,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func.isRequired,
 };
 
-const Join = () => {
-  const navigate = useNavigate();
-  const [pin, setPin] = useState<number>(null);
-  const userId = localStorage.getItem("id");
+interface JoinPopupProps {
+  onClose: () => void;
+  onJoin: (pin: string) => void;
+}
 
-  const [players, setPlayers] = useState<Player[]>(null);
+const JoinPopup: React.FC<JoinPopupProps> = ({ onClose, onJoin, error }) => {
+  const [pin, setPin] = useState('');
 
-  const doJoin = async () => {
-    const player = players.find(user => user.token === localStorage.getItem("token"));
-
-    console.log("Player:", player)
-    console.log("Game Pin:", typeof pin)
-
-    const withoutSpacing = pin.replace(/\s/g, '')
-    const finalPin = parseInt(withoutSpacing, 10);
-
-    console.log("Game Pin Final:",  finalPin)
-
-    try {
-      const requestBody = JSON.stringify( player )
-      const response = await api.post(`/gamelobbies/${finalPin}`, requestBody)
-
-      localStorage.setItem("pin", withoutSpacing);
-
-      navigate("/lobby")
-    } catch (error) {
-      alert (
-        `Something went wrong during the login: \n${handleError(error)}`
-      );
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      onJoin(pin);
+    } else if (event.key === 'Escape') {
+      onClose();
     }
-  };
-
-  useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    async function fetchData() {
-      try {
-        const response = await api.get("/players");
-
-        // Get the returned users and update the state.
-        setPlayers(response.data);
-
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("request to:", response.request.responseURL);
-        console.log("status code:", response.status);
-        console.log("status text:", response.statusText);
-        console.log("requested data:", response.data);
-
-        // See here to get more data.
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
-    }
-
-    fetchData();
-  }, []);
-
+  }
 
   return (
-    <BaseContainer>
-      <div className="login container">
-        <div className="login form">
-          <h2>Enter Game Pin</h2>
-          <FormFieldPin
-            value={pin}
-            onChange={(pin: number) => setPin(pin)}
-          />
-          <div className="login button-container">
-            <Button className="outlined" width="100%" onClick={() => navigate("/overview")}>
-              Cancel
-            </Button>
-            <Button width="100%" onClick={() => doJoin()}>
-              Continue
-            </Button>
-          </div>
+    <div className="backdrop">
+      <div className="modal">
+        <h2 style={{
+          marginBottom: "0.2em",
+        }}>Enter Pin</h2>
+        <hr className="join divider" />
+        <FormFieldPin
+          label=""
+          value={pin}
+          onChange={setPin}
+          onKeyDown={handleKeyDown}
+        />
+        <div style={{ color: "red", height: "1em", fontSize: "1em" }}>{error}</div>
+        <div className="overview button-container">
+          <Button className= "outlined" width="7vw" onClick={onClose}>Cancel</Button>
+          <Button width="7vw" onClick={() => onJoin(pin)}>Join</Button>
         </div>
       </div>
-    </BaseContainer>
-  )
+    </div>
+  );
+};
 
-}
-export default Join;
+JoinPopup.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onJoin: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};
+
+export default JoinPopup;
