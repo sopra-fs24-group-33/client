@@ -55,6 +55,8 @@ const JoinPopup: React.FC<JoinPopupProps> = ({ onClose, onJoin, error }) => {
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       onJoin(pin);
+    } else if (event.key === 'Escape') {
+      onClose();
     }
   }
 
