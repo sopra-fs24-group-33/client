@@ -8,7 +8,6 @@ import "styles/views/Login.scss";
 import PropTypes from "prop-types";
 import {
   RegExpMatcher,
-  TextCensor,
   englishDataset,
   englishRecommendedTransformers,
 } from 'obscenity';// @ts-ignore
