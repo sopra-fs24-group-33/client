@@ -73,7 +73,7 @@ const JoinPopup: React.FC<JoinPopupProps> = ({ onClose, onJoin, error }) => {
           onChange={setPin}
           onKeyDown={handleKeyDown}
         />
-        <div style={{ color: "red", height: "1em", fontSize: "1em" }}>{error}</div>
+        <div style={{ color: "#fc3a87", height: "1em", fontSize: "1em" }}>{error}</div>
         <div className="overview button-container">
           <Button className= "outlined" width="7vw" onClick={onClose}>Cancel</Button>
           <Button width="7vw" onClick={() => onJoin(pin)}>Join</Button>

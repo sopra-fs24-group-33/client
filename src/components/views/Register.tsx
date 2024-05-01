@@ -6,16 +6,27 @@ import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Login.scss";
 import PropTypes from "prop-types";
-// @ts-ignore
+import {
+  RegExpMatcher,
+  TextCensor,
+  englishDataset,
+  englishRecommendedTransformers,
+} from 'obscenity';// @ts-ignore
 import Background from "../../assets/AltBackground.svg";
 // @ts-ignore
 import Logo from "../../assets/Logo.svg";
+
+const matcher = new RegExpMatcher({
+  ...englishDataset.build(),
+  ...englishRecommendedTransformers,
+});
 
 const FormField = (props) => {
   return (
     <div className="login field">
       <label className="login label">{props.label}</label>
       <input
+        type={props.type} // Added type prop
         className="login input"
         placeholder="enter here.."
         value={props.value}
@@ -28,6 +39,7 @@ const FormField = (props) => {
 FormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
+  type: PropTypes.string, // Added type propType
   onChange: PropTypes.func,
 };
 
@@ -35,8 +47,23 @@ const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>(null);
   const [password, setPassword] = useState<string>(null);
+  const [error, setError] = useState("");
+
+  const validateUsername = (un) => {
+
+    if (matcher.hasMatch(un) || /[^a-zA-Z0-9]/.test(un)) {
+      setError("Invalid username")
+      return false
+    } else {
+      return true;
+    }
+  }
 
   const doRegister = async () => {
+    if (!validateUsername(username)) {
+      return;
+    }
+
     try {
       const requestBody = JSON.stringify({username, password})
       const response = await api.post("/users", requestBody);
@@ -48,9 +75,7 @@ const Register = () => {
       navigate("/overview");
     }
     catch (error) {
-      alert(
-        `Something went wrong during the registration: \n${handleError(error)}`
-      )
+      setError("Username already exists")
     }
   }
 
@@ -91,17 +116,20 @@ const Register = () => {
               <h2>
                 Register
               </h2>
-              <img src={Logo} alt="" style={{width: "65px", height:"65px"}} />
+              <img src={Logo} alt="" style={{ width: "65px", height: "65px" }} />
             </div>
             <FormField
               label="Username"
               value={username}
+              type="text"
               onChange={(un: string) => setUsername(un)}
             />
+            <div style={{ color: "#fc3a87", height: "1em", fontSize: "0.88em", marginLeft: "10px", marginBottom: "20px" }}>{error}</div>
 
             <FormField
               label="Password"
               value={password}
+              type="password"
               onChange={(un: string) => setPassword(un)}
             />
             <div className="login button-container">
