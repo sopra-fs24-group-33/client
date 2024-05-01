@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "./Button";
 import PropTypes from "prop-types";
-import "../../styles/ui/Ruels.scss";
+import "../../styles/ui/Rules.scss";
 
 const rulesText = "De Game is a cooperative card game that tests teamwork, good communication\n" +
   "          and intuition.\n" +
@@ -20,7 +20,9 @@ const Rules = ({ onClose }) => {
   return (
     <div className="backdrop" >
       <div className="modal" >
-        <h2>Game Rules</h2>
+        <h2 style={{
+          marginBottom: "1px",
+        }}>Game Rules</h2>
         <hr className="rules divider"/>
         <div className="game-rules">
           <p style={{
