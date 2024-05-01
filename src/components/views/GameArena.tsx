@@ -391,15 +391,14 @@ const GameArena = () => {
       return (
         <div className="teammate-box" key={player.id}>
           <div className="webcam-container" ref={el => {
-            // This function will be called with the DOM element when it is mounted and with `null` when it is unmounted
             if (el && videoTrack) {
               videoTrack.play(el);
             }
           }}>
-            {/* If needed, an overlay or icon can be placed here */}
           </div>
+
           <div className="matehand-container">
-            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal}/>}
+            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal} />}
           </div>
         </div>
       );
