@@ -27,7 +27,7 @@ const Lobby = () => {
 
   const handleUserPublished = (user, videoTrack) => {
 
-    setTeamMates(prev => [...prev, { id: user.uid, name: "neme",  }]); //todo this is ugly
+    setTeamMates(prev => [...prev, { id: user.uid, name: "neme",  }]);
     setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
     console.log("# user published", user, videoTrack);
 
@@ -86,6 +86,7 @@ const Lobby = () => {
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
+    console.log("lobby pin:", lobbyPin)
 
     console.log("admin id:", adminId)
     console.log("player id:", playerId)
@@ -98,6 +99,11 @@ const Lobby = () => {
 
     socket.onmessage = (event) => {
       console.log("received msg:", event.data)
+      if (event.data === "leave") {
+        localStorage.removeItem("pin");
+        navigate("/overview");
+        return;
+      }
       const newLobby = JSON.parse(event.data);
       setLobby(newLobby);
       setPlayers(newLobby.players)
