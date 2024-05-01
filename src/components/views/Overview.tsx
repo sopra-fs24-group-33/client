@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api, handleError } from "helpers/api";
+import { getWSPreFix } from "helpers/getDomain";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import {useNavigate} from "react-router-dom";
@@ -8,8 +9,6 @@ import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
 import PlayerBox from "components/ui/PlayerBox";
 import { Player, User } from "types";
-import { Simulate } from "react-dom/test-utils";
-import error = Simulate.error;
 import Lobby from "models/Lobby";
 // @ts-ignore
 import Background from "../../assets/AltBackground.svg";
@@ -18,37 +17,56 @@ import shame_logo from "../../assets/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
 import "../../styles/_theme.scss";
 import Rules from "../ui/Rules";
+import Join from "./Join";
+import JoinPopup from "./Join";
 
 
 const Overview = () => {
-
+  const prefix = getWSPreFix();
   const navigate = useNavigate();
-
+  const playerId = localStorage.getItem("id");
+  const lobbyPin = localStorage.getItem('pin');
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
   const [curUser, setCurUser] = useState<User>(null);
   const [player, setPlayer] = useState<Player>(null);
   const [showRules, setShowRules] = useState(false);
-  const containerRef = useRef(null);
-  const [isScrollable, setIsScrollable] = useState(false);
+  const [showJoin, setShowJoin] = useState(false);
+  const [ws, setWs] = useState(null);
+  const [error, setError] = useState("");
 
-  const handleShowRules = () => {
-    setShowRules(true);
+  const handleJoin = async (pin) => {
+    const withoutSpacing = pin.replace(/\s/g, '')
+    const finalPin = parseInt(withoutSpacing, 10);
+    console.log("*pin entered:", finalPin)
+
+    if (pin.length < 6) {
+      setError("Pin must be 6-digits long")
+      return;
+    }
+
+    try {
+      const requestBody = JSON.stringify( player )
+      const response = await api.post(`/gamelobbies/${finalPin}`, requestBody)
+
+      localStorage.setItem("pin", withoutSpacing);
+
+      navigate("/lobby")
+    } catch (error) {
+      setError("Invalid Game Pin")
+    }
   }
-  const handleCloseRules = () => {
-    setShowRules(false);
-  }
 
 
 
-  const logout = async () => {
-    const id = localStorage.getItem("id");
-    localStorage.removeItem("id");
-    localStorage.removeItem("token");
-    await api.delete(`/players/${id}`)
-    navigate("/home");
+  const logout = () => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.close(1000, "logout");
+      localStorage.removeItem("id");
+      localStorage.removeItem("token");
+      navigate("/home")
+    }
   };
-
 
   const createLobby = async () => {
     // Get current player based on token
@@ -76,50 +94,82 @@ const Overview = () => {
   }
 
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    async function fetchData() {
-      try {
-        const responsePlayers = await api.get("/players");
-        const responseUsers = await api.get("/users");
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Get the returned users and update the state.
-        setPlayers(responsePlayers.data);
-        setUsers(responseUsers.data);
-
-        // Get current player based on token
-        setCurUser(responseUsers.data.find(user => user.token === localStorage.getItem("token")));
-        setPlayer(responsePlayers.data.find(p => p.token === localStorage.getItem("token")));
-
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("request to:", responsePlayers.request.responseURL);
-        console.log("status code:", responsePlayers.status);
-        console.log("status text:", responsePlayers.statusText);
-        console.log("requested data:", responsePlayers.data);
-
-        // See here to get more data.
-        console.log(responsePlayers);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
+    if (playerId === null) {
+      navigate("/home")
     }
+  }, [playerId, lobbyPin]);
 
-    fetchData();
+  useEffect(() => {
+    console.log("*playerId", localStorage.getItem("id"))
+    const socket = new WebSocket(`${prefix}/overview`);
+    socket.onopen = () => {
+      console.log('*Connected to WebSocket [Overview]');
+
+      const msg = JSON.stringify({ action: "playerId", playerId: playerId});
+      socket.send(msg);
+    };
+
+    socket.onmessage = (event) => {
+      console.log("*user id or player id?:", localStorage.getItem("id"));
+      console.log("*received msg:", event.data)
+      const data: { players: Player[], users: User[] } = JSON.parse(event.data);
+      console.log("*players:", data.players);
+      console.log("*users:", data.users);
+
+      const responsePlayers = data.players;
+      const responseUsers = data.users;
+
+      setPlayers(responsePlayers);
+      setUsers(responseUsers);
+
+      setPlayer(responsePlayers.find(p => p.token === localStorage.getItem("token")));
+      setCurUser(responseUsers.find(user => user.token === localStorage.getItem("token")));
+      }
+
+    socket.onclose = () => {
+      if (!localStorage.getItem("pin")) {
+        logout()
+      }
+      console.log('*WebSocket disconnected');
+    };
+
+    socket.onerror = (error) => {
+      console.error('*WebSocket error:', error);
+    };
+
+    setWs(socket);
+
+    // Add the event listener for closing window/tab
+    return () => {
+      socket.close();
+      // Remove the event listener when the component unmounts
+    };
+
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      // Prevent the default unload behavior and display a warning message
+      event.preventDefault(); // Prevents the default unload for some browsers
+      event.returnValue = ''; // Required for Chrome
+      return "Are you sure you want to leave? You will be logged out if you refresh or close this page.";
+    };
+
+    const handleUnload = () => {
+      localStorage.removeItem("id")
+      localStorage.removeItem("token")
+    }
+
+    // Attach the event listener to the window
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
+
+    return () => {
+      // Cleanup the event listener when the component unmounts
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleUnload);
+    };
+  }, []);
 
   let contentOnline = <Spinner />
   if (players) {
@@ -209,11 +259,14 @@ const Overview = () => {
 
         <div className="overview rules-logout-button-wrapper">
           <Button onClick={() => logout()}>Logout</Button>
-          <Button className="outlined square" onClick={handleShowRules}>Rules</Button>
+          <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
         </div>
 
       </div>
     );
+  } else {
+    contentUserInfo=
+    <Button onClick={() => logout()}>Logout</Button>;
   }
 
   return (
@@ -274,12 +327,19 @@ const Overview = () => {
           <Button className="primary-button" width={300} onClick={() => createLobby()}>
             Create Lobby
           </Button>
-          <Button className="primary-button" width={300} onClick={() => navigate("/join")}>
+          <Button className="primary-button" width={300} onClick={() => setShowJoin(true)}>
             Join Lobby
           </Button>
         </div>
       </div>
-      {showRules && <Rules onClose={handleCloseRules}/>}
+      {showJoin &&
+        <JoinPopup
+          onClose={() => setShowJoin(false)}
+          onJoin={handleJoin}
+          error={error}
+        />
+      }
+      {showRules && <Rules onClose={() => setShowRules(false)}/>}
     </div>
 
 
