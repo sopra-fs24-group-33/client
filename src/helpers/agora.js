@@ -19,7 +19,10 @@ let localTracks = {
 
 
 // Store for the video tracks
+
+// Stores for the tracks
 const videoTracks = new Map();
+const audioTracks = new Map();
 
 export const agoraService = {
   async joinAndPublishStreams(userId, Token, lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
@@ -27,21 +30,30 @@ export const agoraService = {
       await client.subscribe(user, mediaType);
       if (mediaType === "video") {
         videoTracks.set(user.uid, user.videoTrack);
-        handleUserPublished(user, user.videoTrack);
+        handleUserPublished(user, user.videoTrack, "video");
+      } else if (mediaType === "audio") {
+        audioTracks.set(user.uid, user.audioTrack);
+        audioTracks.get(user.uid).play();
+        handleUserPublished(user, user.audioTrack, "audio");
       }
     });
 
-    client.on("user-unpublished", user => {
-      videoTracks.delete(user.uid);
-      handleUserUnpublished(user);
+    client.on("user-unpublished", (user, mediaType) => {
+      if (mediaType === "video") {
+        videoTracks.delete(user.uid);
+      } else if (mediaType === "audio") {
+        audioTracks.delete(user.uid);
+      }
+      handleUserUnpublished(user, mediaType);
     });
 
     try {
       await client.join(APP_ID, lobbyPin, Token, userId);
       [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
       videoTracks.set(userId, localTracks.videoTrack);
+      audioTracks.set(userId, localTracks.audioTrack);
       await client.publish(Object.values(localTracks));
-      handleLocalUserJoined(localTracks.videoTrack);
+      handleLocalUserJoined(localTracks.videoTrack, localTracks.audioTrack);
     } catch (error) {
       console.error("Error in Agora Stream Setup:", error);
     }
@@ -53,9 +65,26 @@ export const agoraService = {
     client.leave();
     client.removeAllListeners();
     videoTracks.clear();
+    audioTracks.clear();
   },
 
   getVideoTracks() {
     return videoTracks;
-  }
+  },
+
+  getAudioTracks() {
+    return audioTracks;
+  },
+
+  mute() {
+    if (localTracks.audioTrack) {
+      localTracks.audioTrack.setEnabled(false);
+    }
+  },
+
+  unmute() {
+    if (localTracks.audioTrack) {
+      localTracks.audioTrack.setEnabled(true);
+    }
+  },
 };
