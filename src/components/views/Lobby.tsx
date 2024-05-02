@@ -192,7 +192,6 @@ const Lobby = () => {
 
       const player = playersMap.get(parseInt(id));
 
-
       return (
         <div className="teammate-box" key={id}>
           <div className="webcam-container" ref={el => {

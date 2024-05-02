@@ -41,6 +41,16 @@ const GameArena = () => {
   })
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
   const agoraService = useAgoraService();
+  const [isMuted, setIsMuted] = useState(false);
+
+  const toggleMute = () => {
+    if (isMuted) {
+      agoraService.unmuteselfe();
+    } else {
+      agoraService.muteselfe();
+    }
+    setIsMuted(!isMuted);
+  };
 
 
 
@@ -355,7 +365,7 @@ const GameArena = () => {
         <div className="pov-container">
           <div className="pov-container hand">
             {(localStorage.getItem("inGame") || reveal) && (
-              <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
+              <PlayerHand cardValues={playerHand} onClick={handleCardClick} />
             )}
           </div>
           <div className="pov-container my-webcam" ref={el => {
@@ -363,7 +373,21 @@ const GameArena = () => {
               agoraService.getVideoTracks().get(playerId.toString()).play(el);
             }
           }}>
+
           </div>
+          <button
+            style={{
+              backgroundColor: isMuted ? 'red' : 'green',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              padding: '10px 20px',
+              cursor: 'pointer'
+            }}
+            onClick={toggleMute}
+          >
+            {isMuted ? 'Unmute' : 'Mute'}
+          </button>
         </div>
 
       </div>

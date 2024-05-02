@@ -76,13 +76,13 @@ export const agoraService = {
     return audioTracks;
   },
 
-  mute() {
+  muteselfe() {
     if (localTracks.audioTrack) {
       localTracks.audioTrack.setEnabled(false);
     }
   },
 
-  unmute() {
+  unmuteselfe() {
     if (localTracks.audioTrack) {
       localTracks.audioTrack.setEnabled(true);
     }
