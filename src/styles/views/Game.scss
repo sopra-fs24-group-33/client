@@ -59,10 +59,16 @@
   }
 
   .webcam-container {
-    width: 30vh;  // Takes full width of the teammate-container
-    height: 30vh;  // Fixed height, adjust as needed
+    width: 30vh;  // Maintains the width of the container
+    height: 30vh;  // Maintains the height of the container
     background-color: grey;  // Just for visibility
+    border: 2px solid black;  // Adds a black border
+    border-radius: 50%;  // Makes the container round
     z-index: 1;
+    display: flex;
+    align-items: center;  // Centers the content vertically
+    justify-content: center;  // Centers the content horizontally
+    overflow: hidden;  // Ensures no overflow of content outside the border
   }
 
   .player-name {
@@ -157,7 +163,32 @@
     width: 225px;
     height: 225px;
     background-color: grey;
+    border: 2px solid black;  // Adds a black border
+    border-radius: 50%;  // Makes the container round
+    z-index: 1;
+    display: flex;
+    align-items: center;  // Centers the content vertically
+    justify-content: center;  // Centers the content horizontally
+    overflow: hidden;  // Ensures no overflow of content outside the border
   }
+}
+
+.button-mute {
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.button-unmute {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
 }
 
 .player {

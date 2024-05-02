@@ -12,7 +12,6 @@ import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/PopUp";
-// import { agoraService } from "helpers/agora";
 import { useAgoraService } from 'helpers/agoracontext';
 
 
@@ -41,104 +40,19 @@ const GameArena = () => {
     return localStorage.getItem('lost') === 'true';
   })
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
-
-  const [teamMatesStream, setTeamMatesStream] = useState(new Map());
-  const [localStream, setLocalStream] = useState(null);
-  const videoRefs = useRef(new Map());
   const agoraService = useAgoraService();
-  const localVideoRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(false);
 
-  useEffect(() => {
-    const localStream = agoraService.getVideoTracks().get(playerId.toString());
-    if (localVideoRef.current && localStream) {
-      localStream.play(localVideoRef.current);
-    }
-
-    return () => {
-      // localStream?.stop();  // This is assuming there is a stop method on your local stream to stop streaming
-    };
-  }, []);
-
-
-  useEffect(() => {
-    // Update video elements with streams when available
-    agoraService.getVideoTracks().forEach((videoTrack, id) => {
-      const videoElement = videoRefs.current.get(id);
-      if (videoElement && videoTrack) {
-        videoTrack.play(videoElement);
-      }
-    });
-  }, [teamMates]);
-
-  const setVideoRef = (playerId, element) => {
-    if (element) {
-      videoRefs.current.set(playerId, element);
-      // Force update to attach stream
-      const videoTrack = agoraService.getVideoTracks().get(playerId);
-      if (videoTrack) {
-        videoTrack.play(element);
-      }
+  const toggleMute = () => {
+    if (isMuted) {
+      agoraService.unmuteselfe();
     } else {
-      videoRefs.current.delete(playerId);
+      agoraService.muteselfe();
     }
+    setIsMuted(!isMuted);
   };
 
 
-  const handleUserPublished = (user, videoTrack) => {
-    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
-    console.log("# user published", user, videoTrack);
-
-  };
-
-  const handleUserUnpublished = (user) => {
-    setTeamMatesStream(prev => {
-      const updated = new Map(prev);
-      updated.delete(user.uid);
-      return updated;
-    });
-  };
-
-  const handleLocalUserJoined = (videoTrack) => {
-    setLocalStream(videoTrack);
-  };
-
-  useEffect(() => {
-    setLocalStream(agoraService.getVideoTracks().get(playerId));
-  }, []);
-
-
-  // useEffect(() => {
-  //
-  //
-  //   const setupStreams = async () => {
-  //     try {
-  //
-  //       //const response = await fetchAgoraToken(room, role, tokentype, userId);
-  //       const response = await api.get(`agoratoken/${lobbyPin}/${playerId}`);
-  //
-  //       console.log("# agora token response", response);
-  //       agoraService.joinAndPublishStreams(
-  //         playerId,
-  //         response.data,
-  //         String(lobbyPin),
-  //         handleUserPublished,
-  //         handleUserUnpublished,
-  //         handleLocalUserJoined
-  //       );
-  //     } catch (error) {
-  //       console.error('Failed to get Agora token:', error);
-  //       // Handle errors, e.g., show notification or error message to user
-  //     }
-  //   };
-  //
-  //   // Call the async function
-  //   setupStreams();
-  //
-  //   // Specify how to clean up after this effect:
-  //   return () => {
-  //     agoraService.cleanup();
-  //   };
-  // }, [lobbyPin]);
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
@@ -451,7 +365,7 @@ const GameArena = () => {
         <div className="pov-container">
           <div className="pov-container hand">
             {(localStorage.getItem("inGame") || reveal) && (
-              <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
+              <PlayerHand cardValues={playerHand} onClick={handleCardClick} />
             )}
           </div>
           <div className="pov-container my-webcam" ref={el => {
@@ -459,7 +373,21 @@ const GameArena = () => {
               agoraService.getVideoTracks().get(playerId.toString()).play(el);
             }
           }}>
+
           </div>
+          <button
+            style={{
+              backgroundColor: isMuted ? 'red' : 'green',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              padding: '10px 20px',
+              cursor: 'pointer'
+            }}
+            onClick={toggleMute}
+          >
+            {isMuted ? 'Unmute' : 'Mute'}
+          </button>
         </div>
 
       </div>

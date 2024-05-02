@@ -8,7 +8,6 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
-// import { agoraService } from "helpers/agora";
 import { useAgoraService } from 'helpers/agoracontext';
 
 
@@ -192,7 +191,6 @@ const Lobby = () => {
     Array.from(agoraService.getVideoTracks().entries()).map(([id, videoTrack]) => {
 
       const player = playersMap.get(parseInt(id));
-
 
       return (
         <div className="teammate-box" key={id}>
