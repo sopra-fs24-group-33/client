@@ -55,7 +55,9 @@ const Lobby = () => {
   useEffect(() => {
 
     const setupStreams = async () => {
+
       try {
+
         const response = await api.get(`agoratoken/${lobbyPin}/${userId}`);
 
         agoraService.joinAndPublishStreams(
@@ -66,7 +68,6 @@ const Lobby = () => {
           handleUserUnpublished,
           handleLocalUserJoined
         );
-
 
       } catch (error) {
         console.error('Failed to get Agora token:', error);
@@ -188,6 +189,8 @@ const Lobby = () => {
   console.log("# agoraService.getVideoTracks", agoraService.getVideoTracks());
 
   let teamContent = players.length > 0 ? (
+
+
     Array.from(agoraService.getVideoTracks().entries()).map(([id, videoTrack]) => {
 
       const player = playersMap.get(parseInt(id));
@@ -200,12 +203,15 @@ const Lobby = () => {
             }
           }}>
             {/* You can place an overlay or icon here if needed */}
+
           </div>
-          <div className="player-name">{player ? player.name : "Loading..."}</div>
+          <h3 className="player-name">{player ? player.name : "Loading..."}</h3>
         </div>
       );
     })
+
   ) : <Spinner />;
+
 
   return (
     <div className="lobby section">

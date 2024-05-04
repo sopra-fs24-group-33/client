@@ -13,6 +13,14 @@ import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/PopUp";
 import { useAgoraService } from 'helpers/agoracontext';
+// @ts-ignore
+import ButtonMute from "../../assets/ButtonMute.svg";
+// @ts-ignore
+import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+
+
+
+
 
 
 const GameArena = () => {
@@ -368,28 +376,28 @@ const GameArena = () => {
               <PlayerHand cardValues={playerHand} onClick={handleCardClick} />
             )}
           </div>
-          <div className="pov-container my-webcam" ref={el => {
-            if (el && agoraService.getVideoTracks().get(playerId.toString())) {
-              agoraService.getVideoTracks().get(playerId.toString()).play(el);
-            }
-          }}>
+          <div className="my-webcam-and-control-box">
+            <div className="pov-container my-webcam" ref={el => {
+              if (el && agoraService.getVideoTracks().get(playerId.toString())) {
+                agoraService.getVideoTracks().get(playerId.toString()).play(el);
+              }
+            }}>
+            </div>
+
+            <div className="control-box">
+
+              {isMuted ? (
+                <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute}/>
+              ) : (
+                <img className="button-unmute" src={ButtonMute} alt="" onClick={toggleMute}/>
+              )}
+
+
+            </div>
 
           </div>
-          <button
-            style={{
-              backgroundColor: isMuted ? 'red' : 'green',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              padding: '10px 20px',
-              cursor: 'pointer'
-            }}
-            onClick={toggleMute}
-          >
-            {isMuted ? 'Unmute' : 'Mute'}
-          </button>
-        </div>
 
+        </div>
       </div>
     </BaseContainer>
   );
