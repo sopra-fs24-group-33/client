@@ -15,11 +15,18 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
     return null;
   }
 
-  const messages = {
+  const headers = {
     win: 'Flawless Victory!',
-    end: 'Game Over. No more cards left!',
-    lose: 'Round Lost.',
-    levelUp: 'Round Won! You\'ve reached the next level!'
+    end: 'Game Over',
+    lose: 'Round Lost',
+    levelUp: 'Round Won!'
+  };
+
+  const messages = {
+    win: 'Be proud of yourself. You mastered De Game!',
+    end: 'No more cards left!',
+    lose: 'You have to restart this level.',
+    levelUp: 'You\'ve reached the next level!'
   };
 
   const actions = {
@@ -41,22 +48,23 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
 
   return (
     <div style={{
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
       zIndex: 1000,
-      padding: '20px',
-      backgroundColor: 'black',
-      border: '1px solid black',
-      borderRadius: '1vw',
-      boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
-      textAlign: 'center'
+      padding: "20px",
+      backgroundColor: "black",
+      border: "1px solid black",
+      borderRadius: "1vw",
+      boxShadow: "0px 0px 10px rgba(0,0,0,0.5)",
+      textAlign: "center",
     }}>
-      <h2>{messages[type]}</h2>
+      <h2>{headers[type]}</h2>
+      <p>{messages[type]}</p>
       <div>
         {actions[type].map((button, index) => (
-          <Button key={index} onClick={button.action} style={{ margin: '5px' }}>
+          <Button key={index} onClick={button.action} style={{ margin: "5px" }}>
             {button.label}
           </Button>
         ))}
