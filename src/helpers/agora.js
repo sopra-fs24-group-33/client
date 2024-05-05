@@ -18,48 +18,73 @@ let localTracks = {
 };
 
 
+// Store for the video tracks
+
+// Stores for the tracks
+const videoTracks = new Map();
+const audioTracks = new Map();
+
 export const agoraService = {
-  async joinAndPublishStreams(userId, Token,lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
-    // Set up event listeners as early as possible
+  async joinAndPublishStreams(userId, Token, lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
     client.on("user-published", async (user, mediaType) => {
       await client.subscribe(user, mediaType);
-      console.log("# Subscribed to user", user.uid, "for media type", mediaType);
       if (mediaType === "video") {
-        handleUserPublished(user, user.videoTrack);
+        videoTracks.set(user.uid, user.videoTrack);
+        handleUserPublished(user, user.videoTrack, "video");
+      } else if (mediaType === "audio") {
+        audioTracks.set(user.uid, user.audioTrack);
+        audioTracks.get(user.uid).play();
+        handleUserPublished(user, user.audioTrack, "audio");
       }
-      // Additional handling for audio if needed
     });
 
-    client.on("user-unpublished", user => {
-      handleUserUnpublished(user);
+    client.on("user-unpublished", (user, mediaType) => {
+      if (mediaType === "video") {
+        videoTracks.delete(user.uid);
+      } else if (mediaType === "audio") {
+        audioTracks.delete(user.uid);
+      }
+      handleUserUnpublished(user, mediaType);
     });
 
     try {
-      console.log("# Joining with APP_ID:", APP_ID);
-      console.log("# Channel Name:", lobbyPin);
-      console.log("# Token:", Token);
-      console.log("# User ID:", userId);
       await client.join(APP_ID, lobbyPin, Token, userId);
-      console.log("# Joined channel with user ID:", userId);
-
       [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
-
-      // After joining, publish local tracks
+      videoTracks.set(userId, localTracks.videoTrack);
+      audioTracks.set(userId, localTracks.audioTrack);
       await client.publish(Object.values(localTracks));
-      console.log("# Published local tracks");
-      handleLocalUserJoined(localTracks.videoTrack);
-
+      handleLocalUserJoined(localTracks.videoTrack, localTracks.audioTrack);
     } catch (error) {
       console.error("Error in Agora Stream Setup:", error);
     }
   },
 
-  async cleanup() {
-    // Unpublish and close local tracks
+  cleanup() {
     localTracks.videoTrack?.close();
     localTracks.audioTrack?.close();
-    await client.leave();
+    client.leave();
     client.removeAllListeners();
-    console.log("# Agora cleanup done.");
-  }
+    videoTracks.clear();
+    audioTracks.clear();
+  },
+
+  getVideoTracks() {
+    return videoTracks;
+  },
+
+  getAudioTracks() {
+    return audioTracks;
+  },
+
+  muteselfe() {
+    if (localTracks.audioTrack) {
+      localTracks.audioTrack.setEnabled(false);
+    }
+  },
+
+  unmuteselfe() {
+    if (localTracks.audioTrack) {
+      localTracks.audioTrack.setEnabled(true);
+    }
+  },
 };

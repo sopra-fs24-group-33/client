@@ -12,7 +12,15 @@ import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/PopUp";
-import { agoraService } from "helpers/agora";
+import { useAgoraService } from 'helpers/agoracontext';
+// @ts-ignore
+import ButtonMute from "../../assets/ButtonMute.svg";
+// @ts-ignore
+import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+
+
+
+
 
 
 const GameArena = () => {
@@ -40,89 +48,19 @@ const GameArena = () => {
     return localStorage.getItem('lost') === 'true';
   })
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
+  const agoraService = useAgoraService();
+  const [isMuted, setIsMuted] = useState(false);
 
-  const [teamMatesStream, setTeamMatesStream] = useState(new Map());
-  const [localStream, setLocalStream] = useState(null);
-  const videoRefs = useRef(new Map());
-
-  const allStreamsReady = () => {
-    return teamMates.every(player => teamMatesStream.has(player.id));
-  };
-
-  useEffect(() => {
-    // Update video elements with streams when available
-    teamMatesStream.forEach((videoTrack, id) => {
-      const videoElement = videoRefs.current.get(id);
-      if (videoElement && videoTrack) {
-        videoTrack.play(videoElement);
-      }
-    });
-  }, [teamMatesStream, teamMates]);
-
-  const setVideoRef = (playerId, element) => {
-    if (element) {
-      videoRefs.current.set(playerId, element);
-      // Force update to attach stream
-      const videoTrack = teamMatesStream.get(playerId);
-      if (videoTrack) {
-        videoTrack.play(element);
-      }
+  const toggleMute = () => {
+    if (isMuted) {
+      agoraService.unmuteselfe();
     } else {
-      videoRefs.current.delete(playerId);
+      agoraService.muteselfe();
     }
+    setIsMuted(!isMuted);
   };
 
 
-  const handleUserPublished = (user, videoTrack) => {
-    setTeamMatesStream(prev => new Map(prev).set(user.uid, user.videoTrack));
-    console.log("# user published", user, videoTrack);
-
-  };
-
-  const handleUserUnpublished = (user) => {
-    setTeamMatesStream(prev => {
-      const updated = new Map(prev);
-      updated.delete(user.uid);
-      return updated;
-    });
-  };
-
-  const handleLocalUserJoined = (videoTrack) => {
-    setLocalStream(videoTrack);
-  };
-
-  useEffect(() => {
-
-
-    const setupStreams = async () => {
-      try {
-
-        //const response = await fetchAgoraToken(room, role, tokentype, userId);
-        const response = await api.get(`agoratoken/${lobbyPin}/${playerId}`);
-
-        console.log("# agora token response", response);
-        agoraService.joinAndPublishStreams(
-          playerId,
-          response.data,
-          String(lobbyPin),
-          handleUserPublished,
-          handleUserUnpublished,
-          handleLocalUserJoined
-        );
-      } catch (error) {
-        console.error('Failed to get Agora token:', error);
-        // Handle errors, e.g., show notification or error message to user
-      }
-    };
-
-    // Call the async function
-    setupStreams();
-
-    // Specify how to clean up after this effect:
-    return () => {
-      agoraService.cleanup();
-    };
-  }, [lobbyPin]);
 
   useEffect(() => {
     const socket = new WebSocket(`${prefix}/game?game=${gameId}`);
@@ -278,6 +216,7 @@ const GameArena = () => {
     const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
     localStorage.removeItem("pin")
     localStorage.removeItem("adminId")
+    agoraService.cleanup();
     navigate("/overview")
   }
 
@@ -365,20 +304,23 @@ const GameArena = () => {
     }
   };
 
+  console.log("# agoraService.getVideoTracks() game", agoraService.getVideoTracks())
 
   let teamContent = teamMates.length > 0 ? (
     teamMates.map(player => {
+      const videoTrack = agoraService.getVideoTracks().get(player.id.toString());
+
       return (
         <div className="teammate-box" key={player.id}>
-          <div className="webcam-container" ref={el => setVideoRef(player.id, el)}>
-            {teamMatesStream.has(player.id) ? (
-              <div>{player.name}</div>  //
-            ) : (
-              <Spinner />
-            )}
+          <div className="webcam-container" ref={el => {
+            if (el && videoTrack) {
+              videoTrack.play(el);
+            }
+          }}>
           </div>
+
           <div className="matehand-container">
-            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal}/>}
+            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal} />}
           </div>
         </div>
       );
@@ -428,17 +370,31 @@ const GameArena = () => {
         <div className="pov-container">
           <div className="pov-container hand">
             {(localStorage.getItem("inGame") || reveal) && (
-              <PlayerHand cardValues={playerHand} onClick={handleCardClick}/>
+              <PlayerHand cardValues={playerHand} onClick={handleCardClick} />
             )}
           </div>
-          <div className="pov-container my-webcam" ref={el => {
-            if (el && localStream) {
-              localStream.play(el);
-            }
-          }}>
-          </div>
-        </div>
+          <div className="my-webcam-and-control-box">
+            <div className="pov-container my-webcam" ref={el => {
+              if (el && agoraService.getVideoTracks().get(playerId.toString())) {
+                agoraService.getVideoTracks().get(playerId.toString()).play(el);
+              }
+            }}>
+            </div>
 
+            <div className="control-box">
+
+              {isMuted ? (
+                <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute}/>
+              ) : (
+                <img className="button-unmute" src={ButtonMute} alt="" onClick={toggleMute}/>
+              )}
+
+
+            </div>
+
+          </div>
+
+        </div>
       </div>
     </BaseContainer>
   );

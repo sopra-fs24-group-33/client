@@ -47,11 +47,6 @@
     }
   }
 
-  &.background {
-    z-index: -50;
-    background-image: url("");
-  }
-
   @keyframes moveGradient {
     50% {
       background-position: 100% 50%;

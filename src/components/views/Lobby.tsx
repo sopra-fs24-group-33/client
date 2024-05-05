@@ -8,7 +8,8 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
-import { agoraService } from "helpers/agora";
+import { useAgoraService } from 'helpers/agoracontext';
+
 
 const Lobby = () => {
   const prefix = getWSPreFix();
@@ -24,6 +25,7 @@ const Lobby = () => {
   const [teamMates, setTeamMates] = useState([])
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
+  const agoraService = useAgoraService();
 
   const handleUserPublished = (user, videoTrack) => {
 
@@ -53,10 +55,11 @@ const Lobby = () => {
   useEffect(() => {
 
     const setupStreams = async () => {
+
       try {
+
         const response = await api.get(`agoratoken/${lobbyPin}/${userId}`);
 
-        console.log("# agora token response", response);
         agoraService.joinAndPublishStreams(
           userId,
           response.data,
@@ -65,6 +68,7 @@ const Lobby = () => {
           handleUserUnpublished,
           handleLocalUserJoined
         );
+
       } catch (error) {
         console.error('Failed to get Agora token:', error);
         // Handle errors, e.g., show notification or error message to user
@@ -76,7 +80,7 @@ const Lobby = () => {
 
     // Specify how to clean up after this effect:
     return () => {
-      agoraService.cleanup();
+      // agoraService.cleanup();
     };
   }, [userId, lobbyPin]);
 
@@ -102,6 +106,7 @@ const Lobby = () => {
       console.log("received msg:", event.data)
       if (event.data === "leave") {
         localStorage.removeItem("pin");
+        agoraService.cleanup();
         navigate("/overview");
         return;
       }
@@ -111,7 +116,7 @@ const Lobby = () => {
       if (newLobby.gameid) {
         console.log("Game started!");
         localStorage.setItem("gameId", newLobby.gameid);
-        navigate("/game")
+        navigate('/game');
       }
 
       const newMap = new Map();
@@ -162,6 +167,7 @@ const Lobby = () => {
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
       localStorage.removeItem("pin")
       localStorage.removeItem("adminId")
+      agoraService.cleanup();
       navigate("/overview");
     } catch (error) {
       console.error("Error leaving the lobby:", handleError(error));
@@ -176,16 +182,18 @@ const Lobby = () => {
     const gamestatus = response.data;
     localStorage.setItem("gameId", gamestatus.id);
     console.log(gamestatus)
-
     navigate("/game")
   };
-  console.log("# players", players, "setTeamMatesStream", teamMatesStream)
+  console.log("# players", players)
+  console.log("# setTeamMatesStream", teamMatesStream)
+  console.log("# agoraService.getVideoTracks", agoraService.getVideoTracks());
 
-  let teamContent = teamMatesStream.size > 0 ? (
-    Array.from(teamMatesStream.entries()).map(([id, videoTrack]) => {
+  let teamContent = players.length > 0 ? (
+
+
+    Array.from(agoraService.getVideoTracks().entries()).map(([id, videoTrack]) => {
 
       const player = playersMap.get(parseInt(id));
-
 
       return (
         <div className="teammate-box" key={id}>
@@ -195,12 +203,15 @@ const Lobby = () => {
             }
           }}>
             {/* You can place an overlay or icon here if needed */}
+
           </div>
-          <div className="player-name">{player ? player.name : "Loading..."}</div>
+          <h3 className="player-name">{player ? player.name : "Loading..."}</h3>
         </div>
       );
     })
+
   ) : <Spinner />;
+
 
   return (
     <div className="lobby section">
