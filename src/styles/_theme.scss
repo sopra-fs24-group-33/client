@@ -32,6 +32,7 @@ $fontHeading: "HelveticaNeueLTProBdExO";
 $fontSubHeading: "HelveticaNeueLTProBdEx"; //nicht kursiv
 $fontButton: "HelveticaNeueLTProBdEx"; //nicht kursiv
 $fontSubHeadingLight: "HelveticaNeueLTProEx";
+$fontLight: "HelveticaNeueLTUltraLight";
 /*
 $fontMono: "Roboto Mono", monospace;
 $fontBold: "Roboto Black";
@@ -56,12 +57,16 @@ $borderRadius: 0.75em;
 
 
 h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   height: 100px; // h1 was always bigger than the text inside and the text was to far up. i found no other way that to hard code the height :(
   font-family: $fontHeading;
   font-size: 7em;
   color: white;
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 0;
 }
 h2 {
   font-family: $fontSubHeading;
@@ -82,7 +87,15 @@ h3 {
 }
 h3.light {
   font-family: $fontSubHeadingLight;
-  font-weight: lighter;
+  font-weight: 1;
+}
+
+h4 {
+  height: 18px;
+  font-family: $fontLight;
+  font-size: 1em;
+  color: white;
+  margin: 0;
 }
 
 p {

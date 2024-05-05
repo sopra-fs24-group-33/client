@@ -78,7 +78,7 @@ const Login = () => {
   }
 
   return (
-    <div style={{
+    <div className="login background" style={{
       backgroundImage: `url(${Background})`,
       backgroundSize: 'cover',
       backgroundPosition: '100%',
@@ -88,6 +88,7 @@ const Login = () => {
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'column',
+      zIndex: "-55",
     }}>
       <BaseContainer>
         <div className="login container">

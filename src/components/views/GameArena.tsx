@@ -408,9 +408,6 @@ const GameArena = () => {
         </div>
 
         <div className="game-arena-container">
-          <Button className="primary-button" onClick={handleNewGame}>
-            (Temp)New Game
-          </Button>
           {popupType && (
             <Popup
               type={popupType}

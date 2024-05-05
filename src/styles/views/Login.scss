@@ -10,6 +10,8 @@
     min-width: 1000px;
   }
   &.form {
+    --border-width: 1px;  // Define the width of the animated border
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -18,12 +20,42 @@
     font-size: 16px;
     font-weight: 300;
     padding: 1.5em 2em;
-    border-radius: 0.75em;
+    border-radius: calc(0.75em + var(--border-width));  // Include the border width in the border-radius
     background-color: black;
-    border: white 1px solid;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    box-shadow: $dropShadow;
+    position: relative;
+    color: white;
 
+    &::after {
+      content: "";
+      position: absolute;
+      top: calc(-1 * var(--border-width));
+      left: calc(-1 * var(--border-width));
+      width: calc(100% + var(--border-width) * 2);
+      height: calc(100% + var(--border-width) * 2);
+      background: linear-gradient(
+                      90deg,
+                      hsl(244, 96%, 60%),
+                      hsl(336, 97%, 61%),
+                      hsl(244, 96%, 60%),
+                      hsl(336, 97%, 61%),
+      );
+      background-size: 500% 500%;
+      background-position: 0 50%;
+      border-radius: calc(0.75em + var(--border-width));  // Include the border width in the border-radius
+      animation: moveGradient 15s alternate infinite;
+      z-index: -1;
+    }
+  }
+
+  &.background {
+    z-index: -50;
+    background-image: url("");
+  }
+
+  @keyframes moveGradient {
+    50% {
+      background-position: 100% 50%;
+    }
   }
   &.field {
     margin: 10px;
@@ -41,14 +73,14 @@
     color: $textColor;
     text-indent: 10px;
     border: double 1px white;
-    border-radius: 15px;
+    border-radius: 5px;
     background-color: transparent;
 
     &:focus {
-      border: double 1px transparent;
+      border: double 0.1px transparent;
       border-left-width: 0;
       border-right-width: 0;
-      border-radius: 15px;
+      border-radius: 5px;
       background-image: linear-gradient(to right, black, black), linear-gradient(to right, #FC3A87, #4235FB);
       background-clip: content-box, border-box;
       text-indent: 10px;
