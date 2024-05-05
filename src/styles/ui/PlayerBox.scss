@@ -11,11 +11,19 @@
     display: flex;
     align-items: center;
     background: linear-gradient(to right, $lila, $pink2 95%);
+  }
 
-    &:hover {
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-    }
-
+  &.empty {
+    position: relative;
+    margin-bottom: 1.5em;
+    width: 320px;
+    height: 50px;
+    padding: 15px;
+    border-radius: $borderRadius;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: white solid 2px;
   }
 
   &.username {
