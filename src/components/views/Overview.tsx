@@ -63,9 +63,6 @@ const Overview = () => {
 
   }
 
-
-
-
   const logout = () => {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.close(1000, "logout");
@@ -178,7 +175,7 @@ const Overview = () => {
     };
   }, []);
 
-  let contentOnline = <Spinner />
+  let contentOnline: any;
   if (players) {
     contentOnline = (
       <div className="overview">
@@ -197,10 +194,9 @@ const Overview = () => {
     );
   }
 
-  let contentLosers = <Spinner />
+  let contentLosers: any;
   if (users) {
     const sortedUsers = users.slice().sort((a, b) => b.shame_tokens - a.shame_tokens);
-
     contentLosers = (
       <div className="overview">
         <ul className="overview user-list">
@@ -220,22 +216,17 @@ const Overview = () => {
 
   let totalOnlineShameTokens = 0;
   let totalLosersShameTokens = 0;
-
 // Calculate total shame tokens for online players
   if (players) {
     totalOnlineShameTokens = players.reduce((total, player) => total + player.shame_tokens, 0);
   }
-
 // Calculate total shame tokens for losers
   if (users) {
     totalLosersShameTokens = users.reduce((total, user) => total + user.shame_tokens, 0);
   }
 
   let contentUserInfo: any;
-
   if (curUser) {
-    const passwordStars = '*'.repeat(curUser.password.length);
-
     contentUserInfo = (
       <div className="overview sub-container">
 
@@ -248,10 +239,6 @@ const Overview = () => {
             <div className="overview inner-text-wrapper">
               <p>username</p>
               <p>{curUser.username}</p>
-            </div>
-            <div className="overview inner-text-wrapper">
-              <p>Password</p>
-              <p>{passwordStars}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Shame Tokens</p>
