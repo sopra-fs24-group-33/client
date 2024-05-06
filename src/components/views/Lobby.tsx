@@ -9,6 +9,10 @@ import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
 import { useAgoraService } from 'helpers/agoracontext';
+// @ts-ignore
+import ButtonMute from "../../assets/ButtonMute.svg";
+// @ts-ignore
+import ButtonUnmute from "../../assets/ButtonUnmute.svg";
 
 
 const Lobby = () => {
@@ -26,6 +30,16 @@ const Lobby = () => {
   const [teamMatesStream, setTeamMatesStream] = useState(new Map());
   const [localStream, setLocalStream] = useState(null);
   const agoraService = useAgoraService();
+  const [isMuted, setIsMuted] = useState(false);
+
+  const toggleMute = () => {
+    if (isMuted) {
+      agoraService.unmuteselfe();
+    } else {
+      agoraService.muteselfe();
+    }
+    setIsMuted(!isMuted);
+  };
 
   const handleUserPublished = (user, videoTrack) => {
 
@@ -190,24 +204,29 @@ const Lobby = () => {
 
   let teamContent = players.length > 0 ? (
 
-
     Array.from(agoraService.getVideoTracks().entries()).map(([id, videoTrack]) => {
 
       const player = playersMap.get(parseInt(id));
 
-      return (
-        <div className="teammate-box" key={id}>
-          <div className="webcam-container" ref={el => {
-            if (el) {
-              videoTrack.play(el);
-            }
-          }}>
-            {/* You can place an overlay or icon here if needed */}
+      if (player.id != playerId) {
+        return (
+          <div className="teammate-box" key={id}>
+            <div className="webcam-container" ref={el => {
+              if (el) {
+                videoTrack.play(el);
+              }
+            }}>
+              {/* You can place an overlay or icon here if needed */}
 
+            </div>
+            <h3 className="player-name">{player ? player.name : "Loading..."}</h3>
           </div>
-          <h3 className="player-name">{player ? player.name : "Loading..."}</h3>
-        </div>
-      );
+        );
+      } else {
+        return null;
+      }
+
+
     })
 
   ) : <Spinner />;
@@ -250,6 +269,22 @@ const Lobby = () => {
           )}
         </div>
       </BaseContainer>
+
+      <div className="my-webcam-and-control-box">
+        <div className="pov-container my-webcam" ref={el => {
+          if (el && agoraService.getVideoTracks().get(playerId.toString())) {
+            agoraService.getVideoTracks().get(playerId.toString()).play(el);
+          }
+        }}>
+        </div>
+        <div className="control-box">
+          {isMuted ? (
+            <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute} />
+          ) : (
+            <img className="button-unmute" src={ButtonMute} alt="" onClick={toggleMute} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

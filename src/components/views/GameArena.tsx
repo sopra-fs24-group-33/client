@@ -231,7 +231,6 @@ const GameArena = () => {
       setLost(true);
       localStorage.setItem('lost', 'true');
     } else if (successfulMove === 3) {
-      console.log("hi")
       setPopupType('end')
     }
     setTimeout(() => {
@@ -328,16 +327,15 @@ const GameArena = () => {
   ) : <Spinner />;
 
   let mainContent = drawPhase && localStorage.getItem("inGame") === null ? (
+    //"Draw Cards" button used to be here
     <div>
-      <Button className="primary-button" onClick={readyDrawCards} disabled={drawButtonClicked}>
-        Draw Cards {playersReady}/{players.length}
-      </Button>
       <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
     </div>
   ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
 
   let tableClasses = `game-arena-container table ${moveStatus}`;
 
+  // @ts-ignore
   return (
     <BaseContainer style={{
       margin: '0px',
@@ -350,9 +348,6 @@ const GameArena = () => {
         </div>
 
         <div className="game-arena-container">
-          <Button className="primary-button" onClick={handleNewGame}>
-            (Temp)New Game
-          </Button>
           {popupType && (
             <Popup
               type={popupType}
@@ -364,6 +359,7 @@ const GameArena = () => {
             />
           )}
           <div className="game-arena-container table-border">
+
             <div className={tableClasses}>
               {mainContent}
             </div>
@@ -376,6 +372,7 @@ const GameArena = () => {
               <PlayerHand cardValues={playerHand} onClick={handleCardClick} />
             )}
           </div>
+
           <div className="my-webcam-and-control-box">
             <div className="pov-container my-webcam" ref={el => {
               if (el && agoraService.getVideoTracks().get(playerId.toString())) {
@@ -383,18 +380,26 @@ const GameArena = () => {
               }
             }}>
             </div>
-
             <div className="control-box">
-
               {isMuted ? (
                 <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute}/>
               ) : (
                 <img className="button-unmute" src={ButtonMute} alt="" onClick={toggleMute}/>
               )}
-
-
             </div>
+          </div>
+        </div>
 
+        <div className="cockpit">
+          <h2>Level: {game && game.level}</h2>
+          <div className="cockpit-button-container">
+            <Button className="primary-button quit" onClick={handleNewGame}>
+              Quit
+            </Button>
+            {drawPhase && localStorage.getItem("inGame") === null && (
+            <Button className="primary-button" onClick={readyDrawCards} disabled={drawButtonClicked}>
+              Draw Cards {playersReady}/{players.length}
+            </Button> )}
           </div>
 
         </div>

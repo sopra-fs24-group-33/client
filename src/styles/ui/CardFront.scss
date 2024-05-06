@@ -11,13 +11,16 @@
   cursor: pointer;
   overflow: hidden;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  box-shadow: 0 0 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced initial subtle shadow
+  box-shadow: 5px 5px 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced initial subtle shadow
   &:hover {
     transform: translateY(-30px);
     // Adjusted hover shadow for a tighter glow effect
+    /*
     box-shadow:
             0 0 1vh rgba(0, 0, 0, 0.65),
             0 0 3vh rgba(255, 255, 255, 0.8);
+
+     */
   }
   .card-img {
     flex-grow: 1;
@@ -46,7 +49,7 @@
   border-radius: 1vh;
   overflow: hidden;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  box-shadow: 0 0 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced initial subtle shadow
+  box-shadow: 5px 5px 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced initial subtle shadow
 
   .card-img {
     flex-grow: 1;
