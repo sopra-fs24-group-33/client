@@ -202,17 +202,18 @@ const Lobby = () => {
   console.log("# setTeamMatesStream", teamMatesStream)
   console.log("# agoraService.getVideoTracks", agoraService.getVideoTracks());
 
+
   let teamContent = players.length > 0 ? (
 
-    Array.from(agoraService.getVideoTracks().entries()).map(([id, videoTrack]) => {
+    Array.from(playersMap.entries()).map(([id, player]) => {
 
-      const player = playersMap.get(parseInt(id));
+      const videoTrack = agoraService.getVideoTracks().get(id.toString());
 
       if (player.id != playerId) {
         return (
           <div className="teammate-box" key={id}>
             <div className="webcam-container" ref={el => {
-              if (el) {
+              if (el && videoTrack) {
                 videoTrack.play(el);
               }
             }}>
@@ -225,10 +226,7 @@ const Lobby = () => {
       } else {
         return null;
       }
-
-
     })
-
   ) : <Spinner />;
 
 
