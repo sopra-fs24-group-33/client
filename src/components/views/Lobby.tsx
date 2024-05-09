@@ -14,16 +14,17 @@ import ButtonMute from "../../assets/ButtonMute.svg";
 // @ts-ignore
 import ButtonUnmute from "../../assets/ButtonUnmute.svg";
 
-
 const Lobby = () => {
   const prefix = getWSPreFix();
   const navigate = useNavigate();
+  const totalPlayerBoxes = 5;
   const lobbyPin = localStorage.getItem('pin');
   const playerId = localStorage.getItem("id");
   const adminId = localStorage.getItem("adminId")
   const [ws, setWs] = useState(null);
   const [lobby, setLobby] = useState<GameLobby>(null);
   const [players, setPlayers] = useState<Player[]>([]);
+  const emptyPlayerBoxesCount = totalPlayerBoxes - players.length;
   const [playersMap, setPlayersMap] = useState(new Map());
   const userId = localStorage.getItem("id");
   const [teamMates, setTeamMates] = useState([])
@@ -40,6 +41,12 @@ const Lobby = () => {
     }
     setIsMuted(!isMuted);
   };
+
+  const emptyPlayerBoxes = Array.from({ length: emptyPlayerBoxesCount }, (_, index) => (
+    <li key={`empty_${index}`}>
+      <PlayerBox />
+    </li>
+  ));
 
   const handleUserPublished = (user, videoTrack) => {
 
@@ -152,20 +159,6 @@ const Lobby = () => {
 
     setWs(socket);
 
-    async function handleBeforeUnload(event) {
-      // TODO: when refreshing this gets triggered, but I want to trigger this when closing
-      console.log("TEST::::::::::::::::::")
-//      event.preventDefault(); // Optionally prompt the user to confirm exit
-//      // Asynchronously notify the server that the user is leaving the lobby
-//      await leaveLobby(); // Call leaveLobby synchronously using async/await
-//      // Clear the local storage items
-//      localStorage.removeItem("pin");
-//      localStorage.removeItem("adminId");
-//      navigate("/overview"); // Navigate the user away after successful API call
-      // The return value for modern browsers to show the confirmation dialog
-//      event.returnValue = ''; // Chrome requires returnValue to be set
-    }
-
     // Add the event listener for closing window/tab
     return () => {
       socket.close();
@@ -236,12 +229,19 @@ const Lobby = () => {
         {teamContent}
       </div>
       <BaseContainer className="lobby container">
-        <h2 className="lobby header">Game
-          Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
+        <div className="lobby header">
+          <h2>
+            Game Pin
+          </h2>
+          <h2 className="light">
+            {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
+          </h2>
+        </div>
         <hr className="lobby hr-thin" />
         <div className="lobby player-container">
           {players.length > 0 ? (
             <ul className="overview user-list">
+              {/* Render existing players */}
               {players.map(player => (
                 <li key={player.id}>
                   <PlayerBox
@@ -251,6 +251,8 @@ const Lobby = () => {
                   />
                 </li>
               ))}
+              {/* Render empty player boxes */}
+              {emptyPlayerBoxes}
             </ul>
           ) : (
             <Spinner />
@@ -258,11 +260,11 @@ const Lobby = () => {
         </div>
         <div className="lobby button-container">
           <Button className="outlined" width="100%" onClick={leaveLobby}>
-            Leave Lobby
+            Leave
           </Button>
           {adminId === playerId && (
             <Button className="" width="100%" onClick={() => startGame()} disabled={players.length <= 1}>
-              Start Game
+              Start
             </Button>
           )}
         </div>

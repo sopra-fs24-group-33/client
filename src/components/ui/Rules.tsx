@@ -19,7 +19,7 @@ const rulesText = "De Game is a cooperative card game that tests teamwork, good 
 const Rules = ({ onClose }) => {
   return (
     <div className="backdrop" >
-      <div className="modal" >
+      <div className="modal-rules" >
         <h2 style={{
           marginBottom: "1px",
         }}>Game Rules</h2>
@@ -37,25 +37,26 @@ const Rules = ({ onClose }) => {
 
           <h3>Setup</h3>
           <ul>
-            <li>Deck consists of 99 cards numbered from 1 to 99.</li>
-            <li>Shuffle the deck.</li>
-            <li>Start from Level 1.</li>
+            <li>2-5 Players</li>
+            <li>Deck consists of 99 cards numbered from 1 to 99</li>
+            <li>Shuffle the deck</li>
+            <li>Start from Level 1</li>
           </ul>
 
           <h3>Gameplay</h3>
           <ol>
             <li><strong>Drawing Cards:</strong> At the start of each level, players draw a number of cards equal to the
-              level (e.g., draw 2 cards in Level 2).
+              level (e.g., draw 2 cards in Level 2)
             </li>
-            <li><strong>Playing Cards:</strong> Players aim to play their cards in ascending order.</li>
+            <li><strong>Playing Cards:</strong> Players aim to play their cards in ascending order</li>
             <li><strong>Progression:</strong> Successfully arranging all drawn cards in ascending order allows the team
-              to get to the next level.
+              to get to the next level
             </li>
             <li><strong>Mistakes:</strong> If a card is played out of order, the player receives a shame token, and the
-              round restarts at the current level with the same number of cards.
+              round restarts at the current level with the same number of cards
             </li>
             <li><strong>Communication Limits:</strong> The key challenge in De Game is to find ways to communicate their
-              cards without stating the specific number.
+              cards without stating the specific number
             </li>
           </ol>
 

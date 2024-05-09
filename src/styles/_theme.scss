@@ -18,6 +18,7 @@ $lila2: #4235FB;
 $pink: #fc3a87;
 $pink2: #E05ACB;
 $blue: rgb(66, 53, 251);
+$grey: #3b3b3b;
 
 /* some constants */
 
@@ -33,6 +34,7 @@ $fontHeading: "HelveticaNeueLTProBdExO";
 $fontSubHeading: "HelveticaNeueLTProBdEx"; //nicht kursiv
 $fontButton: "HelveticaNeueLTProBdEx"; //nicht kursiv
 $fontSubHeadingLight: "HelveticaNeueLTProEx";
+$fontLight: "HelveticaNeueLTUltraLight";
 /*
 $fontMono: "Roboto Mono", monospace;
 $fontBold: "Roboto Black";
@@ -57,21 +59,32 @@ $borderRadius: 0.75em;
 
 
 h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   height: 100px; // h1 was always bigger than the text inside and the text was to far up. i found no other way that to hard code the height :(
   font-family: $fontHeading;
   font-size: 7em;
   color: white;
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 0;
+  caret-color: transparent;
 }
 h2 {
   font-family: $fontSubHeading;
   font-size: 2.25em;
   color: white;
+  margin-top: 5px;
+  margin-bottom: 0;
+  caret-color: transparent;
 }
 h2.light {
+  margin-top: 5px;
+  margin-bottom: 0;
   font-family: $fontSubHeadingLight;
   font-weight: lighter;
+  caret-color: transparent;
 }
 
 h3 {
@@ -80,16 +93,27 @@ h3 {
   font-size: 1.1em;
   color: white;
   margin: 0;
+  caret-color: transparent;
 }
 h3.light {
   font-family: $fontSubHeadingLight;
-  font-weight: lighter;
+  font-weight: 1;
+  caret-color: transparent;
+}
+
+h4 {
+  height: 18px;
+  font-family: $fontLight;
+  font-size: 1em;
+  color: white;
+  margin: 0;
+  caret-color: transparent;
 }
 
 p {
   font-family: $fontDefault;
   font-size: 18px;
-
+  caret-color: transparent;
 }
 
 li {
@@ -97,6 +121,7 @@ li {
   font-size: 16px;
   line-height: 1.2;
   margin-bottom: 5px;
+  caret-color: transparent;
 }
 
 

@@ -5,7 +5,15 @@ import ShameToken from "./ShameToken";
 // @ts-ignore
 import shame_logo from "../../assets/shame_logo.svg";
 
-const PlayerBox = ({ username, shameTokens, you }) => {
+const PlayerBox = ({ username ="", shameTokens=0, you=false }) => {
+
+  if (!username) {
+    // Render empty player box
+    return (
+      <div className="player-box empty">
+      </div>
+    );
+  }
 
   return (
     <div className={`player-box box`}>

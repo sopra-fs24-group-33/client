@@ -24,11 +24,16 @@
     padding: 1.5em 2em;
     border-radius: 0.75em;
     background-color: black;
+    border: $grey 1px solid;
     transition: opacity 0.5s ease, transform 0.5s ease;
     box-shadow: $dropShadow;
   }
   &.header {
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 5vw;
+    padding-right: 5vw;
   }
   .hr-thin {
     width: 100%;
@@ -36,6 +41,7 @@
     background-color: white; /* Ensures the line is visible with the desired color, optional */
     border: none; /* Removes the default border to rely on the background-color and height for the line's appearance */
     margin-bottom: 0.75em;
+    caret-color: transparent;
 
   }
 

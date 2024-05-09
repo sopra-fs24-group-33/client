@@ -40,7 +40,7 @@ const Overview = () => {
     const finalPin = parseInt(withoutSpacing, 10);
     console.log("*pin entered:", finalPin)
 
-    if (pin.length < 6) {
+    if (withoutSpacing.length < 6) {
       setError("Pin must be 6-digits long")
       return;
     }

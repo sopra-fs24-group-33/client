@@ -8,8 +8,10 @@
     justify-content: center;
     height: 100vh;
     min-width: 1000px;
+    caret-color: transparent;
   }
   &.form {
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -18,18 +20,20 @@
     font-size: 16px;
     font-weight: 300;
     padding: 1.5em 2em;
-    border-radius: 0.75em;
+    border-radius: $borderRadius;  // Include the border width in the border-radius
     background-color: black;
-    border: white 1px solid;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    box-shadow: $dropShadow;
-
+    border: 1px solid $grey;
+    position: relative;
+    color: white;
+    caret-color: transparent;
   }
+
   &.field {
     margin: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    caret-color: transparent;
   }
   &.header {
     display: flex;
@@ -40,18 +44,19 @@
     height: 50px;
     color: $textColor;
     text-indent: 10px;
-    border: double 1px white;
-    border-radius: 15px;
+    border: double 2px $grey;
+    border-radius: 0.75em;
     background-color: transparent;
-
+    caret-color: transparent;
     &:focus {
-      border: double 1px transparent;
+      border: double 0.1px transparent;
       border-left-width: 0;
       border-right-width: 0;
-      border-radius: 15px;
-      background-image: linear-gradient(to right, black, black), linear-gradient(to right, $pink, $lila2);
+      border-radius: 0.75em;
+      background-image: linear-gradient(to right, black, black), linear-gradient(to right, #FC3A87, #4235FB);
       background-clip: content-box, border-box;
       text-indent: 10px;
+      caret-color: white;
     }
   }
   &.label {
@@ -59,6 +64,8 @@
     margin-bottom: 10px;
     text-transform: lowercase;
     font-weight: 300;
+    caret-color: transparent;
+
   }
   &.button-container {
     display: flex;
@@ -87,16 +94,27 @@
     width: 100%;
     margin-top: 2em;
     margin-bottom: 2em;
+    caret-color: transparent;
   }
   &.hr-box {
     display: flex;
     flex-direction: row;
     align-items: center;
+    caret-color: transparent;
   }
   &.hr-text {
     font-size: 16px;
     font-weight: 300;
     padding-left: 7px;
     padding-right: 7px;
+    caret-color: transparent;
+  }
+  &.error-text {
+    color: $pink;
+    height: 1em;
+    font-size: 0.88em;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    caret-color: transparent;
   }
 }
