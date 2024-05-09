@@ -123,7 +123,7 @@ const Register = () => {
               type="text"
               onChange={(un: string) => setUsername(un)}
             />
-            <div style={{ color: "#fc3a87", height: "1em", fontSize: "0.88em", marginLeft: "10px", marginBottom: "20px" }}>{error}</div>
+            <div className="login error-text">{error}</div>
 
             <FormField
               label="Password"

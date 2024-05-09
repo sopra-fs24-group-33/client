@@ -62,7 +62,7 @@ const JoinPopup: React.FC<JoinPopupProps> = ({ onClose, onJoin, error }) => {
 
   return (
     <div className="backdrop">
-      <div className="modal">
+      <div className="modal-rules">
         <h2 style={{
           marginBottom: "0.2em",
         }}>Enter Pin</h2>

@@ -212,8 +212,14 @@ const Lobby = () => {
         {teamContent}
       </div>
       <BaseContainer className="lobby container">
-        <h2 className="lobby header">Game
-          Pin: {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}</h2>
+        <div className="lobby header">
+          <h2>
+            Game Pin
+          </h2>
+          <h2 className="light">
+            {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
+          </h2>
+        </div>
         <hr className="lobby hr-thin" />
         <div className="lobby player-container">
           {players.length > 0 ? (
@@ -237,11 +243,11 @@ const Lobby = () => {
         </div>
         <div className="lobby button-container">
           <Button className="outlined" width="100%" onClick={leaveLobby}>
-            Leave Lobby
+            Leave
           </Button>
           {adminId === playerId && (
             <Button className="" width="100%" onClick={() => startGame()} disabled={players.length <= 1}>
-              Start Game
+              Start
             </Button>
           )}
         </div>

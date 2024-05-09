@@ -19,7 +19,7 @@ const rulesText = "De Game is a cooperative card game that tests teamwork, good 
 const Rules = ({ onClose }) => {
   return (
     <div className="backdrop" >
-      <div className="modal" >
+      <div className="modal-rules" >
         <h2 style={{
           marginBottom: "1px",
         }}>Game Rules</h2>

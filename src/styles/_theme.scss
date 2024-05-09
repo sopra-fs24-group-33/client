@@ -18,6 +18,7 @@ $lila2: #4235FB;
 $pink: #fc3a87;
 $pink2: #E05ACB;
 $blue: rgb(66, 53, 251);
+$grey: #3b3b3b;
 
 /* some constants */
 
@@ -68,15 +69,22 @@ h1 {
   color: white;
   margin-top: 5px;
   margin-bottom: 0;
+  caret-color: transparent;
 }
 h2 {
   font-family: $fontSubHeading;
   font-size: 2.25em;
   color: white;
+  margin-top: 5px;
+  margin-bottom: 0;
+  caret-color: transparent;
 }
 h2.light {
+  margin-top: 5px;
+  margin-bottom: 0;
   font-family: $fontSubHeadingLight;
   font-weight: lighter;
+  caret-color: transparent;
 }
 
 h3 {
@@ -85,10 +93,12 @@ h3 {
   font-size: 1.1em;
   color: white;
   margin: 0;
+  caret-color: transparent;
 }
 h3.light {
   font-family: $fontSubHeadingLight;
   font-weight: 1;
+  caret-color: transparent;
 }
 
 h4 {
@@ -97,12 +107,13 @@ h4 {
   font-size: 1em;
   color: white;
   margin: 0;
+  caret-color: transparent;
 }
 
 p {
   font-family: $fontDefault;
   font-size: 18px;
-
+  caret-color: transparent;
 }
 
 li {
@@ -110,6 +121,7 @@ li {
   font-size: 16px;
   line-height: 1.2;
   margin-bottom: 5px;
+  caret-color: transparent;
 }
 
 
