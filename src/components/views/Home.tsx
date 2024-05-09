@@ -1,7 +1,9 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 // @ts-ignore
-import Background from "../../assets/AltBackground.svg";
+//import Background from "../../assets/AltBackground.svg";
+// @ts-ignore
+import Background from "../../assets/Background_manyCards.svg";
 // @ts-ignore
 import Deck_backside from "../../assets/Deck_backside.svg";
 import { Button } from "../ui/Button";
