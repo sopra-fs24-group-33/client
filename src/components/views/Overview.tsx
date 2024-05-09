@@ -29,6 +29,7 @@ const Overview = () => {
   const [players, setPlayers] = useState<Player[]>(null);
   const [users, setUsers] = useState<User[]>(null);
   const [curUser, setCurUser] = useState<User>(null);
+  const [curGuest, setCurGuest] = useState<Player>(null);
   const [player, setPlayer] = useState<Player>(null);
   const [showRules, setShowRules] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
@@ -128,6 +129,9 @@ const Overview = () => {
 
       setPlayer(responsePlayers.find(p => p.token === localStorage.getItem("token")));
       setCurUser(responseUsers.find(user => user.token === localStorage.getItem("token")));
+      if(!curUser) {
+        setCurGuest(responsePlayers.find(g => g.token === localStorage.getItem("token")));
+      }
       }
 
     socket.onclose = () => {
@@ -229,7 +233,6 @@ const Overview = () => {
   if (curUser) {
     contentUserInfo = (
       <div className="overview sub-container">
-
         <div className="overview">
           <div className="overview header-hey-username">
             <h2 className="light">Hey&nbsp;</h2>
@@ -250,18 +253,45 @@ const Overview = () => {
             </div>
           </div>
         </div>
-
         <div className="overview rules-logout-button-wrapper">
           <Button onClick={() => logout()}>Logout</Button>
           <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
         </div>
-
       </div>
     );
-  } else {
+  } else if (curGuest) {
+    contentUserInfo = (
+      <div className="overview sub-container">
+        <div className="overview">
+          <div className="overview header-hey-username">
+            <h2 className="light">Hey&nbsp;</h2>
+            <h2>{curGuest.name}</h2>
+          </div>
+          <div className="overview outer-text-wrapper">
+            <div className="overview inner-text-wrapper">
+              <p>username</p>
+              <p>{curGuest.name}</p>
+            </div>
+            <div className="overview inner-text-wrapper">
+              <p>Shame Tokens</p>
+              <p>{curGuest.shame_tokens}</p>
+            </div>
+          </div>
+        </div>
+        <div className="overview rules-logout-button-wrapper">
+          <Button onClick={() => logout()}>Logout</Button>
+          <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
+        </div>
+      </div>
+    );
+  }
+
+
+  else {
     contentUserInfo=
     <Button onClick={() => logout()}>Logout</Button>;
   }
+  console.log("ATTENTION PLEASE THIS IS THE CURRENT GUESZT", curGuest);
 
   return (
     <div style={{
