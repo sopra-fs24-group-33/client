@@ -83,6 +83,8 @@
   }
 }
 
+
+
 .game-arena-container {
   display: flex;
   justify-content: center;
@@ -91,7 +93,7 @@
   height: 45vh;
   background-color: transparent;//rgba(255, 0, 0, 0.42);
 
-  &.table {
+  &.table-old {
     width: 80vw;
     height: 57vh;
     border-radius: 1vw;
@@ -121,6 +123,41 @@
     }
     &.blink-failure {
       animation: blink-failure 0.5s ease-out;
+    }
+  }
+
+  &.table {
+    width: 80vw;
+    height: 57vh;
+    border-radius: 1vw;
+    background-color: gray;
+    z-index: -1;
+    box-shadow:
+            0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), /* Outer glow */
+            inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5); /* Inner glow */
+
+    @keyframes blink-success {
+      0%, 100% {
+        box-shadow: 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 1vw 1.25vh $lila, inset 0 0 1vw 1.25vh $lila;
+      }
+    }
+    &.blink-success {
+      animation: blink-success 2s ease-out;
+    }
+
+    @keyframes blink-failure {
+      0%, 100% {
+        box-shadow: 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 1vw 1.25vh $pink, inset 0 0 1vw 1.25vh $pink;
+      }
+    }
+    &.blink-failure {
+      animation: blink-failure 2s ease-out;
     }
   }
 
@@ -166,14 +203,15 @@
     align-items: center;  // Centers the content vertically
     justify-content: center;  // Centers the content horizontally
     overflow: hidden;  // Ensures no overflow of content outside the border
+    background-color: gray;
     margin-bottom: 1em;
   }
 }
 
 .my-webcam-and-control-box {
   position: absolute;
-  bottom: 1em;
-  right: 1em;
+  bottom: 4em;
+  right: 5em;
   display: grid;
 }
 
@@ -210,6 +248,28 @@
     font-weight: 500;
     color: $accent;
   }
+}
+
+.cockpit {
+  position: absolute;
+  bottom: 4em;
+  left: 5em;
+  width: 400px;
+  height: 250px;
+  border: white 1px solid;
+  background-color: black;
+  border-radius: 0.75em;
+  box-shadow: $dropShadow;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5em 2em;
+}
+
+.cockpit-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: auto;
 }
 
 .confetti-container {
