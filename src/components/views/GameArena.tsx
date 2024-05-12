@@ -17,6 +17,16 @@ import { useAgoraService } from 'helpers/agoracontext';
 import ButtonMute from "../../assets/ButtonMute.svg";
 // @ts-ignore
 import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+// @ts-ignore
+import ButtonExit from "../../assets/Exit.svg";
+// @ts-ignore
+import ButtonInfo from "../../assets/Info.svg";
+// @ts-ignore
+import ButtonSettings from "../../assets/Settings.svg";
+import Deck from "components/ui/cards/Deck";
+import Rules from "../ui/Rules";
+import DrawPopUp from "../ui/Settings";
+import Settings from "../ui/Settings";
 
 
 
@@ -30,12 +40,13 @@ const GameArena = () => {
   const gameId = localStorage.getItem("gameId")
   const playerId = Number(localStorage.getItem("id"))
   const [drawPhase, setDrawPhase] = useState<boolean>(true) // Set initial draw phase true
-  const [game, setGame] = useState<Game>(null)
+  const [game, setGame] = useState<Game>()
   const [players, setPlayers] = useState([]);
   const [player, setPlayer] = useState<GamePlayer>(null);
   const [playerHand, setPlayerHand] = useState<number[]>([]) // Own cards
   const [cardsPlayed, setCardsPlayed] = useState<number[]>([]); // Cards played
   const [teamMates, setTeamMates] = useState<GamePlayer[]>([])
+  const [cardStack, setCardStack] = useState<number[]>([]);
   const [ws, setWs] = useState(null);
   const [moveStatus, setMoveStatus] = useState('');
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | 'end' | null>(null);
@@ -50,6 +61,8 @@ const GameArena = () => {
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
   const agoraService = useAgoraService();
   const [isMuted, setIsMuted] = useState(false);
+  const [showSettings, setShowSettings] = useState();
+  const [altStyle, setAltStyle] = useState(false);
 
   const toggleMute = () => {
     if (isMuted) {
@@ -59,6 +72,43 @@ const GameArena = () => {
     }
     setIsMuted(!isMuted);
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await api.get(`/game/${gameId}`);
+        console.log("+++Received Data:", response.data)
+        setGame(response.data);
+        setPlayers(response.data.players)
+        console.log(response.data.players.find(p => p.id === playerId))
+        const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
+        setPlayerHand(player.cards);
+        setCardStack(response.data.cardStack)
+
+        // set current level on local storage
+        localStorage.setItem("lvl", response.data.level);
+
+        setTeamMates(response.data.players.filter(p => p.id !== playerId))
+
+        if (localStorage.getItem("inGame")) {
+          setShowTeamHand(true);
+          setCardsPlayed(prev => [...prev, 0, response.data.currentCard]);
+        }
+
+      } catch (error) {
+        console.error(
+          `Something went wrong while fetching the users: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        alert(
+          "Something went wrong while fetching the users! See the console for details."
+        );
+      }
+    }
+    fetchData();
+  }, []);
 
 
 
@@ -70,12 +120,21 @@ const GameArena = () => {
     };
 
     socket.onmessage = (event) => {
+
+      if (event.data === "leave") {
+        removeAllGameTokens()
+        agoraService.cleanup();
+        navigate("/overview")
+        return;
+      }
+
+
       const data = JSON.parse(event.data);
-      console.log("Game event received:", data);
+      console.log("+++Game event received:", data);
+      setCardStack(data.cardStack)
       setGame(data)
       setPlayers(data.players)
       setCardsPlayed(prev => [...prev, data.currentCard]);
-
       // COOLDOWNN
       const now = new Date().getTime();
       lastCardPlayTime.current = now;
@@ -115,40 +174,6 @@ const GameArena = () => {
     };
 
     setWs(socket);
-
-    async function fetchData() {
-      try {
-        const response = await api.get(`/game/${gameId}`);
-        console.log("Received Data:", response.data)
-        setGame(response.data);
-        setPlayers(response.data.players)
-        console.log(response.data.players.find(p => p.id === playerId))
-        const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
-        setPlayerHand(player.cards);
-
-        // set current level on local storage
-        localStorage.setItem("lvl", response.data.level);
-
-        setTeamMates(response.data.players.filter(p => p.id !== playerId))
-
-        if (localStorage.getItem("inGame")) {
-          setShowTeamHand(true);
-          setCardsPlayed(prev => [...prev, 0, response.data.currentCard]);
-        }
-
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
-    }
-    fetchData();
 
     return () => {
       socket.close();
@@ -210,12 +235,19 @@ const GameArena = () => {
     navigate("/lobby")
   }
 
+  const removeAllGameTokens = () => {
+    localStorage.removeItem("pin")
+    localStorage.removeItem("adminId")
+    localStorage.removeItem("lost")
+    localStorage.removeItem("inGame")
+    localStorage.removeItem("lvl")
+  }
+
   const handleLeaveGame = async () => {
     const requestBody = JSON.stringify(player)
     console.log("player in game.tsx:", requestBody)
-    const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-    localStorage.removeItem("pin")
-    localStorage.removeItem("adminId")
+    await api.delete(`/endgame/${gameId}`)
+    removeAllGameTokens()
     agoraService.cleanup();
     navigate("/overview")
   }
@@ -261,6 +293,9 @@ const GameArena = () => {
       console.log("HANDLE DRAW CARDS RESPONSE:", response.data)
       const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
       setPlayerHand(player.cards)
+      console.log("+++CARD STACK:", response.cardStack)
+      setCardStack(response.data.cardStack)
+
 
       const FilteredPlayers = response.data.players
         .filter(p => p.id !== playerId)
@@ -273,6 +308,9 @@ const GameArena = () => {
         handleMove(3);
       }
     } else {
+      console.log("Game State:",game)
+      if (game) {
+      }
       console.log("hä....")
     }
     console.log("setting reveal back to false")
@@ -282,8 +320,20 @@ const GameArena = () => {
     setCardsPlayed([]) // clear cards played pile
     setDrawButtonClicked(false);
   }
-  const isReady = () => {
-    readyWS.send(game.players.length);
+  const handleInfo = () => {
+
+  }
+
+  const handleSettings = () => {
+    changeCardStyle()
+  }
+
+  const changeCardStyle = () => {
+    if (altStyle) {
+      setAltStyle(false)
+    } else {
+      setAltStyle(true)
+    }
   }
 
   const handleCardClick = async (cardValue: number) => {
@@ -304,6 +354,7 @@ const GameArena = () => {
   };
 
   console.log("# agoraService.getVideoTracks() game", agoraService.getVideoTracks())
+  console.log("SETTINGS SET:", showSettings)
 
   let teamContent = teamMates.length > 0 ? (
     teamMates.map(player => {
@@ -319,7 +370,7 @@ const GameArena = () => {
           </div>
 
           <div className="matehand-container">
-            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal} />}
+            {showTeamHand && <MateHand cardValues={player.cards} revealCards={reveal} alt={altStyle} />}
           </div>
         </div>
       );
@@ -329,9 +380,9 @@ const GameArena = () => {
   let mainContent = drawPhase && localStorage.getItem("inGame") === null ? (
     //"Draw Cards" button used to be here
     <div>
-      <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
+      <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} alt={altStyle} />
     </div>
-  ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} />
+  ) : <CardPile onCardPlayed={handleCardClick} cards={cardsPlayed} alt={altStyle} />
 
   let tableClasses = `game-arena-container table ${moveStatus}`;
 
@@ -359,8 +410,18 @@ const GameArena = () => {
             />
           )}
           <div className="game-arena-container table-border">
-
+            <div className="deck">
+              <Deck numCards={cardStack.length}>
+              </Deck>
+            </div>
+            <div className="draw-button">
+              {drawPhase && localStorage.getItem("inGame") === null && (
+                <Button className="animated-gradient square extra-large" onClick={readyDrawCards} disabled={drawButtonClicked}>
+                  Draw Cards {playersReady}/{players.length}
+                </Button> )}
+            </div>
             <div className={tableClasses}>
+
               {mainContent}
             </div>
           </div>
@@ -369,7 +430,7 @@ const GameArena = () => {
         <div className="pov-container">
           <div className="pov-container hand">
             {(localStorage.getItem("inGame") || reveal) && (
-              <PlayerHand cardValues={playerHand} onClick={handleCardClick} />
+              <PlayerHand cardValues={playerHand} onClick={handleCardClick} alt={altStyle} />
             )}
           </div>
 
@@ -391,18 +452,12 @@ const GameArena = () => {
         </div>
 
         <div className="cockpit">
-          <h2>Level: {game && game.level}</h2>
-          <div className="cockpit-button-container">
-            <Button className="primary-button quit" onClick={handleNewGame}>
-              Quit
-            </Button>
-            {drawPhase && localStorage.getItem("inGame") === null && (
-            <Button className="primary-button" onClick={readyDrawCards} disabled={drawButtonClicked}>
-              Draw Cards {playersReady}/{players.length}
-            </Button> )}
-          </div>
-
+          <h3 className={"button-level"}>Lv. {game && game.level}</h3>
+          <img className="button-cockpit" src={ButtonInfo} alt="" onClick={handleInfo} />
+          <img className="button-cockpit" src={ButtonSettings} alt="" onClick={handleSettings} />
+          <img className="button-cockpit" src={ButtonExit} alt="" onClick={handleLeaveGame} />
         </div>
+
       </div>
     </BaseContainer>
   );
