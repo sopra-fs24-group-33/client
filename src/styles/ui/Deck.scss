@@ -1,0 +1,58 @@
+.deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px; // Adjust margin as needed
+  caret-color: transparent;
+}
+
+.pile {
+  position: relative;
+}
+
+
+.card {
+  position: absolute;
+  transition: all 0.3s ease;
+  caret-color: transparent;
+  box-shadow: 10px 10px 5px 1px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+  width: 200px; // Set the width of the image container
+  height: 150px; // Set the height of the image container
+  caret-color: transparent;
+
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  caret-color: transparent;
+
+}
+
+.card-image img.drawn {
+  transform: translateY(100%);
+  caret-color: transparent;
+}
+
+.card-wrapper {
+  width: 100px;
+  height: 150px;
+  caret-color: transparent;
+}
+
+.card-wrapper img {
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card-wrapper.drawn img {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(50px);
+}
