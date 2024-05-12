@@ -5,14 +5,15 @@ import "../../../styles/ui/PlayerHand.scss"; // make sure to have the path corre
 
 interface PlayerHandProps {
   cardValues: number[]; // Defining the type for the cardValues prop
+  alt: boolean;
 }
 
-const PlayerHand: React.FC<PlayerHandProps> = ({ cardValues, onClick }) => {
+const PlayerHand: React.FC<PlayerHandProps> = ({ cardValues, onClick, alt = false }) => {
   return (
     <div className="player-hand">
       {cardValues.map((value, index) => (
         // The key prop is correctly used here for React's internal use and does not need to be declared in CardFront's propTypes.
-        <CardFront key={index} value={value} onClick={onClick} className="card-container" />
+        <CardFront key={index} value={value} onClick={onClick} className="card-container" alt={alt}/>
       ))}
     </div>
   );
@@ -23,6 +24,7 @@ const PlayerHand: React.FC<PlayerHandProps> = ({ cardValues, onClick }) => {
 PlayerHand.propTypes = {
   cardValues: PropTypes.arrayOf(PropTypes.number),
   onClick: PropTypes.func,
+  alt: PropTypes.number,
 };
 
 export default PlayerHand;
