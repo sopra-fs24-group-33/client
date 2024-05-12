@@ -7,11 +7,11 @@ import Register from "../../views/Register";
 import Overview from "../../views/Overview";
 import Lobby from "../../views/Lobby";
 import GamePin from "../../views/Join";
-import GameDemoFromBackend from "../../views/GameDemoFromBackend";
 import Design from "../../views/design";
 import GameArena from "../../views/GameArena";
 import WebSocket from "../../views/WebSocket"
 import { AgoraServiceProvider } from '../../../helpers/agoracontext';
+import Deck from "../../ui/cards/Deck";
 
 
 const AppRouter = () => {
@@ -38,8 +38,8 @@ const AppRouter = () => {
           <Route path="/game" element={<GameArena />} />
           <Route path="/lobby" element={<Lobby />} />
           <Route path="/join" element={<GamePin />} />
-          <Route path="/test" element={<GameDemoFromBackend />} />
           <Route path="/design" element={<Design />} />
+          <Route path="/deck" element={<Deck />} />
           <Route path="/ws" element={<WebSocket />} />
 
           {/* Catch-all route */}

@@ -62,7 +62,7 @@ const JoinPopup: React.FC<JoinPopupProps> = ({ onClose, onJoin, error }) => {
 
   return (
     <div className="backdrop">
-      <div className="modal-rules">
+      <div className="modal-join">
         <h2 style={{
           marginBottom: "0.2em",
         }}>Enter Pin</h2>
@@ -75,8 +75,8 @@ const JoinPopup: React.FC<JoinPopupProps> = ({ onClose, onJoin, error }) => {
         />
         <div style={{ color: "#fc3a87", height: "1em", fontSize: "1em" }}>{error}</div>
         <div className="overview button-container">
-          <Button className= "outlined" width="7vw" onClick={onClose}>Cancel</Button>
-          <Button width="7vw" onClick={() => onJoin(pin)}>Join</Button>
+          <Button className= "outlined" width="15vmin" onClick={onClose}>Cancel</Button>
+          <Button width="15vmin" onClick={() => onJoin(pin)}>Join</Button>
         </div>
       </div>
     </div>
