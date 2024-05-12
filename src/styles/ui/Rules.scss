@@ -29,7 +29,17 @@
   overflow: auto; /* Enable scroll if needed */
   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
 }
-
+// Define your keyframes for animatetop inside the SCSS as well
+@keyframes animatetop {
+  from {
+    opacity: 0;
+    transform: translateY(-15%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .modal-rules {
   display: flex;
   align-items: center;
@@ -43,16 +53,18 @@
   border: 1px solid $grey;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   animation: animatetop 0.4s;
-
-  // Define your keyframes for animatetop inside the SCSS as well
-  @keyframes animatetop {
-    from {
-      opacity: 0;
-      transform: translateY(-15%);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+}
+.modal-join {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: fit-content;
+  background-color: black;
+  color: white;
+  padding: 20px;
+  padding-bottom: 2em;
+  border-radius: 0.75em;
+  border: 1px solid $grey;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  animation: animatetop 0.4s;
 }
