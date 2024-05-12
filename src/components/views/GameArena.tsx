@@ -17,6 +17,7 @@ import { useAgoraService } from 'helpers/agoracontext';
 import ButtonMute from "../../assets/ButtonMute.svg";
 // @ts-ignore
 import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+import Rules from "../ui/Rules";
 
 
 
@@ -50,6 +51,7 @@ const GameArena = () => {
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
   const agoraService = useAgoraService();
   const [isMuted, setIsMuted] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   const toggleMute = () => {
     if (isMuted) {
@@ -396,6 +398,7 @@ const GameArena = () => {
             <Button className="primary-button quit" onClick={handleNewGame}>
               Quit
             </Button>
+            <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
             {drawPhase && localStorage.getItem("inGame") === null && (
             <Button className="primary-button" onClick={readyDrawCards} disabled={drawButtonClicked}>
               Draw Cards {playersReady}/{players.length}
@@ -403,8 +406,10 @@ const GameArena = () => {
           </div>
 
         </div>
+        {showRules && <Rules onClose={() => setShowRules(false)} />}
       </div>
     </BaseContainer>
+
   );
 };
 
