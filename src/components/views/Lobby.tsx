@@ -105,10 +105,6 @@ const Lobby = () => {
     };
   }, [userId, lobbyPin]);
 
-
-
-
-
   useEffect(() => {
     localStorage.removeItem("inGame")
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
@@ -230,9 +226,9 @@ const Lobby = () => {
       </div>
       <BaseContainer className="lobby container">
         <div className="lobby header">
-          <h2>
+          <h3>
             Game Pin
-          </h2>
+          </h3>
           <h2 className="light">
             {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
           </h2>
@@ -260,11 +256,11 @@ const Lobby = () => {
         </div>
         <div className="lobby button-container">
           <Button className="outlined" width="100%" onClick={leaveLobby}>
-            Leave
+            Leave Lobby
           </Button>
           {adminId === playerId && (
             <Button className="" width="100%" onClick={() => startGame()} disabled={players.length <= 1}>
-              Start
+              Start Game
             </Button>
           )}
         </div>

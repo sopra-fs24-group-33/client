@@ -116,6 +116,12 @@ p {
   caret-color: transparent;
 }
 
+p.large {
+  font-family: $fontDefault;
+  font-size: 1em;
+  caret-color: transparent;
+}
+
 li {
   font-family: $fontDefault;
   font-size: 16px;

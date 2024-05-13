@@ -6,9 +6,10 @@ import "../../../styles/ui/CardFront.scss";
 interface CardPileProps {
   cards: number[];  // Array of card values
   onCardPlayed: (value: number) => void;
+  alt: boolean;
 }
 
-const CardPile: React.FC<CardPileProps> = ({ cards, onCardPlayed }) => {
+const CardPile: React.FC<CardPileProps> = ({ cards, onCardPlayed, alt = false }) => {
   const getLastTwoCards = () => {
     return cards.slice(-2);  // Get the last two cards from the cards array
   };
@@ -39,7 +40,8 @@ const CardPile: React.FC<CardPileProps> = ({ cards, onCardPlayed }) => {
           <CardFront
             value={value}
             onClick={() => onCardPlayed(value)}
-            className="card-container-large" />
+            className="card-container-large"
+            alt={alt}/>
         </div>
       ))}
     </div>

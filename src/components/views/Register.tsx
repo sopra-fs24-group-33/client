@@ -74,7 +74,11 @@ const Register = () => {
       navigate("/overview");
     }
     catch (error) {
-      setError("Username already exists")
+      if (error.toJSON().message === 'Network Error') {
+        setError("Server is not running")
+      } else {
+        setError("Username already exists")
+      }
     }
   }
 

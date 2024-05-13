@@ -7,16 +7,17 @@ import "../../../styles/ui/MateHand.scss";
 interface CardBackRowProps {
   cardValues: number[];  // Number of card backs to display
   revealCards: boolean; // Whether to show the card front or back
+  alt: boolean;
 }
 
-const MateHand: React.FC<CardBackRowProps> = ({ cardValues, revealCards }) => {
+const MateHand: React.FC<CardBackRowProps> = ({ cardValues, revealCards, alt = false }) => {
   if (revealCards && cardValues.length) {
     // Show card fronts when revealCards is true and cardValues are provided
     // @ts-ignore
     return (
       <div className="player-hand">
         {cardValues.map((value, index) => (
-          <CardFront key={index} value={value} className="card-container-small"/>
+          <CardFront key={index} value={value} className="card-container-small" alt={alt}/>
         ))}
       </div>
     );
