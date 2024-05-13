@@ -17,6 +17,7 @@ import { useAgoraService } from 'helpers/agoracontext';
 import ButtonMute from "../../assets/ButtonMute.svg";
 // @ts-ignore
 import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+import Rules from "../ui/Rules";
 // @ts-ignore
 import ButtonExit from "../../assets/Exit.svg";
 // @ts-ignore
@@ -24,7 +25,6 @@ import ButtonInfo from "../../assets/Info.svg";
 // @ts-ignore
 import ButtonSettings from "../../assets/Settings.svg";
 import Deck from "components/ui/cards/Deck";
-import Rules from "../ui/Rules";
 import DrawPopUp from "../ui/Settings";
 import Settings from "../ui/Settings";
 
@@ -61,6 +61,7 @@ const GameArena = () => {
   const [drawButtonClicked, setDrawButtonClicked] = useState(false);
   const agoraService = useAgoraService();
   const [isMuted, setIsMuted] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   const [showSettings, setShowSettings] = useState();
   const [altStyle, setAltStyle] = useState(false);
 
@@ -135,6 +136,7 @@ const GameArena = () => {
       setGame(data)
       setPlayers(data.players)
       setCardsPlayed(prev => [...prev, data.currentCard]);
+
       // COOLDOWNN
       const now = new Date().getTime();
       lastCardPlayTime.current = now;
@@ -308,9 +310,6 @@ const GameArena = () => {
         handleMove(3);
       }
     } else {
-      console.log("Game State:",game)
-      if (game) {
-      }
       console.log("hä....")
     }
     console.log("setting reveal back to false")
@@ -354,7 +353,6 @@ const GameArena = () => {
   };
 
   console.log("# agoraService.getVideoTracks() game", agoraService.getVideoTracks())
-  console.log("SETTINGS SET:", showSettings)
 
   let teamContent = teamMates.length > 0 ? (
     teamMates.map(player => {
@@ -421,7 +419,6 @@ const GameArena = () => {
                 </Button> )}
             </div>
             <div className={tableClasses}>
-
               {mainContent}
             </div>
           </div>
@@ -453,11 +450,11 @@ const GameArena = () => {
 
         <div className="cockpit">
           <h3 className={"button-level"}>Lv. {game && game.level}</h3>
-          <img className="button-cockpit" src={ButtonInfo} alt="" onClick={handleInfo} />
+          <img className="button-cockpit" src={ButtonInfo} alt="" onClick={() => setShowRules(true)} />
           <img className="button-cockpit" src={ButtonSettings} alt="" onClick={handleSettings} />
           <img className="button-cockpit" src={ButtonExit} alt="" onClick={handleLeaveGame} />
         </div>
-
+        {showRules && <Rules onClose={() => setShowRules(false)} />}
       </div>
     </BaseContainer>
   );
