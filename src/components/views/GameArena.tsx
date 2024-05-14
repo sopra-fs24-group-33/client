@@ -75,6 +75,19 @@ const GameArena = () => {
   };
 
   useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = ''; // Required for Chrome to display the confirmation dialog
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     async function fetchData() {
       try {
         const response = await api.get(`/game/${gameId}`);
