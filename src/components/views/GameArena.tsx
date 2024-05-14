@@ -73,6 +73,62 @@ const GameArena = () => {
     }
     setIsMuted(!isMuted);
   };
+// Save game state to localStorage whenever it changes
+  useEffect(() => {
+    if (game) {
+      localStorage.setItem('gameState', JSON.stringify({
+        game,
+        players,
+        player,
+        playerHand,
+        cardsPlayed,
+        teamMates,
+        drawPhase,
+        popupType,
+        reveal,
+        lost,
+        playersReady,
+        showTeamHand,
+        moveStatus
+      }));
+    }
+  }, [game, players, player, playerHand, cardsPlayed, teamMates, drawPhase, popupType, reveal, lost, playersReady, showTeamHand, moveStatus]);
+
+  // Load game state from localStorage when the component mounts
+  useEffect(() => {
+    const savedState = localStorage.getItem('gameState');
+    if (savedState) {
+      const {
+        game,
+        players,
+        player,
+        playerHand,
+        cardsPlayed,
+        teamMates,
+        drawPhase,
+        popupType,
+        reveal,
+        lost,
+        playersReady,
+        showTeamHand,
+        moveStatus
+      } = JSON.parse(savedState);
+
+      setGame(game);
+      setPlayers(players);
+      setPlayer(player);
+      setPlayerHand(playerHand);
+      setCardsPlayed(cardsPlayed);
+      setTeamMates(teamMates);
+      setDrawPhase(drawPhase);
+      setPopupType(popupType);
+      setReveal(reveal);
+      setLost(lost);
+      setPlayersReady(playersReady);
+      setShowTeamHand(showTeamHand);
+      setMoveStatus(moveStatus);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
