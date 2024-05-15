@@ -22,6 +22,27 @@
 
      */
   }
+
+
+  @keyframes blink-glow {
+    0%, 100% {
+      box-shadow: 0 0 1.5vh 0.75vh $lila; // Glow fully visible
+    }
+    50% {
+      box-shadow: 0 0 0 0 $lila; // Glow completely hidden
+    }
+  }
+
+  &.lowest {
+    animation: blink-glow 2s infinite; // Apply the blinking animation, adjust the duration as needed
+
+    &:hover {
+      transform: translateY(-30px);
+      box-shadow: 5px 5px 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced shadow on hover
+      animation: none; // Stop blinking when hovered for a steady effect
+    }
+  }
+
   .card-img {
     flex-grow: 1;
     width: 100%;

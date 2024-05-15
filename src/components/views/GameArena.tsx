@@ -64,6 +64,7 @@ const GameArena = () => {
   const [showRules, setShowRules] = useState(false);
   const [showSettings, setShowSettings] = useState();
   const [altStyle, setAltStyle] = useState(false);
+  const [help, setHelp] = useState(false);
 
   const toggleMute = () => {
     if (isMuted) {
@@ -427,7 +428,7 @@ const GameArena = () => {
         <div className="pov-container">
           <div className="pov-container hand">
             {(localStorage.getItem("inGame") || reveal) && (
-              <PlayerHand cardValues={playerHand} onClick={handleCardClick} alt={altStyle} />
+              <PlayerHand cardValues={playerHand} onClick={handleCardClick} alt={altStyle} help={help} />
             )}
           </div>
 
@@ -454,8 +455,9 @@ const GameArena = () => {
           <img className="button-cockpit" src={ButtonSettings} alt="" onClick={handleSettings} />
           <img className="button-cockpit" src={ButtonExit} alt="" onClick={handleLeaveGame} />
         </div>
-        {showRules && <Rules onClose={() => setShowRules(false)} />}
       </div>
+      {showRules && <Rules onClose={() => setShowRules(false)} />}
+
     </BaseContainer>
   );
 };

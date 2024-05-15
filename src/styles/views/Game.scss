@@ -77,9 +77,11 @@
   }
 
   .matehand-container {
+    position: absolute;
+    top: 30%;
     width: 100%;  // Full width to match the webcam container above
     margin-top: -5vh;
-    z-index: 2;
+    z-index: 1;
   }
 }
 

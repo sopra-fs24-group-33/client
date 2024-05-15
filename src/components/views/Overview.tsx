@@ -102,6 +102,9 @@ const Overview = () => {
     if (playerId === null) {
       navigate("/home")
     }
+    if (lobbyPin) {
+
+    }
   }, [playerId, lobbyPin]);
 
   useEffect(() => {
