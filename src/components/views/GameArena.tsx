@@ -432,9 +432,15 @@ const GameArena = () => {
             </div>
             <div className="draw-button">
               {drawPhase && localStorage.getItem("inGame") === null && (
-                <Button className="animated-gradient square extra-large" onClick={readyDrawCards} disabled={drawButtonClicked}>
-                  Draw Cards {playersReady}/{players.length}
-                </Button> )}
+                <>
+                  <p className="players-ready"> {playersReady}/{players.length} players are ready</p>
+                  <Button className="animated-gradient extra-large" onClick={readyDrawCards}
+                          disabled={drawButtonClicked}>
+                    Draw Cards
+                  </Button>
+                </>
+              )}
+
             </div>
             <div className={tableClasses}>
               {mainContent}
