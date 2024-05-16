@@ -69,16 +69,7 @@
     justify-content: center;  // Centers the content horizontally
     overflow: hidden;  // Ensures no overflow of content outside the border
   }
-  .shametoken-counter {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-    position: absolute;
-    bottom: 20%;
-    right: -12%;
-    z-index: 2;
-  }
+
 
 
   .player-name {
@@ -93,6 +84,16 @@
   }
 }
 
+.shametoken-counter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  position: absolute;
+  bottom: 20%;
+  right: -12%;
+  z-index: 2;
+}
 
 
 .game-arena-container {

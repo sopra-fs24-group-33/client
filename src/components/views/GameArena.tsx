@@ -382,7 +382,7 @@ const GameArena = () => {
           }}></div>
           <div className="shametoken-counter">
             <img src={shame_logo} alt="" style={{ width: "30px", height: "30px" }} />
-            <h3>{player.shame_tokens ? player.shame_tokens : 0}</h3>
+            <h3>{player? player.shame_tokens : 0}</h3>
           </div>
 
           <div className="matehand-container">
@@ -456,11 +456,15 @@ const GameArena = () => {
               }
             }}>
             </div>
+            <div className="shametoken-counter">
+              <img src={shame_logo} alt="" style={{ width: "30px", height: "30px" }} />
+              <h3>{player ? player.shame_tokens : 0}</h3>
+            </div>
             <div className="control-box">
               {isMuted ? (
-                <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute}/>
+                <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute} />
               ) : (
-                <img className="button-unmute" src={ButtonMute} alt="" onClick={toggleMute}/>
+                <img className="button-unmute" src={ButtonMute} alt="" onClick={toggleMute} />
               )}
             </div>
           </div>
