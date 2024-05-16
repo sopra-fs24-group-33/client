@@ -27,6 +27,9 @@ import ButtonSettings from "../../assets/Settings.svg";
 import Deck from "components/ui/cards/Deck";
 import DrawPopUp from "../ui/Settings";
 import Settings from "../ui/Settings";
+// @ts-ignore
+import shame_logo from "../../assets/shame_logo.svg";
+
 
 
 
@@ -234,7 +237,6 @@ const GameArena = () => {
   };
 
   const revealCards = async () => {
-
     setReveal(true);
     setPopupType(null);
     setDrawPhase(true);
@@ -377,7 +379,10 @@ const GameArena = () => {
             if (el && videoTrack) {
               videoTrack.play(el);
             }
-          }}>
+          }}></div>
+          <div className="shametoken-counter">
+            <img src={shame_logo} alt="" style={{ width: "30px", height: "30px" }} />
+            <h3>{player.shame_tokens ? player.shame_tokens : 0}</h3>
           </div>
 
           <div className="matehand-container">

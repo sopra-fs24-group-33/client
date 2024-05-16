@@ -38,9 +38,7 @@
     align-items: center;
     justify-content: center;
   }
-  & p,h2 {
-    margin: 0.5em 0;
-  }
+
 }
 
 .teammates-container {
@@ -48,19 +46,20 @@
   justify-content: space-around; // Align children to the bottom
   align-items: flex-start; // Center children horizontally (optional)
   width: 100vw;
-  height: 45vh;
+  height: 225px;
 
   .teammate-box {
     display: flex;
+    position: relative; // I had to add this so that the counter can use position absolute
     flex-direction: column;
     align-items: center;  // Center-aligns the webcam and matehand vertically
-    width: 24%;  // Assuming 4 teammates, each gets 24% of the width, adjust as needed
+    width: 225px;
     margin: 0 0.5%;  // Optional margin for spacing between containers
   }
 
   .webcam-container {
-    width: 30vh;  // Maintains the width of the container
-    height: 30vh;  // Maintains the height of the container
+    width: 225px;
+    height: 225px;
     background-color: grey;  // Just for visibility
     border: 2px solid $lila;  // Adds a black border
     border-radius: 50%;  // Makes the container round
@@ -70,6 +69,17 @@
     justify-content: center;  // Centers the content horizontally
     overflow: hidden;  // Ensures no overflow of content outside the border
   }
+  .shametoken-counter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    bottom: 20%;
+    right: -12%;
+    z-index: 2;
+  }
+
 
   .player-name {
     color: white;  // Makes the text white
@@ -178,6 +188,7 @@
   bottom: 4em;
   right: 5em;
   display: grid;
+
 }
 
 .control-box {
