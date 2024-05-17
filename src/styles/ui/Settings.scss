@@ -1,17 +1,28 @@
 @import "../theme";
 
 .backdrop-settings {
+  position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  position: absolute; /* or absolute, depending on your layout needs */
-  top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent; /* Optional: for visibility */
-  pointer-events: none; /* Allows clicks to pass through to underlying elements */
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  display: flex; // use flex to center the modal box
+  align-items: center; // center vertically
+  justify-content: center; // center horizontally
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+
+@keyframes animatetop {
+  from {
+    opacity: 0;
+    transform: translateY(-15%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal-settings {
@@ -24,6 +35,8 @@
   padding: 20px;
   border-radius: 15px;
   border: 1px solid $grey;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  animation: animatetop 0.4s;
 }
 
 .button-settings {
@@ -110,6 +123,20 @@
 .reset-button:hover {
   text-decoration: underline;
 }
+
+.divider-exit {
+  width: 60%;
+  border: none; // Remove the default border
+  height: 1px; // Make it 1px high
+  background-color: white; // Set the color of the divider
+}
+
+.button-wrapper-exit {
+  display: flex;
+  justify-content: space-evenly;
+  width: 320px; /* its as wide as a player box*/
+}
+
 
 
 

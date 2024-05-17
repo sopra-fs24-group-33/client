@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from "./Button";
+import { Button } from "../Button";
 import PropTypes from "prop-types";
-import "../../styles/ui/Rules.scss";
+import "../../../styles/ui/Rules.scss";
 
 const rulesText = "De Game is a cooperative card game that tests teamwork, good communication\n" +
   "          and intuition.\n" +

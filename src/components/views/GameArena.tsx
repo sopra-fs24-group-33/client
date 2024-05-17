@@ -11,13 +11,13 @@ import GamePlayer from "models/GamePlayer";
 import MateHand from "../ui/cards/MateHand";
 import CardPile from "../ui/cards/CardPile";
 import PlayerHand from "../ui/cards/PlayerHand";
-import Popup from "../ui/PopUp";
+import Popup from "../ui/popUps/PopUp";
 import { useAgoraService } from 'helpers/agoracontext';
 // @ts-ignore
 import ButtonMute from "../../assets/ButtonMute.svg";
 // @ts-ignore
 import ButtonUnmute from "../../assets/ButtonUnmute.svg";
-import Rules from "../ui/Rules";
+import Rules from "../ui/popUps/Rules";
 // @ts-ignore
 import ButtonExit from "../../assets/Exit.svg";
 // @ts-ignore
@@ -25,8 +25,8 @@ import ButtonInfo from "../../assets/Info.svg";
 // @ts-ignore
 import ButtonSettings from "../../assets/Settings.svg";
 import Deck from "components/ui/cards/Deck";
-import DrawPopUp from "../../../../../Downloads/src/components/ui/Settings";
-import Settings from "../../../../../Downloads/src/components/ui/Settings";
+import Settings from "components/ui/popUps/Settings";
+import ExitPopUp from "../ui/popUps/ExitPopUp";
 
 
 
@@ -67,6 +67,7 @@ const GameArena = () => {
   const [help, setHelp] = useState(() => localStorage.getItem('help') === 'true');
   const [winColor, setWinColor] = useState(() => localStorage.getItem('winColor') || "#8F5BFFFF");
   const [loseColor, setLoseColor] = useState(() => localStorage.getItem('loseColor') || "#FC3A87FF");
+  const [exitPopUp, setExitPopUp] = useState(false);
 
   const toggleMute = () => {
     if (isMuted) {
@@ -448,7 +449,7 @@ const GameArena = () => {
           <h3 className={"button-level"}>Lv. {game && game.level}</h3>
           <img className="button-cockpit" src={ButtonInfo} alt="" onClick={() => setShowRules(true)} />
           <img className="button-cockpit" src={ButtonSettings} alt="" onClick={() => setShowSettings(true)} />
-          <img className="button-cockpit" src={ButtonExit} alt="" onClick={handleLeaveGame} />
+          <img className="button-cockpit" src={ButtonExit} alt="" onClick={() => setExitPopUp(true)} />
         </div>
       </div>
       {showRules && <Rules onClose={() => setShowRules(false)} />}
@@ -461,6 +462,7 @@ const GameArena = () => {
         altStyle={altStyle} // Pass altStyle boolean
         help={help} // Pass help boolean
       />}
+      {exitPopUp && <ExitPopUp onCancel={() => setExitPopUp(false)} onConfirm={handleLeaveGame} />}
     </BaseContainer>
   );
 };
