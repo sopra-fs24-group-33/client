@@ -1,0 +1,117 @@
+@import "../theme";
+
+.backdrop-settings {
+  z-index: 1; /* Sit on top */
+  position: absolute; /* or absolute, depending on your layout needs */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent; /* Optional: for visibility */
+  pointer-events: none; /* Allows clicks to pass through to underlying elements */
+}
+
+.modal-settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto; /* Ensure the modal itself can be interacted with */
+  background: black; /* Assuming a solid background for the popup */
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid $grey;
+}
+
+.button-settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-box {
+  background: #2c2c2c;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  width: 100%; /* Use percentage width for responsiveness */
+  max-width: 500px; /* Optional: Limit the maximum width */
+  height: auto; /* Allow height to adjust based on content */
+  display: flex;
+  justify-content: space-between; /* Ensure elements are spaced out */
+  align-items: center;
+  color: white;
+  padding: 10px; /* Add padding for spacing */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  gap: 1em;
+}
+
+.settings-box p {
+  margin: 0; /* Remove default margin */
+  flex: 1; /* Allow the label to take available space */
+  text-align: left; /* Align text to the left */
+}
+
+.toggle-wrapper {
+  flex-shrink: 0; /* Prevent the toggle button from shrinking */
+}
+
+
+
+
+.divider {
+  width: 80%;
+  border: none; // Remove the default border
+  height: 1px; // Make it 1px high
+  background-color: white; // Set the color of the divider
+  margin-bottom: 3vh;
+  }
+
+.color-picker-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.color-box {
+  width: 36px;
+  height: 24px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.popover {
+  position: absolute;
+  z-index: 1;
+}
+
+.cover {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
+.reset-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+}
+
+.reset-button:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
