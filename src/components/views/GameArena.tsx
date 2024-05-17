@@ -25,8 +25,7 @@ import ButtonInfo from "../../assets/Info.svg";
 // @ts-ignore
 import ButtonSettings from "../../assets/Settings.svg";
 import Deck from "components/ui/cards/Deck";
-import DrawPopUp from "../../../../../Downloads/src/components/ui/Settings";
-import Settings from "../../../../../Downloads/src/components/ui/Settings";
+import Settings from "components/ui/Settings";
 
 
 
