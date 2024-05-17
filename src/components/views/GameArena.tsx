@@ -63,6 +63,7 @@ const GameArena = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [altStyle, setAltStyle] = useState(() => localStorage.getItem('altStyle') === 'true');
   const [help, setHelp] = useState(() => localStorage.getItem('help') === 'true');
   const [winColor, setWinColor] = useState(() => localStorage.getItem('winColor') || "#8F5BFFFF");
@@ -448,7 +449,7 @@ const GameArena = () => {
           <h3 className={"button-level"}>Lv. {game && game.level}</h3>
           <img className="button-cockpit" src={ButtonInfo} alt="" onClick={() => setShowRules(true)} />
           <img className="button-cockpit" src={ButtonSettings} alt="" onClick={() => setShowSettings(true)} />
-          <img className="button-cockpit" src={ButtonExit} alt="" onClick={handleLeaveGame} />
+          <img className="button-cockpit" src={ButtonExit} alt="" onClick={() => setShowWarning(true)} />
         </div>
       </div>
       {showRules && <Rules onClose={() => setShowRules(false)} />}
@@ -461,6 +462,7 @@ const GameArena = () => {
         altStyle={altStyle} // Pass altStyle boolean
         help={help} // Pass help boolean
       />}
+      {showWarning && <ExitPopUp onCancel={() => setShowWarning(false)} onConfirm={handleLeaveGame} />}
     </BaseContainer>
   );
 };
