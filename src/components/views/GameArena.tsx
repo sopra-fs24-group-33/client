@@ -67,7 +67,6 @@ const GameArena = () => {
   const [help, setHelp] = useState(() => localStorage.getItem('help') === 'true');
   const [winColor, setWinColor] = useState(() => localStorage.getItem('winColor') || "#8F5BFFFF");
   const [loseColor, setLoseColor] = useState(() => localStorage.getItem('loseColor') || "#FC3A87FF");
-  const [exitPopUp, setExitPopUp] = useState(false);
 
   const toggleMute = () => {
     if (isMuted) {
@@ -449,7 +448,7 @@ const GameArena = () => {
           <h3 className={"button-level"}>Lv. {game && game.level}</h3>
           <img className="button-cockpit" src={ButtonInfo} alt="" onClick={() => setShowRules(true)} />
           <img className="button-cockpit" src={ButtonSettings} alt="" onClick={() => setShowSettings(true)} />
-          <img className="button-cockpit" src={ButtonExit} alt="" onClick={() => setExitPopUp(true)} />
+          <img className="button-cockpit" src={ButtonExit} alt="" onClick={handleLeaveGame} />
         </div>
       </div>
       {showRules && <Rules onClose={() => setShowRules(false)} />}
@@ -462,7 +461,6 @@ const GameArena = () => {
         altStyle={altStyle} // Pass altStyle boolean
         help={help} // Pass help boolean
       />}
-      {exitPopUp && <ExitPopUp onCancel={() => setExitPopUp(false)} onConfirm={handleLeaveGame} />}
     </BaseContainer>
   );
 };
