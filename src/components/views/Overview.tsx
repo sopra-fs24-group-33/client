@@ -251,6 +251,14 @@ const Overview = () => {
               <p>Games Played</p>
               <p>{curUser.gamesplayed ? curUser.gamesplayed : 0}</p>
             </div>
+            <div className="overview inner-text-wrapper">
+              <p>Rounds Won</p>
+              <p>{curUser.rounswon ? curUser.roundswon : 0}</p>
+            </div>
+            <div className="overview inner-text-wrapper">
+              <p>Flawless Games</p>
+              <p>{curUser.flawlesswins ? curUser.flawlesswins : 0}</p>
+            </div>
           </div>
         </div>
         <div className="overview rules-logout-button-wrapper">
