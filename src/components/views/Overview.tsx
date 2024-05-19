@@ -248,7 +248,7 @@ const Overview = () => {
               <p>{curUser.shame_tokens}</p>
             </div>
             <div className="overview inner-text-wrapper">
-              <p>Games Played</p>
+              <p>Games Completed</p>
               <p>{curUser.gamesplayed ? curUser.gamesplayed : 0}</p>
             </div>
             <div className="overview inner-text-wrapper">
