@@ -11,14 +11,14 @@
   &.section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100vw;
+    padding-top: 2em;
   }
   &.container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     max-width: fit-content;
     padding: 1.5em 2em;
@@ -28,6 +28,9 @@
     border: $grey 1px solid;
     transition: opacity 0.5s ease, transform 0.5s ease;
     box-shadow: $dropShadow;
+  }
+  &.sub-container {
+    padding-right: 40px;
   }
   &.header {
     display: flex;
@@ -42,8 +45,14 @@
     background-color: white; /* Ensures the line is visible with the desired color, optional */
     border: none; /* Removes the default border to rely on the background-color and height for the line's appearance */
     margin-bottom: 0.75em;
+    margin-top: 1.25em;
     caret-color: transparent;
-
+  }
+  .vertical-line {
+    height: 100%;
+    width: 1px;
+    background-color: white;
+    margin-right: 2em;
   }
 
 
@@ -61,8 +70,10 @@
 
   &.button-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    margin-top: 2em;
+    padding-top: 2em;
+    margin-top: 0.75em;
     gap: 1em;
   }
   .player-video {
