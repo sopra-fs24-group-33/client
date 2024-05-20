@@ -224,16 +224,31 @@ const Lobby = () => {
       <div className="teammates-container">
         {teamContent}
       </div>
+
       <BaseContainer className="lobby container">
-        <div className="lobby header">
-          <h3>
-            Game Pin
-          </h3>
-          <h2 className="light">
-            {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
-          </h2>
+        <div className="lobby sub-container">
+          <div className="lobby header">
+            <h2>
+              Game Pin
+            </h2>
+            <h2 className="light">
+              {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
+            </h2>
+          </div>
+          <div className="lobby button-container">
+            <Button className="outlined" width="100%" onClick={leaveLobby}>
+              Leave Lobby
+            </Button>
+            {adminId === playerId && (
+              <Button className="" width="100%" onClick={() => startGame()} disabled={players.length <= 1}>
+                Start Game
+              </Button>
+            )}
+          </div>
         </div>
-        <hr className="lobby hr-thin" />
+
+        <div className="vertical-line "/>
+
         <div className="lobby player-container">
           {players.length > 0 ? (
             <ul className="overview user-list">
@@ -254,16 +269,7 @@ const Lobby = () => {
             <Spinner />
           )}
         </div>
-        <div className="lobby button-container">
-          <Button className="outlined" width="100%" onClick={leaveLobby}>
-            Leave Lobby
-          </Button>
-          {adminId === playerId && (
-            <Button className="" width="100%" onClick={() => startGame()} disabled={players.length <= 1}>
-              Start Game
-            </Button>
-          )}
-        </div>
+
       </BaseContainer>
 
       <div className="my-webcam-and-control-box">
