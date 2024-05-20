@@ -121,7 +121,7 @@
         box-shadow: 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5);
       }
       50% {
-        box-shadow: 0 0 1vw 1.25vh $lila, inset 0 0 1vw 1.25vh $lila;
+        box-shadow: 0 0 1vw 1.25vh var(--win-color, $lila), inset 0 0 1vw 1.25vh var(--win-color, $lila);
       }
     }
     &.blink-success {
@@ -133,7 +133,7 @@
         box-shadow: 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5), inset 0 0 1vw 0.5vh rgba(255, 255, 255, 0.5);
       }
       50% {
-        box-shadow: 0 0 1vw 1.25vh $pink, inset 0 0 1vw 1.25vh $pink;
+        box-shadow: 0 0 1vw 1.25vh var(--lose-color, $pink), inset 0 0 1vw 1.25vh var(--lose-color, $pink);
       }
     }
     &.blink-failure {

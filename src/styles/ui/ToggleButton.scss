@@ -1,0 +1,80 @@
+@import "../theme";
+
+.toggle-wrapper {
+  display: inline-block;
+}
+
+.toggleCheckbox {
+  display: none;
+}
+
+.toggleContainer {
+  position: relative;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  width: fit-content;
+  min-width: 200px;
+  border: 3px solid black;
+  border-radius: 20px;
+  background: black;
+  color: black;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.toggleContainer.small {
+  min-width: 150px; /* Remove min-width for small size */
+  border-radius: 15px; /* Adjust border radius for smaller size */
+}
+
+.toggleContainer.small div {
+  padding: 4px 8px; /* Adjust padding for smaller size */
+}
+
+.toggleContainer::before {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  left: 0%;
+  border-radius: 20px;
+  background: white;
+  transition: all 0.3s;
+}
+
+.toggleContainer.small::before {
+  border-radius: 15px; /* Adjust border radius for smaller size */
+}
+
+.toggleContainer div {
+  flex: 1;
+  padding: 6px;
+  text-align: center;
+  z-index: 1;
+  font-weight: bold; /* Ensure the text inside is bold */
+}
+
+.toggleCheckbox:checked + .toggleContainer::before {
+  left: 50%;
+}
+
+.toggleCheckbox:checked + .toggleContainer div:first-child {
+  color: white;
+  transition: color 0.3s;
+}
+
+.toggleCheckbox:checked + .toggleContainer div:last-child {
+  color: black;
+  transition: color 0.3s;
+}
+
+.toggleCheckbox + .toggleContainer div:first-child {
+  color: black;
+  transition: color 0.3s;
+}
+
+.toggleCheckbox + .toggleContainer div:last-child {
+  color: white;
+  transition: color 0.3s;
+}
