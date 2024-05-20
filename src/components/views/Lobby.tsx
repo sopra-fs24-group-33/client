@@ -107,6 +107,7 @@ const Lobby = () => {
 
   useEffect(() => {
     localStorage.removeItem("inGame")
+    localStorage.removeItem("end")
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
     console.log("lobby pin:", lobbyPin)
 

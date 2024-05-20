@@ -98,7 +98,6 @@ const GameArena = () => {
     async function fetchData() {
       try {
         const response = await api.get(`/game/${gameId}`);
-        console.log("+++Received Data:", response.data);
         setGame(response.data);
         setPlayers(response.data.players);
         const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
@@ -142,9 +141,14 @@ const GameArena = () => {
     socket.onmessage = (event) => {
 
       if (event.data === "leave") {
-        removeAllGameTokens();
         agoraService.cleanup();
-        navigate("/overview");
+        if (localStorage.getItem('end') !== 'true') {
+          localStorage.removeItem("pin");
+          removeAllGameTokens();
+          navigate("/overview");
+        } else {
+          navigate("/lobby")
+        }
         return;
       }
 
@@ -210,12 +214,10 @@ const GameArena = () => {
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Received Data from READY WEBSOCKET:", data);
       if (data.event) {
         handleDrawCards();
         setPlayersReady(0);
       } else {
-        console.log("Set Players Ready:", data);
         setPlayersReady(data);
       }
     };
@@ -255,17 +257,31 @@ const GameArena = () => {
   };
 
   const removeAllGameTokens = () => {
-    localStorage.removeItem("pin");
     localStorage.removeItem("adminId");
     localStorage.removeItem("lost");
     localStorage.removeItem("inGame");
+    localStorage.removeItem("gameId");
     localStorage.removeItem("lvl");
   };
 
   const handleLeaveGame = async () => {
-    const requestBody = JSON.stringify(player);
-    console.log("player in game.tsx:", requestBody);
-    await api.delete(`/endgame/${gameId}`);
+    let currentPlayer
+    try {
+      const response = await api.get(`/game/${gameId}`);
+      currentPlayer = response.data.players.find(p => p.id.toString() === playerId.toString());
+    } catch (error) {
+      currentPlayer = player;
+    }
+    const requestBody = JSON.stringify(currentPlayer);
+    const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
+    await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
+    socket.close()
+    try {
+      await api.delete(`/endgame/${gameId}`);
+    } catch (error) {
+      console.log("Game already deleted.")
+    }
+    localStorage.removeItem("pin");
     removeAllGameTokens();
     agoraService.cleanup();
     navigate("/overview");
@@ -282,6 +298,7 @@ const GameArena = () => {
       localStorage.setItem('lost', 'true');
     } else if (successfulMove === 3) {
       setPopupType('end');
+      localStorage.setItem('end', 'true');
     }
     setTimeout(() => {
       setMoveStatus('');
@@ -303,38 +320,38 @@ const GameArena = () => {
 
   const handleDrawCards = async () => {
     setShowTeamHand(true);
-    const response = await api.get(`/game/${gameId}`);
-    console.log("lost:", localStorage.getItem('lost'));
-    if (localStorage.getItem('lost')) {
-      const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
-      setPlayerHand(player.cards);
-      setCardStack(response.data.cardStack);
+    try {
+      const response = await api.get(`/game/${gameId}`);
+      if (localStorage.getItem('lost')) {
+        const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
+        setPlayerHand(player.cards);
+        setCardStack(response.data.cardStack);
 
-      const FilteredPlayers = response.data.players
-        .filter(p => p.id !== playerId);
+        const FilteredPlayers = response.data.players
+          .filter(p => p.id !== playerId);
 
-      setTeamMates(FilteredPlayers);
-      console.log("Setting lost to false");
-      localStorage.removeItem('lost');
+        setTeamMates(FilteredPlayers);
+        localStorage.removeItem('lost');
+      }
+      if (response.data.successfulMove === 3) {
+        handleMove(3);
+      }
+      setReveal(false);
+      setDrawPhase(false);
+      localStorage.setItem("inGame", "1");
+      setCardsPlayed([]); // clear cards played pile
+      setDrawButtonClicked(false);
+    } catch (error) {
+      console.error(error)
     }
-    if (response.data.successfulMove === 3) {
-      handleMove(3);
-    }
-    setReveal(false);
-    setDrawPhase(false);
-    localStorage.setItem("inGame", "1");
-    setCardsPlayed([]); // clear cards played pile
-    setDrawButtonClicked(false);
   };
 
   const handleLoseColorChange = (color) => {
-    console.log("&Lose Color:", color);
     setLoseColor(color);
     localStorage.setItem("loseColor", color); // Save to localStorage
   };
 
   const handleWinColorChange = (color) => {
-    console.log("&Win Color:", color);
     setWinColor(color);
     localStorage.setItem("winColor", color); // Save to localStorage
   };
@@ -421,6 +438,7 @@ const GameArena = () => {
               onReveal={revealCards}
               onNewGame={handleNewGame}
               onLeaveGame={handleLeaveGame}
+              isAdmin={playerId.toString() === localStorage.getItem("adminId")}
             />
           )}
           <div className="game-arena-container table-border">
