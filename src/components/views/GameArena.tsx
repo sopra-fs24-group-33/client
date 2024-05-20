@@ -303,9 +303,9 @@ const GameArena = () => {
 
   const handleDrawCards = async () => {
     setShowTeamHand(true);
+    const response = await api.get(`/game/${gameId}`);
     console.log("lost:", localStorage.getItem('lost'));
     if (localStorage.getItem('lost')) {
-      const response = await api.get(`/game/${gameId}`);
       const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
       setPlayerHand(player.cards);
       setCardStack(response.data.cardStack);
@@ -316,10 +316,9 @@ const GameArena = () => {
       setTeamMates(FilteredPlayers);
       console.log("Setting lost to false");
       localStorage.removeItem('lost');
-
-      if (response.data.successfulMove === 3) {
-        handleMove(3);
-      }
+    }
+    if (response.data.successfulMove === 3) {
+      handleMove(3);
     }
     setReveal(false);
     setDrawPhase(false);
