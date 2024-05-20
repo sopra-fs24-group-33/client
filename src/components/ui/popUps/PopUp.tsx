@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button } from "./Button";
-import "../../styles/ui/Button.scss";
-import "../../styles/ui/PopUp.scss";
+import { Button } from "../Button";
+import "../../../styles/ui/Button.scss";
+import "../../../styles/ui/PopUp.scss";
 // @ts-ignore
-import shame_logo from "../../assets/shame_logo.svg";
+import shame_logo from "../../../assets/shame_logo.svg";
 // @ts-ignore
-import victory_logo from "../../assets/victory_logo.svg";
+import victory_logo from "../../../assets/victory_logo.svg";
 //import "../../styles/_theme.scss";
 
 interface PopupProps {
