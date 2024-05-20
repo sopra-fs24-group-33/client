@@ -9,6 +9,8 @@ class User {
     this.gamesplayed = null;
     this.shame_tokens = null;
     this.password = null;
+    this.roundswon = null;
+    this.flawlesswins = null;
     Object.assign(this, data);
   }
 }

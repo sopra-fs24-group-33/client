@@ -27,6 +27,9 @@ import ButtonSettings from "../../assets/Settings.svg";
 import Deck from "components/ui/cards/Deck";
 import Settings from "components/ui/popUps/Settings";
 import ExitPopUp from "../ui/popUps/ExitPopUp";
+// @ts-ignore
+import shame_logo from "../../assets/shame_logo.svg";
+
 
 
 
@@ -77,6 +80,19 @@ const GameArena = () => {
     }
     setIsMuted(!isMuted);
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = ''; // Required for Chrome to display the confirmation dialog
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -363,7 +379,10 @@ const GameArena = () => {
             if (el && videoTrack) {
               videoTrack.play(el);
             }
-          }}>
+          }}></div>
+          <div className="shametoken-counter">
+            <img src={shame_logo} alt="" style={{ width: "30px", height: "30px" }} />
+            <h3>{player? player.shame_tokens : 0}</h3>
           </div>
 
           <div className="matehand-container">
@@ -411,10 +430,15 @@ const GameArena = () => {
             </div>
             <div className="draw-button">
               {drawPhase && localStorage.getItem("inGame") === null && (
-                <Button className="animated-gradient square extra-large" onClick={readyDrawCards} disabled={drawButtonClicked}>
-                  Draw Cards {playersReady}/{players.length}
-                </Button>
+                <>
+                  <p className="players-ready"> {playersReady}/{players.length} players are ready</p>
+                  <Button className="animated-gradient extra-large" onClick={readyDrawCards}
+                          disabled={drawButtonClicked}>
+                    Draw Cards
+                  </Button>
+                </>
               )}
+
             </div>
             <div className={tableClasses}>
               {mainContent}
@@ -434,7 +458,12 @@ const GameArena = () => {
               if (el && agoraService.getVideoTracks().get(playerId.toString())) {
                 agoraService.getVideoTracks().get(playerId.toString()).play(el);
               }
-            }} />
+            }}>
+            </div>
+            <div className="shametoken-counter">
+              <img src={shame_logo} alt="" style={{ width: "30px", height: "30px" }} />
+              <h3>{player ? player.shame_tokens : 0}</h3>
+            </div>
             <div className="control-box">
               {isMuted ? (
                 <img className="button-mute" src={ButtonUnmute} alt="" onClick={toggleMute} />

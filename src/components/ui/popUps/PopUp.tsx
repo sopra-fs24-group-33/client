@@ -1,5 +1,12 @@
 import React from 'react';
 import { Button } from "../Button";
+import "../../styles/ui/Button.scss";
+import "../../styles/ui/PopUp.scss";
+// @ts-ignore
+import shame_logo from "../../assets/shame_logo.svg";
+// @ts-ignore
+import victory_logo from "../../assets/victory_logo.svg";
+//import "../../styles/_theme.scss";
 
 interface PopupProps {
   type: 'win' | 'lose' | 'levelUp';
@@ -18,7 +25,7 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
   const headers = {
     win: 'Flawless Victory!',
     end: 'Game Over',
-    lose: 'Round Lost',
+    lose: 'You Lose',
     levelUp: 'Round Won!'
   };
 
@@ -46,20 +53,22 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
     ]
   };
 
+  const borderStyle = {
+    border: type === 'lose'
+      ? '1px solid #fc3a87'
+      : '1px solid #8F5BFF',
+  };
+
+
+
   return (
-    <div style={{
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 1000,
-      padding: "20px",
-      backgroundColor: "black",
-      border: "1px solid black",
-      borderRadius: "1vw",
-      boxShadow: "0px 0px 10px rgba(0,0,0,0.5)",
-      textAlign: "center",
-    }}>
+    <div className="module" style={borderStyle}>
+      <div className="shamelogo-carrier">
+        <img src={type === 'lose' ? shame_logo : victory_logo}
+             alt=""
+             style={{ width: "100px", height: "100px" }}/>
+      </div>
+
       <h2>{headers[type]}</h2>
       <p>{messages[type]}</p>
       <div>
