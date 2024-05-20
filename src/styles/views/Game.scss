@@ -79,8 +79,10 @@
 
   .matehand-container {
     width: 100%;  // Full width to match the webcam container above
-    margin-top: -5vh;
+    position: absolute;
+    bottom: -55px;
     z-index: 2;
+    height: 100px;
   }
 }
 
@@ -90,8 +92,8 @@
   align-items: center;
   gap: 5px;
   position: absolute;
-  bottom: 20%;
-  right: -12%;
+  bottom: 25%;
+  right: -23%;
   z-index: 2;
 }
 
