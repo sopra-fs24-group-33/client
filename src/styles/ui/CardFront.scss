@@ -22,6 +22,27 @@
 
      */
   }
+
+
+  @keyframes blink-glow {
+    0%, 100% {
+      box-shadow: 0 0 1.5vh 0.75vh $lila; // Glow fully visible
+    }
+    50% {
+      box-shadow: 0 0 0 0 $lila; // Glow completely hidden
+    }
+  }
+
+  &.lowest {
+    animation: blink-glow 2s infinite; // Apply the blinking animation, adjust the duration as needed
+
+    &:hover {
+      transform: translateY(-30px);
+      box-shadow: 5px 5px 1vh 0.33vh rgba(0, 0, 0, 0.5); // Reduced shadow on hover
+      animation: none; // Stop blinking when hovered for a steady effect
+    }
+  }
+
   .card-img {
     flex-grow: 1;
     width: 100%;
@@ -44,7 +65,7 @@
   align-items: stretch;
   justify-content: center;
   position: relative;
-  width: 10vw;
+  width: 150px;
   height: auto;
   border-radius: 1vh;
   overflow: hidden;
@@ -62,7 +83,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 3.5vw;
+    font-size: 50px;
     font-family: $fontSubHeading;
     user-select: none;
   }
@@ -73,7 +94,7 @@
   align-items: stretch;
   justify-content: center;
   position: relative;
-  width: 8vh;
+  width: 65px;
   height: auto;
   border-radius: 0.5vh;
   overflow: hidden;
@@ -91,7 +112,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2.75vh;
+    font-size: 22px;
     font-family: $fontSubHeading;
     user-select: none;
   }

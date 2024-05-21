@@ -22,7 +22,7 @@ const CardFront: React.FC<CardFrontProps> = ({ value, onClick, className, alt = 
   const valueColor = colorForValue(value);
   let srcImage;
   const handleClick = () => {
-    if (className == "card-container") // only for player hand
+    if (className == "card-container" || className == "card-container lowest") // only for player hand
     onClick(value);
   }
 

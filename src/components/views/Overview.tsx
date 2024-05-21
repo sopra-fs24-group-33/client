@@ -16,7 +16,7 @@ import Background from "../../assets/AltBackground.svg";
 import shame_logo from "../../assets/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
 import "../../styles/_theme.scss";
-import Rules from "../ui/Rules";
+import Rules from "../ui/popUps/Rules";
 import Join from "./Join";
 import JoinPopup from "./Join";
 
@@ -101,6 +101,9 @@ const Overview = () => {
   useEffect(() => {
     if (playerId === null) {
       navigate("/home")
+    }
+    if (lobbyPin) {
+
     }
   }, [playerId, lobbyPin]);
 

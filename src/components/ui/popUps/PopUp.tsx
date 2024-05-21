@@ -1,23 +1,24 @@
 import React from 'react';
-import { Button } from "./Button";
-import "../../styles/ui/Button.scss";
-import "../../styles/ui/PopUp.scss";
+import { Button } from "../Button";
+import "../../../styles/ui/Button.scss";
+import "../../../styles/ui/PopUp.scss";
 // @ts-ignore
-import shame_logo from "../../assets/shame_logo.svg";
+import shame_logo from "../../../assets/shame_logo.svg";
 // @ts-ignore
-import victory_logo from "../../assets/victory_logo.svg";
+import victory_logo from "../../../assets/victory_logo.svg";
 //import "../../styles/_theme.scss";
 
 interface PopupProps {
-  type: 'win' | 'lose' | 'levelUp';
+  type: 'win' | 'lose' | 'levelUp' | 'end';
   isVisible: boolean;
   onNext: () => void; // Function to call when closing the popup
   onReveal: () => void;
   onNewGame: () => void;
   onLeaveGame: () => void;
+  isAdmin: boolean;
 }
 
-const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewGame, onLeaveGame }) => {
+const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewGame, onLeaveGame, isAdmin }) => {
   if (!isVisible) {
     return null;
   }
@@ -36,15 +37,31 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
     levelUp: 'You\'ve reached the next level!'
   };
 
-  const actions = {
+  // Determine actions based on isAdmin status
+  const adminActions = {
     win: [
-      { label: 'New Game', action: onNewGame },
-      { label: 'Leave', action: onLeaveGame }
+      { label: 'Back to Lobby', action: onNewGame }
     ],
     end: [
-      { label: 'New Game', action: onNewGame},
-      { label: 'Leave', action: onLeaveGame}
+      { label: 'Back to Lobby', action: onNewGame }
+    ]
+  };
+
+  const userActions = {
+    win: [
+      { label: 'Back to Lobby', action: onNewGame },
+      { label: 'Leave Game', action: onLeaveGame }
     ],
+    end: [
+      { label: 'Back to Lobby', action: onNewGame },
+      { label: 'Leave Game', action: onLeaveGame }
+    ]
+  };
+
+  const actions = isAdmin ? adminActions : userActions;
+
+  const allActions = {
+    ...actions,
     lose: [
       { label: 'Reveal Cards', action: onReveal }
     ],
@@ -59,8 +76,6 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
       : '1px solid #8F5BFF',
   };
 
-
-
   return (
     <div className="module" style={borderStyle}>
       <div className="shamelogo-carrier">
@@ -72,7 +87,7 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
       <h2>{headers[type]}</h2>
       <p>{messages[type]}</p>
       <div>
-        {actions[type].map((button, index) => (
+        {allActions[type].map((button, index) => (
           <Button key={index} onClick={button.action} style={{ margin: "5px" }}>
             {button.label}
           </Button>
