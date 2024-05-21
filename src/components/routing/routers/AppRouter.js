@@ -6,12 +6,8 @@ import Home from "../../views/Home";
 import Register from "../../views/Register";
 import Overview from "../../views/Overview";
 import Lobby from "../../views/Lobby";
-import GamePin from "../../views/Join";
-import Design from "../../views/design";
 import GameArena from "../../views/GameArena";
-import WebSocket from "../../views/WebSocket"
 import { AgoraServiceProvider } from '../../../helpers/agoracontext';
-import Deck from "../../ui/cards/Deck";
 
 
 const AppRouter = () => {
@@ -21,7 +17,6 @@ const AppRouter = () => {
         <Routes>
 
           <Route path="/" element={<Navigate to="/home" replace />} />
-
           <Route path="/home" element={<LoginGuard />}>
             <Route index element={<Home />} />
           </Route>
@@ -37,10 +32,6 @@ const AppRouter = () => {
           <Route path="/overview" element={<Overview />} />
           <Route path="/game" element={<GameArena />} />
           <Route path="/lobby" element={<Lobby />} />
-          <Route path="/join" element={<GamePin />} />
-          <Route path="/design" element={<Design />} />
-          <Route path="/deck" element={<Deck />} />
-          <Route path="/ws" element={<WebSocket />} />
 
           {/* Catch-all route */}
           <Route path="*" element={<Navigate to="/home" replace />} />

@@ -15,7 +15,7 @@ const CardPile: React.FC<CardPileProps> = ({ cards, onCardPlayed, alt = false })
   };
 
   const getCardStyle = (index: number) => {
-    let angle;
+    let angle: number;
 
     if (cards.length <= 2) {
       // Special case for the first two cards

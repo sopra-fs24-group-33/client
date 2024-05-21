@@ -13,7 +13,7 @@ import Lobby from "models/Lobby";
 // @ts-ignore
 import Background from "../../assets/AltBackground.svg";
 // @ts-ignore
-import shame_logo from "../../assets/shame_logo.svg";
+import shame_logo from "../../assets/tokens/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
 import "../../styles/_theme.scss";
 import Rules from "../ui/popUps/Rules";
