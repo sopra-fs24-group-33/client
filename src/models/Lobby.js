@@ -6,7 +6,7 @@ import { GamePlayer } from "../types";
 class GameLobby {
   constructor(data = {}) {
     this.pin = null;
-    this.adminid = null;
+    this.admin = null;
     this.gameid = null;
     this.players = null;
     Object.assign(this, data);

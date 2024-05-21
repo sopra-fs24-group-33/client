@@ -2,8 +2,10 @@ export type User = {
   username: string;
   id: number;
   token: string;
-  gamesplayed: number;
+  gamesPlayed: number;
   shame_tokens: number;
+  flawlessWins: number;
+  roundsWon: number;
   password: string;
 };
 
@@ -16,7 +18,7 @@ export type Player = {
 };
 
 export type GameLobby = {
-  adminid: number;
+  admin: number;
   pin: number;
   gameid: number;
   players: GamePlayer[];

@@ -247,20 +247,20 @@ const Overview = () => {
               <p>{curUser.username}</p>
             </div>
             <div className="overview inner-text-wrapper">
+              <p>Games Completed</p>
+              <p>{curUser.gamesPlayed ? curUser.gamesPlayed : 0}</p>
+            </div>
+            <div className="overview inner-text-wrapper">
               <p>Shame Tokens</p>
               <p>{curUser.shame_tokens}</p>
             </div>
             <div className="overview inner-text-wrapper">
-              <p>Games Completed</p>
-              <p>{curUser.gamesplayed ? curUser.gamesplayed : 0}</p>
-            </div>
-            <div className="overview inner-text-wrapper">
               <p>Rounds Won</p>
-              <p>{curUser.rounswon ? curUser.roundswon : 0}</p>
+              <p>{curUser.roundsWon ? curUser.roundsWon : 0}</p>
             </div>
             <div className="overview inner-text-wrapper">
               <p>Flawless Games</p>
-              <p>{curUser.flawlesswins ? curUser.flawlesswins : 0}</p>
+              <p>{curUser.flawlessWins ? curUser.flawlessWins : 0}</p>
             </div>
           </div>
         </div>
@@ -329,7 +329,7 @@ const Overview = () => {
                 <h2>Online</h2>
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
-                  <img src={shame_logo} alt="" style={{}} />
+                  <img src={shame_logo} alt="" style={{ width:"35px", height:"35px" }} />
                   <h3 className="shame-token-count light">{totalOnlineShameTokens}</h3>
                 </div>
               </div>
@@ -346,7 +346,7 @@ const Overview = () => {
               </di>
               <div className="player-shame-token">
                 <div className="shame-token-wrapper">
-                  <img src={shame_logo} alt="" style={{}} />
+                  <img src={shame_logo} alt="" style={{ width:"35px", height:"35px" }} />
                   <h3 className="shame-token-count light">{totalLosersShameTokens}</h3>
                 </div>
               </div>
