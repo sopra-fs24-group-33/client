@@ -1,10 +1,10 @@
-# DeGame
-
-Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother.
-
 <p align="center">
 	<img src="figures/DeGameLogo.png" width="100">
 </p>
+
+# DeGame
+
+Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother.
 
 ## Table of contents
 1. [Motivaiton & Game Rules](#motivation--game-rules)
@@ -111,25 +111,25 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ## Illustrations
 
 <p align="center">
-	<img src="figures/DeGameHome.png" width="550">
+	<img src="figures/DeGameHome.png" width="800">
 </p>
 
 `Home` page
 
 <p align="center">
-	<img src="figures/DeGameOverview.png" width="550">
+	<img src="figures/DeGameOverview.png" width="800">
 </p>
 
 `Overview` page
 
 <p align="center">
-	<img src="figures/DeGameLobby.png" width="550">
+	<img src="figures/DeGameLobby.png" width="800">
 </p>
 
 `Lobby` page
 
 <p align="center">
-	<img src="figures/DeGameGameArena.png" width="550">
+	<img src="figures/DeGameGameArena.png" width="800">
 </p>
 
 `GameArena` page
