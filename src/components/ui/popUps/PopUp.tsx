@@ -6,7 +6,8 @@ import "../../../styles/ui/PopUp.scss";
 import shame_logo from "../../../assets/shame_logo.svg";
 // @ts-ignore
 import victory_logo from "../../../assets/victory_logo.svg";
-//import "../../styles/_theme.scss";
+// @ts-ignore
+import champion_logo from "../../../assets/champion_logo.svg";
 
 interface PopupProps {
   type: 'win' | 'lose' | 'levelUp' | 'end';
@@ -70,18 +71,40 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
     ]
   };
 
+  // Define border style based on type
   const borderStyle = {
-    border: type === 'lose'
-      ? '1px solid #fc3a87'
-      : '1px solid #8F5BFF',
+    border:
+      type === 'lose'
+        ? '1px solid #fc3a87'
+        : type === 'levelUp'
+          ? '1px solid #8F5BFF'
+          : type === 'win'
+            ? '1px solid gold'
+            : '1px solid $grey', // Default to grey for 'end'
+  };
+
+  // Select the appropriate logo based on the type
+  const getLogo = (type: string) => {
+    switch (type) {
+      case 'lose':
+        return shame_logo;
+      case 'levelUp':
+        return victory_logo;
+      case 'win':
+        return champion_logo;
+      default:
+        return null;
+    }
   };
 
   return (
     <div className="module" style={borderStyle}>
       <div className="shamelogo-carrier">
-        <img src={type === 'lose' ? shame_logo : victory_logo}
-             alt=""
-             style={{ width: "100px", height: "100px" }}/>
+        {getLogo(type) && (
+          <img src={getLogo(type)}
+               alt=""
+               style={{ width: "100px", height: "100px" }} />
+        )}
       </div>
 
       <h2>{headers[type]}</h2>

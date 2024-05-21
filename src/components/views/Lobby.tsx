@@ -13,6 +13,7 @@ import { useAgoraService } from 'helpers/agoracontext';
 import ButtonMute from "../../assets/ButtonMute.svg";
 // @ts-ignore
 import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+import Rules from "../ui/popUps/Rules";
 
 const Lobby = () => {
   const prefix = getWSPreFix();
@@ -32,6 +33,9 @@ const Lobby = () => {
   const [localStream, setLocalStream] = useState(null);
   const agoraService = useAgoraService();
   const [isMuted, setIsMuted] = useState(false);
+  const [showRules, setShowRules] = useState(false);
+  const [admin, setAdmin] = useState();
+
 
   const toggleMute = () => {
     if (isMuted) {
@@ -108,12 +112,9 @@ const Lobby = () => {
   useEffect(() => {
     localStorage.removeItem("inGame")
     localStorage.removeItem("end")
+    localStorage.removeItem('flawlessWin')
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
     console.log("lobby pin:", lobbyPin)
-
-    console.log("admin id:", adminId)
-    console.log("player id:", playerId)
-
 
 
     socket.onopen = () => {
@@ -142,6 +143,9 @@ const Lobby = () => {
         newMap.set(player.id, player);
       });
       setPlayersMap(newMap);
+
+      const adminFound = newLobby.players.find(p => p.id === newLobby.admin);
+      setAdmin((adminFound));
 
       console.log("Received data:", newLobby);
     };
@@ -235,6 +239,9 @@ const Lobby = () => {
             <h2 className="light">
               {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
             </h2>
+            <p> { admin ? `Admin: ${admin.name}` : "Admin: "} </p>
+            <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
+
           </div>
           <div className="lobby button-container">
             <Button className="outlined" width="100%" onClick={leaveLobby}>
@@ -269,6 +276,7 @@ const Lobby = () => {
           ) : (
             <Spinner />
           )}
+          {showRules && <Rules onClose={() => setShowRules(false)}/>}
         </div>
 
       </BaseContainer>
