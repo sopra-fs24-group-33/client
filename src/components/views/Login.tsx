@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
-import User from "models/User";
 import Player from "models/Player";
 import {useNavigate} from "react-router-dom";
 import { Button } from "components/ui/Button";

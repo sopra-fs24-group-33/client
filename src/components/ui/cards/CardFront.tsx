@@ -1,4 +1,3 @@
-// CardFront.tsx
 import React from "react";
 import "../../../styles/ui/CardFront.scss";
 // @ts-ignore
@@ -20,7 +19,7 @@ interface CardFrontProps {
 
 const CardFront: React.FC<CardFrontProps> = ({ value, onClick, className, alt = true }) => {
   const valueColor = colorForValue(value);
-  let srcImage;
+  let srcImage: any;
   const handleClick = () => {
     if (className == "card-container" || className == "card-container lowest") // only for player hand
     onClick(value);

@@ -3,11 +3,11 @@ import { Button } from "../Button";
 import "../../../styles/ui/Button.scss";
 import "../../../styles/ui/PopUp.scss";
 // @ts-ignore
-import shame_logo from "../../../assets/shame_logo.svg";
+import shame_logo from "../../../assets/tokens/shame_logo.svg";
 // @ts-ignore
-import victory_logo from "../../../assets/victory_logo.svg";
+import victory_logo from "../../../assets/tokens/victory_logo.svg";
 // @ts-ignore
-import champion_logo from "../../../assets/champion_logo.svg";
+import champion_logo from "../../../assets/tokens/champion_logo.svg";
 
 interface PopupProps {
   type: 'win' | 'lose' | 'levelUp' | 'end';
