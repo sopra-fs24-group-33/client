@@ -136,7 +136,13 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Roadmap
 
-# TODO
+### Additional colour themes
+
+An additional feature that could be added would be to allow users to switch between themes throughout the website. Maybe add a "light-mode" in contrast to our "dark-mode".
+
+### Additional amimations
+
+To enhance the user experience, animations of some sort could be implemented. For example moving elements in the background, which would allow for a less static feel.
 
 ## Authors & Acknowledgement
 
