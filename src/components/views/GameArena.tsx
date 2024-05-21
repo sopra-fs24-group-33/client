@@ -140,14 +140,17 @@ const GameArena = () => {
 
     socket.onmessage = (event) => {
 
+      if (event.data === "return") {
+        navigate("/lobby")
+        return;
+      }
+
       if (event.data === "leave") {
         agoraService.cleanup();
         if (localStorage.getItem('end') !== 'true') {
           localStorage.removeItem("pin");
           removeAllGameTokens();
           navigate("/overview");
-        } else {
-          navigate("/lobby")
         }
         return;
       }
@@ -253,10 +256,14 @@ const GameArena = () => {
     } catch (error) {
       console.error(error);
     }
+    if (playerId === Number(localStorage.getItem('adminId'))) {
+      ws.send("returnToLobby")
+    }
     navigate("/lobby");
   };
 
   const removeAllGameTokens = () => {
+    localStorage.removeItem('flawlessWin')
     localStorage.removeItem("adminId");
     localStorage.removeItem("lost");
     localStorage.removeItem("inGame");
@@ -272,10 +279,10 @@ const GameArena = () => {
     } catch (error) {
       currentPlayer = player;
     }
-    const requestBody = JSON.stringify(currentPlayer);
-    const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
-    await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
-    socket.close()
+    if (localStorage.getItem('end') === 'true') {
+      const requestBody = JSON.stringify(currentPlayer);
+      await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
+    }
     try {
       await api.delete(`/endgame/${gameId}`);
     } catch (error) {
@@ -290,19 +297,29 @@ const GameArena = () => {
   const handleMove = (successfulMove: number) => {
     if (successfulMove === 1) {
       setMoveStatus('blink-success');
+      setTimeout(() => {
+        setMoveStatus('');
+      }, 500); // Reset after 1 second
     } else if (successfulMove === 2) {
+      localStorage.setItem('flawlessWin', 'false');
       setMoveStatus('blink-failure');
       setPopupType('lose');
       console.log("setting lost to true");
       setLost(true);
       localStorage.setItem('lost', 'true');
+      setTimeout(() => {
+        setMoveStatus('');
+      }, 500); // Reset after 1 second
     } else if (successfulMove === 3) {
-      setPopupType('end');
+      setMoveStatus('end')
+      if (localStorage.getItem('flawlessWin') === 'false') {
+        setPopupType('end');
+      } else {
+        setMoveStatus('end-flawless');
+        setPopupType('win');
+      }
       localStorage.setItem('end', 'true');
     }
-    setTimeout(() => {
-      setMoveStatus('');
-    }, 500); // Reset after 1 second
   };
 
   const readyDrawCards = async () => {
@@ -451,7 +468,7 @@ const GameArena = () => {
                   <p className="players-ready"> {playersReady}/{players.length} players are ready</p>
                   <Button className="animated-gradient extra-large" onClick={readyDrawCards}
                           disabled={drawButtonClicked}>
-                    Draw Cards
+                    {localStorage.getItem('end') === 'true' ? 'Finish Game' : 'Draw Cards'}
                   </Button>
                 </>
               )}
