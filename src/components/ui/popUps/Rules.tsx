@@ -20,7 +20,7 @@ const Rules = ({ onClose }) => {
           <h3>Objective</h3>
           <ul>
             <li>Place the cards drawn from the deck in ascending numerical order across various levels</li>
-            <li>Play through all the whole card stack (99 cards)</li>
+            <li>Play through the whole card stack (99 cards)</li>
           </ul>
 
           <h3>Setup</h3>
@@ -40,7 +40,7 @@ const Rules = ({ onClose }) => {
             <li><strong>Progression:</strong> Successfully laying down all drawn cards in ascending order allows the team
               to get to the next level
             </li>
-            <li><strong>Mistakes:</strong> If a card is played out of order, the player that played the wrong card and the player that should have played the card receive shame tokens, 
+            <li><strong>Mistakes:</strong> If a card is played out of order, the player that played the wrong card and the player that was supposed to play the card receive shame tokens, 
               and new cards are distributed (level and number of cards stay the same)
             </li>
             <li><strong>Communication Limits:</strong> The key challenge of De Game is to find ways to communicate their
