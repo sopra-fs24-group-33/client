@@ -21,7 +21,3 @@ export function colorForValue(value) {
   // Convert back to hex string
   return `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`;
 }
-
-// Example usage:
-const cardValue = 50; // Example card value
-const cardColor = colorForValue(cardValue); // Gets the interpolated color based on value

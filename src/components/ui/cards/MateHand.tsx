@@ -13,7 +13,6 @@ interface CardBackRowProps {
 const MateHand: React.FC<CardBackRowProps> = ({ cardValues, revealCards, alt = false }) => {
   if (revealCards && cardValues.length) {
     // Show card fronts when revealCards is true and cardValues are provided
-    // @ts-ignore
     return (
       <div className="player-hand">
         {cardValues.map((value, index) => (

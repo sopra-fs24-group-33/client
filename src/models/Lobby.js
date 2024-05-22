@@ -1,8 +1,3 @@
-import { GamePlayer } from "../types";
-
-/**
- * Lobby model
- */
 class GameLobby {
   constructor(data = {}) {
     this.pin = null;

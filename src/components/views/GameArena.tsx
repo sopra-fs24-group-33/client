@@ -14,21 +14,21 @@ import PlayerHand from "../ui/cards/PlayerHand";
 import Popup from "../ui/popUps/PopUp";
 import { useAgoraService } from 'helpers/agoracontext';
 // @ts-ignore
-import ButtonMute from "../../assets/ButtonMute.svg";
+import ButtonMute from "../../assets/icons/ButtonMute.svg";
 // @ts-ignore
-import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+import ButtonUnmute from "../../assets/icons/ButtonUnmute.svg";
 import Rules from "../ui/popUps/Rules";
 // @ts-ignore
-import ButtonExit from "../../assets/Exit.svg";
+import ButtonExit from "../../assets/icons/Exit.svg";
 // @ts-ignore
-import ButtonInfo from "../../assets/Info.svg";
+import ButtonInfo from "../../assets/icons/Info.svg";
 // @ts-ignore
-import ButtonSettings from "../../assets/Settings.svg";
+import ButtonSettings from "../../assets/icons/Settings.svg";
 import Deck from "components/ui/cards/Deck";
 import Settings from "components/ui/popUps/Settings";
 import ExitPopUp from "../ui/popUps/ExitPopUp";
 // @ts-ignore
-import shame_logo from "../../assets/shame_logo.svg";
+import shame_logo from "../../assets/tokens/shame_logo.svg";
 
 
 

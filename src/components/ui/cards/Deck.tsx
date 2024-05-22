@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // @ts-ignore
 import cardBackImage from "../../../assets/cards/Card Backside.svg"; // Adjust the path as necessary
 import "../../../styles/ui/Deck.scss";

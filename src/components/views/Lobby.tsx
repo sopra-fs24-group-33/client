@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { getWSPreFix } from "helpers/getDomain";
 import { GameLobby, Player } from "../../types";
@@ -10,9 +10,9 @@ import { useNavigate } from "react-router-dom";
 import "styles/views/Lobby.scss";
 import { useAgoraService } from 'helpers/agoracontext';
 // @ts-ignore
-import ButtonMute from "../../assets/ButtonMute.svg";
+import ButtonMute from "../../assets/icons/ButtonMute.svg";
 // @ts-ignore
-import ButtonUnmute from "../../assets/ButtonUnmute.svg";
+import ButtonUnmute from "../../assets/icons/ButtonUnmute.svg";
 import Rules from "../ui/popUps/Rules";
 
 const Lobby = () => {

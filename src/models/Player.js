@@ -1,6 +1,3 @@
-/**
- * User model
- */
 class Player {
   constructor(data = {}) {
     this.id = null;
