@@ -14,12 +14,13 @@ const Rules = ({ onClose }) => {
         <div className="game-rules">
           <p style={{
             fontSize: "16px",
-          }}>De Game is a cooperative card game that tests teamwork, good communication, and
+          }}>De Game is a cooperative card game that promotes teamwork, good communication, and
             intuition.</p>
 
           <h3>Objective</h3>
           <ul>
-            <li>Place the cards drawn from the deck in ascending numerical order across various levels.</li>
+            <li>Place the cards drawn from the deck in ascending numerical order across various levels</li>
+            <li>Play through the whole card stack (99 cards)</li>
           </ul>
 
           <h3>Setup</h3>
@@ -27,30 +28,30 @@ const Rules = ({ onClose }) => {
             <li>2-5 Players</li>
             <li>Deck consists of 99 cards numbered from 1 to 99</li>
             <li>Shuffle the deck</li>
-            <li>Start from Level 1</li>
+            <li>Start at Level 1</li>
           </ul>
 
           <h3>Gameplay</h3>
           <ol>
-            <li><strong>Drawing Cards:</strong> At the start of each level, players draw a number of cards equal to the
+            <li><strong>Drawing Cards:</strong> At the start of each level, players draw the number of cards equal to the
               level (e.g., draw 2 cards in Level 2)
             </li>
-            <li><strong>Playing Cards:</strong> Players aim to play their cards in ascending order</li>
-            <li><strong>Progression:</strong> Successfully arranging all drawn cards in ascending order allows the team
+            <li><strong>Playing Cards:</strong> The aim is to play the cards in ascending order</li>
+            <li><strong>Progression:</strong> Successfully laying down all drawn cards in ascending order allows the team
               to get to the next level
             </li>
-            <li><strong>Mistakes:</strong> If a card is played out of order, the player receives a shame token, and the
-              round restarts at the current level with the same number of cards
+            <li><strong>Mistakes:</strong> If a card is played out of order, the player that played the wrong card and the player that was supposed to play the card receive shame tokens, 
+              and new cards are distributed (level and number of cards stay the same)
             </li>
-            <li><strong>Communication Limits:</strong> The key challenge in De Game is to find ways to communicate their
-              cards without stating the specific number
+            <li><strong>Communication Limits:</strong> The key challenge of De Game is to find ways to communicate their
+              cards without stating or implying the specific number
             </li>
           </ol>
 
           <h3>End of Game</h3>
           <p style={{
             fontSize: "16px",
-          }}>The game concludes when there are no remaining cards in the deck. The team’s performance can be evaluated
+          }}>The game ends when there are no remaining cards in the deck. The team’s performance can be evaluated
             based on the number of levels completed and shame tokens collected.</p>
         </div>
 

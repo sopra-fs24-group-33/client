@@ -46,6 +46,15 @@ const Lobby = () => {
     setIsMuted(!isMuted);
   };
 
+  useEffect(() => {
+    const checkMicStatus = async () => {
+      const micStatus = agoraService.isMicMuted();
+      setIsMuted(micStatus);
+    };
+
+    checkMicStatus();
+  }, []);
+
   const emptyPlayerBoxes = Array.from({ length: emptyPlayerBoxesCount }, (_, index) => (
     <li key={`empty_${index}`}>
       <PlayerBox />
