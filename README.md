@@ -1,10 +1,10 @@
 <p align="center">
-	<img src="figures/DeGameLogo.png" width="100">
+	<img src="figures/DeGameLogo.png" width="75">
 </p>
 
-# DeGame
+# De Game
 
-Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother.
+Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother. This app was created as a part of the UZH-course "Software Engineering Lab".
 
 ## Table of contents
 1. [Motivaiton & Game Rules](#motivation--game-rules)
@@ -18,11 +18,10 @@ Welcome to our version of Steffen Brendorff's card game "The Game" that promotes
 
 ## Motivation & Game Rules
 
-There is an existing card game called “The Game” by Steffen Brendorff that we played when first sitting together in our SoPra-group. We thought to ourselves that this is a very fun game that also lets a group of people get to know each other in a way that is not very typical. It allows the players to get to know the way of thinking of their group members. Additionally, we have not found an existing online version of “The Game” so this was definitely a hole we wanted to fill.
+There is an existing card game called “The Game” by Steffen Brendorff that we played when first sitting together in our SoPra-group. We thought to ourselves that this is a very fun game that also lets a group of people get to know each other in a way that is not very typical. It allows the players to get to know the way of thinking of their group members. Additionally, we have not found an existing online version of “The Game” so this was definitely a hole we wanted to fill. <br>
+Our version “De Game” is inspired heavily by “The Game”. It is an online version of the card game where all the players compete against De Game as a team. De Game contains 99 cards that each have a number on it, namely numbers 1 through 99. The goal of the game is to play the cards that are in the players hands in ascending order. At the beginning of the first round, everyone receives one card (Level 1). When the cards in play are not played in the correct order there is no “level up” and the next round is again played in level 1. This means that every player again receives one card. An important point is that all the cards that were in play will no longer be in the game. They can be revealed which can help for people that are good at counting cards. When all the cards are played in the correct order the group of players levels up to the next level. In level two, every player receives two playing cards. This goes on until there are no longer enough cards on the stack to start a round in the corresponding level. <br>
+Our SoPra-group likes to have fun and also to make fun of each other (in a respectful way, of course). Thus, we decided to add a fun feature, namely, “Shame Tokens”. When a player plays their card and it was not their turn because there is a lower card value in play, this player as well as the player holding the lowest card will receive a “Shame Token”. This gives the other players in the group a numeric value of shame that can be given to a player. It is important to notice that shame tokens are not something that is positive because De Game is a game that promotes teamwork. Collecting shame tokens is what leaves you on the “Loserboard” (opposite pole of usual leaderboards).
 
-Our version “De Game” is inspired heavily by “The Game”. It is an online version of the card game where all the players compete against De Game as a team. De Game contains 99 cards that each have a number on it, namely numbers 1 through 99. The goal of the game is to play the cards that are in the players hands in ascending order. At the beginning of the first round, everyone receives one card (Level 1). When the cards in play are not played in the correct order there is no “level up” and the next round is again played in level 1. This means that every player again receives one card. An important point is that all the cards that were in play will no longer be in the game. They can be revealed which can help for people that are good at counting cards. When all the cards are played in the correct order the group of players levels up to the next level. In level two, every player receives two playing cards. This goes on until there are no longer enough cards on the stack to start a round in the corresponding level. 
-
-Our SoPra-group likes to have fun and also to make fun of each other (in a respectful way, of course). Thus, we decided to add a fun feature, namely, “Shame Tokens”. When a player plays their card and it was not their turn because there is a lower card value in play, this player will receive a “Shame Token”. This gives the other players in the group a numeric value of shame that can be given to a player. It is important to notice that shame tokens are not something that is positive because De Game is a game that promotes teamwork. Collecting shame tokens is what leaves you on the “Loserboard” (opposite pole of usual leaderboards).
 
 ## Technologies
 
@@ -111,28 +110,28 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ## Illustrations
 
 <p align="center">
-	<img src="figures/DeGameHome.png" width="800">
+	<img src="figures/DeGameHome.png" width="850">
 </p>
 
-`Home` page
+This is what the `Home` page looks like. It is the first thing you see when followin the [link](https://sopra-fs24-group-33-client.oa.r.appspot.com/home) to De Game.
 
 <p align="center">
-	<img src="figures/DeGameOverview.png" width="800">
+	<img src="figures/DeGameOverview.png" width="850">
 </p>
 
-`Overview` page
+`Overview` page with the three columns as described [before](#overview).
 
 <p align="center">
-	<img src="figures/DeGameLobby.png" width="800">
+	<img src="figures/DeGameLobby.png" width="850">
 </p>
 
-`Lobby` page
+This is what `Lobby` page looks like as a non-admin. There is no `Start Game` button. All players' streams are visible and there is the option to mute your own microphone. As soon as the admin chooses to start the game we advance to the next page.
 
 <p align="center">
-	<img src="figures/DeGameGameArena.png" width="800">
+	<img src="figures/DeGameGameArena.png" width="850">
 </p>
 
-`GameArena` page
+Here you can see the `GameArena` page with all the players, the mini menu, the card stack reprsentation, the cards that have been played, the amount of cards that people still have on their hands, and you own cards (not visible in this picture because the card has been played).
 
 ## Roadmap
 
@@ -154,4 +153,4 @@ To enhance the user experience, animations of some sort could be implemented. Fo
 
 ## License
 
-# TODO
+The 2.0 version of the [`Apache License`](https://www.apache.org/licenses/LICENSE-2.0) was approved by th ASF in 2004.
