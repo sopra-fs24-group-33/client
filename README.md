@@ -131,7 +131,7 @@ This is what `Lobby` page looks like as a non-admin. There is no `Start Game` bu
 	<img src="figures/DeGameGameArena.png" width="850">
 </p>
 
-Here you can see the `GameArena` page with all the players, the mini menu, the card stack reprsentation, the cards that have been played, the amount of cards that people still have on their hands, and you own cards (not visible in this picture because the card has been played).
+Here you can see the `GameArena` page with all the players, the mini menu, the card stack reprsentation, the cards that have been played, the amount of cards that people still have on their hands, and you own cards.
 
 ## Roadmap
 
