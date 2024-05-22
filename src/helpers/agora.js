@@ -23,6 +23,7 @@ let localTracks = {
 // Stores for the tracks
 const videoTracks = new Map();
 const audioTracks = new Map();
+let localMute = false;
 
 export const agoraService = {
   async joinAndPublishStreams(userId, Token, lobbyPin, handleUserPublished, handleUserUnpublished, handleLocalUserJoined) {
@@ -79,12 +80,21 @@ export const agoraService = {
   muteselfe() {
     if (localTracks.audioTrack) {
       localTracks.audioTrack.setEnabled(false);
+      localMute = true;
     }
   },
 
   unmuteselfe() {
     if (localTracks.audioTrack) {
       localTracks.audioTrack.setEnabled(true);
+      localMute = false;
     }
+  },
+
+  isMicMuted() {
+    if (localTracks.audioTrack) {
+      return !localTracks.audioTrack.enabled;
+    }
+    return true;
   },
 };

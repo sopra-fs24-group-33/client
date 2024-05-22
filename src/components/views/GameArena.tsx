@@ -82,6 +82,16 @@ const GameArena = () => {
   };
 
   useEffect(() => {
+    const checkMicStatus = async () => {
+      const micStatus = agoraService.isMicMuted();
+      setIsMuted(micStatus);
+    };
+
+    checkMicStatus();
+  }, []);
+
+
+  useEffect(() => {
     const handleBeforeUnload = (event) => {
       event.preventDefault();
       event.returnValue = ''; // Required for Chrome to display the confirmation dialog
