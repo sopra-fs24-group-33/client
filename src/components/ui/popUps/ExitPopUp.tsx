@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "../Button";
 import PropTypes from "prop-types";
-import "../../../styles/ui/Settings.scss";
+import "../../../styles/ui/popUps/Settings.scss";
 
 const ExitPopUp = ({ onCancel, onConfirm }) => {
   return (

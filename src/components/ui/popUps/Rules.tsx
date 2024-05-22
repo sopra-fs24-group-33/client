@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "../Button";
 import PropTypes from "prop-types";
-import "../../../styles/ui/Rules.scss";
+import "../../../styles/ui/popUps/Rules.scss";
 
 const Rules = ({ onClose }) => {
   return (

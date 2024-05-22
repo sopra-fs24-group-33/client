@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import CardFront from "./CardFront";
-import "../../../styles/ui/PlayerHand.scss"; // make sure to have the path correct
+import "../../../styles/ui/cards/PlayerHand.scss"; // make sure to have the path correct
 
 interface PlayerHandProps {
   cardValues: number[]; // Defining the type for the cardValues prop

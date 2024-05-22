@@ -1,7 +1,7 @@
 import React from "react";
 import CardFront from "./CardFront";
-import "../../../styles/ui/CardPile.scss";
-import "../../../styles/ui/CardFront.scss";
+import "../../../styles/ui/cards/CardPile.scss";
+import "../../../styles/ui/cards/CardFront.scss";
 
 interface CardPileProps {
   cards: number[];  // Array of card values

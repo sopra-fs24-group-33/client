@@ -158,7 +158,6 @@ const GameArena = () => {
 
       const data = JSON.parse(event.data);
       console.log("+++Game event received:", data);
-      setCardStack(data.cardStack);
       setGame(data);
       setPlayers(data.players);
       setCardsPlayed(prev => [...prev, data.currentCard]);
@@ -339,10 +338,10 @@ const GameArena = () => {
     setShowTeamHand(true);
     try {
       const response = await api.get(`/game/${gameId}`);
+      setCardStack(response.data.cardStack);
       if (localStorage.getItem('lost')) {
         const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
         setPlayerHand(player.cards);
-        setCardStack(response.data.cardStack);
 
         const FilteredPlayers = response.data.players
           .filter(p => p.id !== playerId);

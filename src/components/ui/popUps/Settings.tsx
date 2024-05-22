@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
-import "../../../styles/ui/Join.scss";
-import "../../../styles/ui/Settings.scss";
+import "../../../styles/ui/popUps/Join.scss";
+import "../../../styles/ui/popUps/Settings.scss";
 import "../../../styles/views/Overview.scss";
 import { Button } from "../Button";
 import { ToggleButton } from "../ToggleButton";

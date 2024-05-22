@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "../Button";
 import "../../../styles/ui/Button.scss";
-import "../../../styles/ui/PopUp.scss";
+import "../../../styles/ui/popUps/PopUp.scss";
 // @ts-ignore
 import shame_logo from "../../../assets/tokens/shame_logo.svg";
 // @ts-ignore

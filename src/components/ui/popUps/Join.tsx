@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from 'prop-types';
-import "../../styles/views/Login.scss";
-import "../../styles/ui/Join.scss";
-import "../../styles/views/Overview.scss";
-import { Button } from "../ui/Button";  // Ensure this path is correct and styles are appropriate for the popup
+import "../../../styles/views/Login.scss";
+import "../../../styles/ui/popUps/Join.scss";
+import "../../../styles/views/Overview.scss";
+import { Button } from "../Button";  // Ensure this path is correct and styles are appropriate for the popup
 
 const FormFieldPin = ({ label, value, onChange, onKeyDown}) => {
   const inputRef = useRef(null);

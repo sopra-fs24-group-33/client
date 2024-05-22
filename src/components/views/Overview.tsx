@@ -17,8 +17,8 @@ import shame_logo from "../../assets/tokens/shame_logo.svg";
 import "../../styles/ui/PlayerBox.scss";
 import "../../styles/_theme.scss";
 import Rules from "../ui/popUps/Rules";
-import Join from "./Join";
-import JoinPopup from "./Join";
+import Join from "../ui/popUps/Join";
+import JoinPopup from "../ui/popUps/Join";
 
 
 const Overview = () => {
