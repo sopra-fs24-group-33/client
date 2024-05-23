@@ -55,7 +55,7 @@ const UserProfile = () => {
                 <span className="icon-wrapper">
                   <img style={{ width: '30px'}} src={shame_logo} alt="Shame Token Logo"/>
                 </span>
-                <span className="number">{user.shame_tokens}</span>
+                <p className="number">{user.shame_tokens}</p>
               </div>
             </div>
             <div className="user inner-text-wrapper">
@@ -64,7 +64,7 @@ const UserProfile = () => {
                 <span className="icon-wrapper">
                   <img style={{ width: '30px'}} src={victory_logo} alt="Victory Logo" className="icon" />
                 </span>
-                <span className="number">{user.roundsWon || 0}</span>
+                <p className="number">{user.roundsWon || 0}</p>
               </div>
             </div>
             <div className="user inner-text-wrapper">
@@ -73,7 +73,7 @@ const UserProfile = () => {
                 <span className="icon-wrapper" >
                   <img style={{ width: '35px'}} src={champion_logo} alt="Champion Logo" className="icon" />
                 </span>
-                <span className="number">{user.flawlessWins || 0}</span>
+                <p className="number">{user.flawlessWins || 0}</p>
               </div>
             </div>
           </div>
