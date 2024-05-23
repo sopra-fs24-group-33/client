@@ -151,6 +151,8 @@ To enhance the user experience, animations of some sort could be implemented. Fo
 - [Paulin Roth](https://github.com/Paulin3000)
 - [Kavishan Srirangarasa](https://github.com/kauii)
 
+We thank our teaching assistant [Louis Caerts](https://github.com/LouisCaerts) for supporting us during the development of this application.
+
 ## License
 
 The 2.0 version of the [`Apache License`](https://www.apache.org/licenses/LICENSE-2.0) was approved by th ASF in 2004.
