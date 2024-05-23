@@ -17,6 +17,9 @@
     }
     &.clickable {
       cursor: pointer;
+      &:hover {
+        border: white 1px solid;
+      }
     }
   }
 
