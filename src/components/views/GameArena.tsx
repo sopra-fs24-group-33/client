@@ -49,7 +49,7 @@ const GameArena = () => {
   const [playerHand, setPlayerHand] = useState<number[]>([]); // Own cards
   const [cardsPlayed, setCardsPlayed] = useState<number[]>([]); // Cards played
   const [teamMates, setTeamMates] = useState<GamePlayer[]>([]);
-  const [cardStack, setCardStack] = useState<number[]>([]);
+  const [cardStack, setCardStack] = useState<number[]>(null);
   const [ws, setWs] = useState(null);
   const [moveStatus, setMoveStatus] = useState('');
   const [popupType, setPopupType] = useState<'win' | 'lose' | 'levelUp' | 'end' | null>(null);
@@ -112,7 +112,6 @@ const GameArena = () => {
         setPlayers(response.data.players);
         const player = new GamePlayer(response.data.players.find(p => p.id === playerId));
         setPlayerHand(player.cards);
-        setCardStack(response.data.cardStack);
 
         // set current level on local storage
         localStorage.setItem("lvl", response.data.level);
@@ -469,7 +468,7 @@ const GameArena = () => {
           )}
           <div className="game-arena-container table-border">
             <div className="deck">
-              <Deck numCards={cardStack.length} />
+              <Deck numCards={ cardStack ? cardStack.length : 99 } />
             </div>
             <div className="draw-button">
               {drawPhase && localStorage.getItem("inGame") === null && (

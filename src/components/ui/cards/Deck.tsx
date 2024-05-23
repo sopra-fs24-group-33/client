@@ -4,11 +4,11 @@ import cardBackImage from "../../../assets/cards/Card Backside.svg"; // Adjust t
 import "../../../styles/ui/cards/Deck.scss";
 
 interface DeckProps {
-  numCards: number,
-  width: string,
+  numCards: number;
+  width: string;
 }
 
-const Deck: React.FC<DeckProps> = ({ numCards = 100, width = "6vw" }) => {
+const Deck: React.FC<DeckProps> = ({ numCards = 99, width = "6vw" }) => {
   const numPiles = Math.ceil(numCards / 10);
   const generateCards = () => {
     const cards = [];
@@ -31,11 +31,10 @@ const Deck: React.FC<DeckProps> = ({ numCards = 100, width = "6vw" }) => {
     <div className="deck">
       <div className="pile">
         {generateCards()}
+        <div className="tooltip">{numCards} cards left</div>
       </div>
     </div>
   );
 };
 
-
 export default Deck;
-
