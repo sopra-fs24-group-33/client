@@ -248,10 +248,13 @@ const Lobby = () => {
             <h2 className="light">
               {lobby ? `${lobby.pin.toString().substring(0, 3)} ${lobby.pin.toString().substr(3)}` : ""}
             </h2>
-            <p> { admin ? `Admin: ${admin.name}` : "Admin: "} </p>
-            <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
+          </div>
+          <div className="admin-wrapper">
+            <p> {"Admin: "} </p>
+            <h3>{admin ? `${admin.name}` : ""} </h3>
 
           </div>
+          <Button className="outlined square" onClick={() => setShowRules(true)}>Rules</Button>
           <div className="lobby button-container">
             <Button className="outlined" width="100%" onClick={leaveLobby}>
               Leave Lobby
@@ -264,7 +267,7 @@ const Lobby = () => {
           </div>
         </div>
 
-        <div className="vertical-line "/>
+        <div className="vertical-line " />
 
         <div className="lobby player-container">
           {players.length > 0 ? (

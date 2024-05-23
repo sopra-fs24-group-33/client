@@ -322,6 +322,7 @@
 .draw-button {
   top: 66%;
   position: absolute;
+  z-index: 10;
 }
 
 .draw-button-players-ready {
