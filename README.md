@@ -135,13 +135,47 @@ Here you can see the `GameArena` page with all the players, the mini menu, the c
 
 ## Roadmap
 
-### Additional colour themes
+### UI Improvements
+Enhance user personalization by offering more freedom and creativity in customizing the website's interface.
 
-An additional feature that could be added would be to allow users to switch between themes throughout the website. Maybe add a "light-mode" in contrast to our "dark-mode".
+- **Light/Dark Mode Toggle**: Allow users to switch between light and dark themes to suit their preferences.
+- **Customizable Table Backgrounds**: Provide options for users to change the background of the table to various styles or images.
+- **Personalized Color Schemes**: Allow users to choose and apply their own color schemes for different elements of the UI.
 
-### Additional amimations
+These improvements will allow users to tailor their visual experience according to their preferences.
 
-To enhance the user experience, animations of some sort could be implemented. For example moving elements in the background, which would allow for a less static feel.
+### Enhanced Animations
+Improve the overall user experience by implementing dynamic animations.
+
+- **Background Animations**: Moving elements in the background to create a more engaging and less static interface.
+- **Card Animations**:
+  - **Drawing Cards**: Smooth animations when drawing cards to indicate action.
+  - **Placing Cards**: Animations that highlight the card being placed on the table.
+  - **Shuffling Deck**: Animation for shuffling the deck at the start of a game.
+- **Loading Animations**: Custom loading animations or spinners to indicate progress and keep users engaged.
+
+These animations can bring the website to life and make interactions more visually appealing.
+
+### Sound Effects
+To further enhance the user experience, incorporating sound effects could be highly beneficial.
+
+- **Card Interactions**:
+  - **Drawing a Card**
+  - **Playing a Card**
+  - **Shuffling Deck**
+
+- **Correct and Incorrect Actions**:
+  - **Correct Action**
+  - **Incorrect Action**
+
+- **General User Actions**:
+  - **Mute/Unmute**: To signify the mute/unmute action.
+  - **Navigation Clicks**: For example, when clicking a button.
+
+By integrating these sound effects, the website will offer a more immersive and engaging experience, making interactions feel more responsive and rewarding.
+
+
+
 
 ## Authors & Acknowledgement
 
