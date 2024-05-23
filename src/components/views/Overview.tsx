@@ -52,6 +52,10 @@ const Overview = () => {
         setError("Lobby is full")
         return;
       }
+      else if (response.data.gameid !== null)  {
+        setError("Game has started already")
+        return;
+      }
     } catch (error) {
       setError("Invalid Game Pin")
       return;
