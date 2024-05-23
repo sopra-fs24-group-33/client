@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from "../Button";
 import PropTypes from "prop-types";
 import "../../../styles/ui/popUps/Rules.scss";
 
 const Rules = ({ onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
   return (
-    <div className="backdrop" >
-      <div className="modal-rules" >
-        <h2 style={{
-          marginBottom: "1px",
-        }}>Game Rules</h2>
-        <hr className="rules divider"/>
+    <div className="backdrop">
+      <div className="modal-rules">
+        <h2 style={{ marginBottom: "1px" }}>Game Rules</h2>
+        <hr className="rules divider" />
         <div className="game-rules">
-          <p style={{
-            fontSize: "16px",
-          }}>De Game is a cooperative card game that promotes teamwork, good communication, and
-            intuition.</p>
+          <p style={{ fontSize: "16px" }}>
+            De Game is a cooperative card game that promotes teamwork, good communication, and intuition.
+          </p>
 
           <h3>Objective</h3>
           <ul>
@@ -40,7 +50,7 @@ const Rules = ({ onClose }) => {
             <li><strong>Progression:</strong> Successfully laying down all drawn cards in ascending order allows the team
               to get to the next level
             </li>
-            <li><strong>Mistakes:</strong> If a card is played out of order, the player that played the wrong card and the player that was supposed to play the card receive shame tokens, 
+            <li><strong>Mistakes:</strong> If a card is played out of order, the player that played the wrong card and the player that was supposed to play the card receive shame tokens,
               and new cards are distributed (level and number of cards stay the same)
             </li>
             <li><strong>Communication Limits:</strong> The key challenge of De Game is to find ways to communicate their
@@ -49,10 +59,10 @@ const Rules = ({ onClose }) => {
           </ol>
 
           <h3>End of Game</h3>
-          <p style={{
-            fontSize: "16px",
-          }}>The game ends when there are no remaining cards in the deck. The team’s performance can be evaluated
-            based on the number of levels completed and shame tokens collected.</p>
+          <p style={{ fontSize: "16px" }}>
+            The game ends when there are no remaining cards in the deck. The team’s performance can be evaluated
+            based on the number of levels completed and shame tokens collected.
+          </p>
         </div>
 
         <Button onClick={onClose}>Got it</Button>

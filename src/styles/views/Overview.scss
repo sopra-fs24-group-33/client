@@ -18,7 +18,7 @@
   }
   &.container {
     overflow: hidden; /* Allow content to overflow outside the padding */
-    max-height: 65vh;
+    height: fit-content;
     width: fit-content;
     background: black;
     padding: 2em;
@@ -62,7 +62,7 @@
   }
   &.player-container {
     position: relative;
-    max-height: 575px;
+    max-height: 525px;
     overflow-y: auto;
     overflow-x: hidden;
     width: fit-content;
@@ -73,7 +73,7 @@
     align-items: center;
     box-shadow: $dropShadow;
     scrollbar-width: thin; /* Can be "auto", "thin", or "none" */
-    scrollbar-color: rgba(44, 44, 44, 1) black; /* thumb and track color */
+    scrollbar-color: $grey black; /* thumb and track color */
   }
   &.outer-text-wrapper {
     width: 320px; /* its as wide as a player box*/

@@ -1,0 +1,61 @@
+@import "../theme";
+
+.user {
+  &.container {
+    padding: 45px;
+    margin-top: 75px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: fit-content;
+    width: fit-content;
+    background: black;
+    border-radius: 15px;
+    border: $grey solid 1px;
+  }
+
+  &.divider {
+    border: none; // Remove the default border
+    height: 1px; // Make it 1px high
+    width: 100%;
+    background-color: white; // Set the color of the divider
+  }
+
+  &.outer-text-wrapper {
+    width: fit-content; /* it's as wide as a player box */
+    min-width: 400px;
+  }
+
+  &.inner-text-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; // Align items vertically
+    font-size: 1.2em; // Increase font size
+  }
+
+  .stat-wrapper {
+    display: flex;
+    align-items: center; // Align items vertically
+  }
+
+  .icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px; // Adjust space between icon and number
+  }
+
+  .icon {
+    width: 25px; // Adjust the size as needed
+    height: 25px;
+  }
+
+  .number {
+    display: inline-flex;
+    align-items: center;
+    line-height: normal; // Ensure the number aligns with the icon height
+  }
+
+  p {
+    font-size: 1.2em; // Increase font size for paragraph text
+  }
+}

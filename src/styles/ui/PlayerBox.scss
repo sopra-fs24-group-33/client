@@ -11,7 +11,18 @@
     display: flex;
     align-items: center;
     background: linear-gradient(to right, $lila, $pink2 95%);
+
+    &.you {
+      background: linear-gradient(to right, #6040ef, #7e44f1 95%);
+    }
+    &.clickable {
+      cursor: pointer;
+      &:hover {
+        border: white 1px solid;
+      }
+    }
   }
+
 
   &.empty {
     position: relative;
