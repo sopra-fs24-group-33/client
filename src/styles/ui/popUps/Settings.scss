@@ -2,7 +2,6 @@
 
 .backdrop-settings {
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -12,6 +11,8 @@
   justify-content: center; // center horizontally
   overflow: auto; /* Enable scroll if needed */
   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+  z-index: 15;
+
 }
 
 @keyframes animatetop {
@@ -81,7 +82,7 @@
   height: 1px; // Make it 1px high
   background-color: white; // Set the color of the divider
   margin-bottom: 3vh;
-  }
+}
 
 .color-picker-wrapper {
   position: relative;
@@ -100,7 +101,6 @@
 
 .popover {
   position: absolute;
-  z-index: 1;
 }
 
 .cover {
