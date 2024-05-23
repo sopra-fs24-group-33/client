@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="figures/DeGameLogo.png" width="75">
+	<img src="figures/Logo.svg" width="75">
 </p>
 
 # De Game
