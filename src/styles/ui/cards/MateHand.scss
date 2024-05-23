@@ -11,3 +11,13 @@
   height: auto;  // Maintain aspect ratio
   margin: 0 -18px;  // Space out the cards
 }
+
+.player-hand-mates {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; // This will center the cards in the container
+  align-items: center; // This will align the cards vertically
+  gap: 1px; // Adjust the gap between cards as necessary
+  // Add any additional styling you want for the hand container here
+}
+

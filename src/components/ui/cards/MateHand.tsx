@@ -14,7 +14,7 @@ const MateHand: React.FC<CardBackRowProps> = ({ cardValues, revealCards, alt = f
   if (revealCards && cardValues.length) {
     // Show card fronts when revealCards is true and cardValues are provided
     return (
-      <div className="player-hand">
+      <div className="player-hand-mates">
         {cardValues.map((value, index) => (
           <CardFront key={index} value={value} className="card-container-small" alt={alt}/>
         ))}

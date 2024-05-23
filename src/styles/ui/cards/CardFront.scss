@@ -65,7 +65,7 @@
   align-items: stretch;
   justify-content: center;
   position: relative;
-  width: 200px;
+  width: 150px;
   height: auto;
   border-radius: 1vh;
   overflow: hidden;
@@ -90,16 +90,17 @@
 }
 
 .card-container-small {
-  display:flex;
+  display: flex;
   align-items: stretch;
   justify-content: center;
   position: relative;
-  width: 65px;
+  width: 50px; // Fixed width for each card
   height: auto;
-  border-radius: 0.5vh;
+  border-radius: 4px;
   overflow: hidden;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  box-shadow: 0 0 1vh 0.33vh rgba(0, 0, 0, 0.25); // Reduced initial subtle shadow
+  box-shadow: -1vh 0 1vh -1vh rgba(0, 0, 0, 0.6); // Shadow only on the left side
+  margin-right: -10px;
 
   .card-img {
     flex-grow: 1;
@@ -107,12 +108,13 @@
     height: 100%;
     object-fit: cover;
   }
+
   .card-value {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 22px;
+    font-size: 1.25em;
     font-family: $fontSubHeading;
     user-select: none;
   }
