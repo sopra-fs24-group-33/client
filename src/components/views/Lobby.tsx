@@ -122,6 +122,8 @@ const Lobby = () => {
     localStorage.removeItem("inGame")
     localStorage.removeItem("end")
     localStorage.removeItem('flawlessWin')
+    localStorage.removeItem("lvl")
+    localStorage.removeItem("lost");
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
     console.log("lobby pin:", lobbyPin)
 

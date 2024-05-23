@@ -12,6 +12,8 @@ import shame_logo from "../../assets/tokens/shame_logo.svg";
 import victory_logo from "../../assets/tokens/victory_logo.svg";
 // @ts-ignore
 import champion_logo from "../../assets/tokens/champion_logo.svg";
+// @ts-ignore
+import Background from "../../assets/AltBackground2.svg";
 
 const UserProfile = () => {
   console.log(localStorage.getItem("token"));
@@ -84,18 +86,31 @@ const UserProfile = () => {
   }
 
   return (
-    <BaseContainer className="user container">
-      {user && user.token === localStorage.getItem("token") ? (
-        <h2>My Profile</h2>
-      ) : (
-        <h2>{user?.username ?? "???"}</h2>
-      )}
-      <hr className="user divider" />
-      {content}
-      <Button className="secondary-button" width="40%" onClick={() => navigate("/overview")} style={{ marginTop: "20px" }}>
-        Go Back
-      </Button>
-    </BaseContainer>
+    <div style={{
+      backgroundImage: `url(${Background})`,
+      backgroundSize: "cover",
+      backgroundPosition: "100%",
+      height: "100vh",
+      width: "100vw",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column",
+    }}>
+      <BaseContainer className="user container" >
+        {user && user.token === localStorage.getItem("token") ? (
+          <h2>My Profile</h2>
+        ) : (
+          <h2>{user?.username ?? "???"}</h2>
+        )}
+        <hr className="user divider" />
+        {content}
+        <Button className="secondary-button" width="40%" onClick={() => navigate("/overview")} style={{ marginTop: "20px" }}>
+          Go Back
+        </Button>
+      </BaseContainer>
+    </div>
+
   );
 };
 
