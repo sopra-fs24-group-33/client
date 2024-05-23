@@ -98,6 +98,11 @@ const Overview = () => {
     }
   }
 
+  const retrieveProfile = ( id:number ) => {
+    console.log("Retrieving profile with userId:", id)
+    navigate(`/users/${id}`);
+  }
+
   useEffect(() => {
     if (playerId === null) {
       navigate("/home")
@@ -134,6 +139,8 @@ const Overview = () => {
       setCurUser(responseUsers.find(user => user.token === localStorage.getItem("token")));
       if(!curUser) {
         setCurGuest(responsePlayers.find(g => g.token === localStorage.getItem("token")));
+      } else {
+        localStorage.setItem("userId", curUser.id)
       }
       }
 
@@ -213,6 +220,8 @@ const Overview = () => {
                 username={user.username}
                 shameTokens={user.shame_tokens}
                 you={localStorage.getItem("token") === user.token}
+                clickable={true}
+                onClick={() => retrieveProfile(user.id)}
               />
             </li>
           ))}
