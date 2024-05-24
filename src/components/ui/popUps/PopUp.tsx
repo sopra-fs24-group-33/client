@@ -109,7 +109,7 @@ const Popup: React.FC<PopupProps> = ({ type, isVisible, onReveal, onNext, onNewG
 
       <h2>{headers[type]}</h2>
       <p>{messages[type]}</p>
-      <div>
+      <div className="button-container">
         {allActions[type].map((button, index) => (
           <Button key={index} onClick={button.action} style={{ margin: "5px" }}>
             {button.label}
