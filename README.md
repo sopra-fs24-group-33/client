@@ -1,8 +1,6 @@
 <p align="center">
-	<img src="figures/Logo.svg" width="75">
+	<img src="figures/Title.png">
 </p>
-
-# De Game
 
 Welcome to our version of Steffen Brendorff's card game "The Game" that promotes teamwork and having fun with eachother. This app was created as a part of the UZH-course "Software Engineering Lab".
 
