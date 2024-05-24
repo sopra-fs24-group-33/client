@@ -92,9 +92,17 @@ export const agoraService = {
   },
 
   isMicMuted() {
+    // console.log("# isMicMuted", localMute, "localTracks.audioTrack", localTracks.audioTrack, "!localTracks.audioTrack.enabled", !localTracks.audioTrack.enabled);
     if (localTracks.audioTrack) {
       return !localTracks.audioTrack.enabled;
     }
-    return true;
+    return false;
   },
+
+  audioTrackExists() {
+    console.log("# audioTrackExists", localTracks.audioTrack, "!!localTracks.audioTrack", !!localTracks.audioTrack);
+    return !!localTracks.audioTrack;
+
+  }
+
 };
