@@ -100,9 +100,12 @@ export const agoraService = {
   },
 
   audioTrackExists() {
-    console.log("# audioTrackExists", localTracks.audioTrack, "!!localTracks.audioTrack", !!localTracks.audioTrack);
-    return !!localTracks.audioTrack;
+    const audioTrack = localTracks.audioTrack;
+    const hasEnabledMutex = audioTrack && audioTrack._enabledMutex !== null && audioTrack._enabledMutex !== undefined;
 
+    console.log("# audioTrackExists", audioTrack, "!!audioTrack", !!audioTrack, "has _enabledMutex", hasEnabledMutex);
+
+    return !!audioTrack && hasEnabledMutex;
   }
 
 };
