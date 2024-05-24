@@ -1,15 +1,10 @@
 import AgoraRTC from "agora-rtc-sdk-ng";
 
-//const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
-
 // Configuration constants
-const APP_ID = "bb103a1b0b3c477ea5bae0cc1c32525f"
+const APP_ID = "bb103a1b0b3c477ea5bae0cc1c32525f";
 const APP_CERTIFICATE = 'd016d99bc4d8434aa063a0efe54412f1';
-const TOKEN = "007eJxTYOiS/mZd5f3JSMcu4JPdxOXzHszyYcmTPcnKd2/Cnfh379MUGMzMLUySTS3MU5LNUkxSTU0tTRLTkpJSjSxNU8xMjUzSXu7VTmsIZGR4bHCKkZEBAkF8FobcxMw8BgYAUhcgHw=="
-const CHANNEL = "main"
-
-
-
+const TOKEN = "007eJxTYOiS/mZd5f3JSMcu4JPdxOXzHszyYcmTPcnKd2/Cnfh379MUGMzMLUySTS3MU5LNUkxSTU0tTRLTkpJSjSxNU8xMjUzSXu7VTmsIZGR4bHCKkZEBAkF8FobcxMw8BgYAUhcgHw==";
+const CHANNEL = "main";
 
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 let localTracks = {
@@ -17,10 +12,7 @@ let localTracks = {
   audioTrack: null
 };
 
-
 // Store for the video tracks
-
-// Stores for the tracks
 const videoTracks = new Map();
 const audioTracks = new Map();
 let localMute = false;
@@ -50,10 +42,22 @@ export const agoraService = {
 
     try {
       await client.join(APP_ID, lobbyPin, Token, userId);
-      [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
-      videoTracks.set(userId, localTracks.videoTrack);
+
+      try {
+        [localTracks.audioTrack, localTracks.videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+      } catch (err) {
+        console.warn("Camera not found or permission denied:", err);
+        localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      }
+
+      if (localTracks.videoTrack) {
+        videoTracks.set(userId, localTracks.videoTrack);
+      }
+
       audioTracks.set(userId, localTracks.audioTrack);
-      await client.publish(Object.values(localTracks));
+
+      await client.publish(Object.values(localTracks).filter(track => track !== null));
+
       handleLocalUserJoined(localTracks.videoTrack, localTracks.audioTrack);
     } catch (error) {
       console.error("Error in Agora Stream Setup:", error);
@@ -92,7 +96,6 @@ export const agoraService = {
   },
 
   isMicMuted() {
-    // console.log("# isMicMuted", localMute, "localTracks.audioTrack", localTracks.audioTrack, "!localTracks.audioTrack.enabled", !localTracks.audioTrack.enabled);
     if (localTracks.audioTrack) {
       return !localTracks.audioTrack.enabled;
     }
@@ -107,5 +110,4 @@ export const agoraService = {
 
     return !!audioTrack && hasEnabledMutex;
   }
-
 };
