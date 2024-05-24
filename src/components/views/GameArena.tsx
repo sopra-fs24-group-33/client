@@ -166,7 +166,6 @@ const GameArena = () => {
 
 
       const data = JSON.parse(event.data);
-      console.log("+++Game event received:", data);
       setGame(data);
       setPlayers(data.players);
       setCardsPlayed(prev => [...prev, data.currentCard]);
@@ -312,7 +311,6 @@ const GameArena = () => {
       localStorage.setItem('flawlessWin', 'false');
       setMoveStatus('blink-failure');
       setPopupType('lose');
-      console.log("setting lost to true");
       setLost(true);
       localStorage.setItem('lost', 'true');
       setTimeout(() => {
@@ -333,13 +331,10 @@ const GameArena = () => {
   const readyDrawCards = async () => {
     setDrawButtonClicked(true);
     if (reveal === true) {
-      console.log("reveal is true");
       if (parseInt(localStorage.getItem("adminId")) === playerId) {
-        console.log("Admin updated the game.");
         const response = await api.put(`/move/${gameId}`, 100); // ensures that only one makes a put request to update the statews
       }
     }
-    console.log("playersReady: ", playersReady);
     readyWS.send(game.players.length);
   };
 
@@ -399,7 +394,6 @@ const GameArena = () => {
       console.log("Can't play current card. Draw again...");
     }
     else if (!lastCardPlayTime.current || now - lastCardPlayTime.current > 500) {
-      console.log("Card clicked with value:", cardValue);
       const response = await api.put(`/move/${gameId}`, cardValue);
       ws.send(gameId);
       setPlayerHand(playerHand.filter(n => n !== cardValue));
@@ -407,8 +401,6 @@ const GameArena = () => {
       console.log("Wait for cooldown to end");
     }
   };
-
-  console.log("# agoraService.getVideoTracks() game", agoraService.getVideoTracks());
 
   let teamContent = teamMates.length > 0 ? (
     teamMates.map(player => {

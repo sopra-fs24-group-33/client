@@ -148,7 +148,6 @@ const Lobby = () => {
     localStorage.removeItem("lvl")
     localStorage.removeItem("lost");
     const socket = new WebSocket(`${prefix}/lobby?lobby=${lobbyPin}`);
-    console.log("lobby pin:", lobbyPin)
 
 
     socket.onopen = () => {
@@ -156,7 +155,6 @@ const Lobby = () => {
     };
 
     socket.onmessage = (event) => {
-      console.log("received msg:", event.data)
       if (event.data === "leave") {
         localStorage.removeItem("pin");
         agoraService.cleanup();
@@ -167,7 +165,6 @@ const Lobby = () => {
       setLobby(newLobby);
       setPlayers(newLobby.players)
       if (newLobby.gameid) {
-        console.log("Game started!");
         localStorage.setItem("gameId", newLobby.gameid);
         navigate('/game');
       }
@@ -181,7 +178,6 @@ const Lobby = () => {
       const adminFound = newLobby.players.find(p => p.id === newLobby.admin);
       setAdmin((adminFound));
 
-      console.log("Received data:", newLobby);
     };
 
     socket.onclose = async () => {
@@ -205,7 +201,6 @@ const Lobby = () => {
     try {
       const player = lobby.players.find(p => p.id.toString() === playerId);
       const requestBody = JSON.stringify(player)
-      console.log("player in lobby.tsx:", requestBody)
       const response = await api.put(`/gamelobbies/${lobbyPin}`, requestBody)
       localStorage.removeItem("pin")
       localStorage.removeItem("adminId")

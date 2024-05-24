@@ -4,8 +4,6 @@ import { getWSPreFix } from "helpers/getDomain";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import {useNavigate} from "react-router-dom";
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
 import "styles/views/Overview.scss";
 import PlayerBox from "components/ui/PlayerBox";
 import { Player, User } from "types";
@@ -39,7 +37,6 @@ const Overview = () => {
   const handleJoin = async (pin) => {
     const withoutSpacing = pin.replace(/\s/g, '')
     const finalPin = parseInt(withoutSpacing, 10);
-    console.log("*pin entered:", finalPin)
 
     if (withoutSpacing.length < 6) {
       setError("Pin must be 6-digits long")
@@ -81,10 +78,7 @@ const Overview = () => {
     // Get current player based on token
     try {
       const requestBody = JSON.stringify( player )
-      console.log("this is the requesto body: " + requestBody)
       const response = await api.post("/gamelobbies", requestBody);
-
-      console.log("This is the response data:", response.data)
 
       const lobby = new Lobby(response.data)
 
@@ -103,7 +97,6 @@ const Overview = () => {
   }
 
   const retrieveProfile = ( id:number ) => {
-    console.log("Retrieving profile with userId:", id)
     navigate(`/users/${id}`);
   }
 
@@ -117,21 +110,15 @@ const Overview = () => {
   }, [playerId, lobbyPin]);
 
   useEffect(() => {
-    console.log("*playerId", localStorage.getItem("id"))
     const socket = new WebSocket(`${prefix}/overview`);
     socket.onopen = () => {
-      console.log('*Connected to WebSocket [Overview]');
 
       const msg = JSON.stringify({ action: "playerId", playerId: playerId});
       socket.send(msg);
     };
 
     socket.onmessage = (event) => {
-      console.log("*user id or player id?:", localStorage.getItem("id"));
-      console.log("*received msg:", event.data)
       const data: { players: Player[], users: User[] } = JSON.parse(event.data);
-      console.log("*players:", data.players);
-      console.log("*users:", data.users);
 
       const responsePlayers = data.players;
       const responseUsers = data.users;
@@ -315,7 +302,6 @@ const Overview = () => {
     contentUserInfo=
     <Button onClick={() => logout()}>Logout</Button>;
   }
-  console.log("ATTENTION PLEASE THIS IS THE CURRENT GUESZT", curGuest);
 
   return (
     <div style={{
