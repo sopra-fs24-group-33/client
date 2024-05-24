@@ -35,22 +35,23 @@ const Home = () => {
             alignItems: "center",
             flexDirection: "column",
           }}>
-            <h4 style={{
+            <h3 style={{
               textAlign: "left",
               width: "100%",
+              paddingBottom: "33px",
 
             }}>
               Welcome to
-            </h4>
+            </h3>
             <h1>DE GAME</h1>
 
-            <h4 style={{
+            <h3 style={{
               textAlign: "right",
               width: "100%",
 
             }}>
               A collaborative card game
-            </h4>
+            </h3>
           </div>
           <img src={Deck_backside} alt="" style={{ marginLeft: "20px" }} />
         </div>

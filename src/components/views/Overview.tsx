@@ -285,7 +285,7 @@ const Overview = () => {
     );
   } else if (curGuest) {
     contentUserInfo = (
-      <div className="overview sub-container">
+      <div className="overview sub-container-guest">
         <div className="overview">
           <div className="overview header-hey-username">
             <h2 className="light">Hey&nbsp;</h2>
@@ -330,7 +330,7 @@ const Overview = () => {
       flexDirection: "column",
     }}>
       <div className="overview section">
-        <BaseContainer className="overview container">
+        <div className="overview container">
           {contentUserInfo}
 
           <div className="overview vertical-line-box">
@@ -369,7 +369,7 @@ const Overview = () => {
             </div>
           </div>
 
-        </BaseContainer>
+        </div>
 
         <div className="overview button-container">
           <Button className="primary-button" width={300} onClick={() => createLobby()}>
