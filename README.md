@@ -135,6 +135,12 @@ Here you can see the `GameArena` page with all the players, the mini menu, the c
 
 ## Roadmap
 
+### Interactive Tutorial
+To help new players understand the game, add an interactive tutorial to guide users through the game.
+
+- **Simulate Playthroguh**
+- **Guide User Step-by-step**
+
 ### UI Improvements
 Enhance user personalization by offering more freedom and creativity in customizing the website's interface.
 
