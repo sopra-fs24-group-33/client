@@ -38,22 +38,43 @@ const Lobby = () => {
 
 
   const toggleMute = () => {
-    if (isMuted) {
-      agoraService.unmuteselfe();
-    } else {
-      agoraService.muteselfe();
-    }
-    setIsMuted(!isMuted);
+    try {
+      console.log("# toggleMute", agoraService.audioTrackExists());
+      if (agoraService.audioTrackExists()) {
+        if (isMuted) {
+          agoraService.unmuteselfe();
+        } else {
+          agoraService.muteselfe();
+        }
+        setIsMuted(!isMuted);
+      }
+    } catch (error) {
+
+      }
+
   };
+
 
   useEffect(() => {
     const checkMicStatus = async () => {
+      console.log("# checkMicStatus", agoraService.audioTrackExists())
+      if (!agoraService.audioTrackExists()) {
+        return;
+      }
       const micStatus = agoraService.isMicMuted();
       setIsMuted(micStatus);
     };
-
     checkMicStatus();
   }, []);
+
+  // useEffect(() => {
+  //
+  //   const unmute_if_muted = async () => {
+  //     if (isMuted) {
+  //       agoraService.unmuteselfe();}
+  //     };
+  //     unmute_if_muted();
+  // }, []);
 
   const emptyPlayerBoxes = Array.from({ length: emptyPlayerBoxesCount }, (_, index) => (
     <li key={`empty_${index}`}>
@@ -83,6 +104,9 @@ const Lobby = () => {
     // added to team mates to display local stream
     setTeamMates(prev => [...prev,{ id: playerId, name:  "neme",  }]);
     setTeamMatesStream(prev => new Map(prev).set(playerId, videoTrack ));
+    const micStatus = agoraService.isMicMuted();
+    console.log("# micStatus", micStatus)
+    setIsMuted(micStatus);
   };
 
 
@@ -112,7 +136,6 @@ const Lobby = () => {
     // Call the async function
     setupStreams();
 
-    // Specify how to clean up after this effect:
     return () => {
       // agoraService.cleanup();
     };
