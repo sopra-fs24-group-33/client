@@ -44,18 +44,31 @@ FormField.propTypes = {
 
 const Register = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState<string>(null);
-  const [password, setPassword] = useState<string>(null);
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState("");
   const [error2, setError2] = useState("");
 
   const validateUsername = (un) => {
-    if (matcher.hasMatch(un) || /[^a-zA-Z0-9]/.test(un)) {
-      setError("Invalid username");
+    if (un.length > 10) {
+      setError("Username cannot exceed 10 characters");
       return false;
-    } else {
-      return true;
     }
+    else if (matcher.hasMatch(un)) {
+      setError("Inappropriate Username");
+      return false;
+    }
+    else if (/[^a-zA-Z0-9]/.test(un)) {
+      setError("No special characters allowed")
+      return false
+    }
+    setError(""); // Clear error if valid
+    return true;
+  };
+
+  const handleUsernameChange = (un) => {
+    setUsername(un);
+    validateUsername(un);
   };
 
   const doRegister = async () => {
@@ -136,7 +149,7 @@ const Register = () => {
               label="Username"
               value={username}
               type="text"
-              onChange={(un: string) => setUsername(un)}
+              onChange={handleUsernameChange}
             />
             <div className="login error-text">{error}</div>
 
@@ -144,7 +157,7 @@ const Register = () => {
               label="Password"
               value={password}
               type="password"
-              onChange={(un: string) => setPassword(un)}
+              onChange={(pw: string) => setPassword(pw)}
             />
             <div className="login error-text">{error2}</div>
 
@@ -153,7 +166,7 @@ const Register = () => {
                 Cancel
               </Button>
               <Button
-                disabled={!username || !password}
+                disabled={!username || !password || error}
                 width="100%"
                 onClick={() => doRegister()}
               >
